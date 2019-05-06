@@ -1,0 +1,47 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier",
+    "tslint-config-airbnb"
+  ],
+  "rules": {
+    "align": false,
+    "array-type": [true, "array-simple"],
+    "import-name": false,
+    "no-boolean-literal-compare": false,
+    "no-empty-interface": false,
+    "no-inferrable-types": true,
+    "no-this-assignment": [true, { "allow-destructuring": true }],
+    "object-literal-sort-keys": false,
+    "object-shorthand-properties-first": false,
+    "prefer-array-literal": false,
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "ter-arrow-parens": [true, "always"],
+    "ter-func-call-spacing": false,
+    "ter-indent": false,
+    "trailing-comma": [
+      true,
+      {
+        "multiline": {
+          "arrays": "always",
+          "objects": "always",
+          "functions": "never",
+          "imports": "always",
+          "exports": "always",
+          "typeLiterals": "always"
+        },
+        "singleline": "never",
+        "esSpecCompliant": true
+      }
+    ],
+    "typedef": [true, "call-signature", "arrow-call-signature"],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ]
+  },
+  "jsRules": {}
+}

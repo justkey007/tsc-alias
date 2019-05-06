@@ -1,0 +1,60 @@
+{
+  "name": "tsc-alias",
+  "version": "1.0.0",
+  "description": "Replace absolute paths to relative paths after typescript compilation",
+  "main": "cjs/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "tsc-alias": "cjs/index.js"
+  },
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "clear": "rm -rf ./lib ./cjs ./coverage",
+    "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "tslint -c ./tslint.json \"src/**/*\"",
+    "lint:fix": "tslint --fix -c ./tslint.json \"src/**/*\"",
+    "start": "yarn clear && yarn format && yarn lint:fix && yarn test && yarn build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "typescript",
+    "paths",
+    "alias",
+    "absolute path",
+    "relative path",
+    "compilation",
+    "tsc"
+  ],
+  "author": "Juskey B.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justkey007/tsc-alias/issues"
+  },
+  "homepage": "https://github.com/justkey007/tsc-alias.git",
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.12.0",
+    "jest": "^24.5.0",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.14.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.4000"
+  },
+  "dependencies": {
+    "@types/globby": "^9.1.0",
+    "commander": "^2.19.0",
+    "globby": "^8.0.2",
+    "normalize-path": "^3.0.0"
+  }
+}

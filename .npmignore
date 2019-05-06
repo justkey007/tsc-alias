@@ -1,0 +1,33 @@
+# OS
+.DS_Store
+
+# Config files
+.ackrc
+.babelrc
+.eslintignore
+.eslintrc
+.eslintrc.js
+.flowconfig
+.gitignore
+.npmignore
+.travis.yml
+babel.config.js
+gulpfile.babel.js
+gulpfile.js
+rollup.config.js
+
+# Documents
+contributors.txt
+
+# Test files
+test
+__tests__
+*.test.js
+coverage
+.nyc_output
+
+# Cache
+.rpt2_cache
+
+# Secrets
+.env
