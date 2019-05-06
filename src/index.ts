@@ -11,8 +11,6 @@ import { getPathThatEndsUp, loadConfig, walk } from './util';
 program
   .version('0.0.1')
   .option('-p, --project <file>', 'path to tsconfig.json')
-  .option('-s, --src <path>', 'source root path')
-  .option('-o, --out <path>', 'output root path');
 
 program.on('--help', () => {
   console.log(`
