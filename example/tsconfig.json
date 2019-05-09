@@ -7,7 +7,6 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "baseUrl": "./",
-    "typeRoots": ["./@commons/@types"],
     "paths": {
       "@commons": ["src/lib/commons/index.ts"],
       "custom": ["custom_modules/index.ts"],
