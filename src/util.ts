@@ -1,7 +1,6 @@
 import { readdirSync, statSync } from 'fs';
 import { dirname, resolve } from 'path';
 
-
 export interface IRawTSConfig {
   extends?: string;
   compilerOptions?: {
@@ -60,7 +59,7 @@ export const loadConfig = (file: string): ITSConfig => {
   return config;
 };
 
-export function walk(dir: string, stopOn: string = ''): string[] {
+export function walk(dir: string, stopOn = ''): string[] {
   let results: string[] = [];
   const list = readdirSync(dir);
 
@@ -71,7 +70,8 @@ export function walk(dir: string, stopOn: string = ''): string[] {
       results.push(file);
       break;
     }
-    const stat = statSync(file); stopOn;
+    const stat = statSync(file);
+    stopOn;
     if (stat && stat.isDirectory() && dirName !== stopOn) {
       /* Recurse into a subdirectory */
       results = results.concat(walk(file, stopOn));
@@ -83,8 +83,13 @@ export function walk(dir: string, stopOn: string = ''): string[] {
   return results;
 }
 
-export function getPathThatEndsUp(paths: string[], ending: string): string | undefined {
-  let splitPath: string[]; let found = false; let i = 0;
+export function getPathThatEndsUp(
+  paths: string[],
+  ending: string
+): string | undefined {
+  let splitPath: string[];
+  let found = false;
+  let i = 0;
   while (!found && i < paths.length) {
     splitPath = paths[i].split('/');
     if (splitPath.lastIndexOf(ending) === splitPath.length - 1) {

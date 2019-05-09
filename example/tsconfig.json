@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "baseUrl": "./",
+    "typeRoots": ["./@commons/@types"],
+    "paths": {
+      "@commons": ["src/lib/commons/index.ts"],
+      "custom": ["custom_modules/index.ts"],
+      "extra": ["../src/index.test"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

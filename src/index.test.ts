@@ -1,3 +1,5 @@
-test('index', () => {
-  expect(true).toBe(true);
-});
+// test('index', () => {
+//   expect(true).toBe(true);
+// });
+
+export const EXTRA = 'extra';
