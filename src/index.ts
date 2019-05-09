@@ -9,7 +9,7 @@ import { basename, dirname, normalize, relative, resolve } from 'path';
 import { getPathThatEndsUp, loadConfig, walk } from './util';
 
 program
-  .version('0.0.1')
+  .version('1.0.2')
   .option('-p, --project <file>', 'path to tsconfig.json');
 
 program.on('--help', () => {
