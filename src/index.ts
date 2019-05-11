@@ -25,7 +25,7 @@ const { project } = program as {
   project?: string;
 };
 
-// console.log = () => {};
+console.log = () => {};
 console.info('***tsc-alias starting***');
 
 const configFile = resolve(process.cwd(), project ? project : 'tsconfig.json');
