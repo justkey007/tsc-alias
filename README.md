@@ -24,4 +24,10 @@ yarn add -D tsc-alias
 "scripts": {
   "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
 }
+
+#or
+
+"scripts": {
+  "build": "tsc && tsc-alias",
+}
 ```
