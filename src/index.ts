@@ -14,6 +14,7 @@ program
 
 program.on('--help', () => {
   console.log(`
+  $ tscpath
   $ tscpath -p tsconfig.json
 `);
 });
@@ -23,15 +24,11 @@ program.parse(process.argv);
 const { project } = program as {
   project?: string;
 };
-if (!project) {
-  throw new Error('--project must be specified');
-}
-
-console.log('***tsc-alias starting***');
 
 console.log = () => {};
+console.info('***tsc-alias starting***');
 
-const configFile = resolve(process.cwd(), project);
+const configFile = resolve(process.cwd(), project ? project : 'tsconfig.json');
 console.log(`tsconfig.json: ${configFile}`);
 
 const { baseUrl, outDir, paths } = loadConfig(configFile);
@@ -87,7 +84,7 @@ const aliases = Object.keys(paths)
       basePath = normalizePath(normalize(`${configDir}/${baseUrl}/${outDir}`));
     }
     return {
-      prefix: alias.replace(/\*$/, ''),
+      prefix: alias.replace(/\*$/, '').replace(/\//g, ''),
       basePath,
       paths: _paths,
       isExtra,
@@ -130,7 +127,7 @@ const replaceImportStatement = ({
 }): string => {
   const requiredModule = orig.split(/"|'/)[1];
   const index = orig.indexOf(alias.prefix);
-  const isAlias = requiredModule === alias.prefix;
+  const isAlias = requiredModule.indexOf(alias.prefix) === 0;
   if (index > -1 && isAlias) {
     let absoluteAliasPath;
     absoluteAliasPath = normalizePath(
@@ -141,13 +138,13 @@ const replaceImportStatement = ({
       )
     );
 
-    // console.log('abs', absoluteAliasPath);
-    // console.log('fileDirName', dirname(file));
+    console.log('abs', absoluteAliasPath);
+    console.log('fileDirName', dirname(file));
 
     let relativeAliasPath = normalizePath(
       relative(dirname(file), absoluteAliasPath)
     );
-    // console.log('rel', relativeAliasPath + '\n');
+    console.log('rel', relativeAliasPath + '\n');
 
     if (relativeAliasPath[0] !== '.') {
       relativeAliasPath = './' + relativeAliasPath;
@@ -192,11 +189,15 @@ const files = sync(`${outPath}/**/*.{js,jsx,ts,tsx}`, {
 } as any).map((x) => resolve(x));
 
 const flen = files.length;
+let replaceCount = 0;
 for (let i = 0; i < flen; i += 1) {
   const file = files[i];
   const text = readFileSync(file, 'utf8');
   const newText = replaceAlias(text, file);
   if (text !== newText) {
+    replaceCount++;
     writeFileSync(file, newText, 'utf8');
   }
 }
+
+console.info(`${replaceCount} files have been replaced!`);

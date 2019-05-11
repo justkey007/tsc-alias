@@ -1,17 +1,16 @@
 {
   "name": "tsc-alias",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Replace absolute paths to relative paths after typescript compilation",
-  "main": "cjs/index.js",
-  "module": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "bin/index.js",
+  "module": "bin/index.js",
+  "types": "bin/index.d.ts",
   "bin": {
-    "tsc-alias": "cjs/index.js"
+    "tsc-alias": "bin/index.js"
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./tsconfig.esm.json",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "build": "tsc -p ./tsconfig.json",
+    "build:watch": "tsc -w -p ./tsconfig.json",
     "clear": "rm -rf ./lib ./cjs ./coverage",
     "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "tslint -c ./tslint.json \"src/**/*\"",

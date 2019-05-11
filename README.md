@@ -11,6 +11,8 @@ Replace absolute paths to relative paths after typescript compilation (tsc) duri
 First, install tsc-alias as devDependency using npm or yarn.
 
 ```sh
+npm install -g tsc-alias
+#or
 npm install --save-dev tsc-alias
 # or
 yarn add -D tsc-alias

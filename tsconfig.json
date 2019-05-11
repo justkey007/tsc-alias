@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "watch": true,
     "allowJs": false,
     "allowSyntheticDefaultImports": false,
     "alwaysStrict": true,
     "baseUrl": ".",
     "checkJs": false,
     "declaration": true,
-    "declarationDir": "lib",
+    "declarationDir": "@types",
     "diagnostics": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["es5", "es6", "es2015", "es7", "es2016", "es2017"],
@@ -14,16 +15,16 @@
     "listFiles": true,
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "noEmit": true,
+    "noEmit": false,
     "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
-    "strictNullChecks": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
+    "strictNullChecks": false,
     "noUnusedParameters": true,
-    "outDir": "lib",
+    "outDir": "bin",
     "paths": {
       "src/*": ["src/*"]
     },
@@ -36,5 +37,5 @@
     "typeRoots": ["node_modules/@types", "src/@types"]
   },
   "include": ["node_modules/@types", "src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.spec.*", "**/*.test.*"]
 }
