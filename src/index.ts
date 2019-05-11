@@ -159,6 +159,9 @@ aliases.forEach((alias) => {
     alias.basePath = normalizePath(
       normalize(`${configDir}/${outDir}/${relConfDirPathInOutPath}/${baseUrl}`)
     );
+  } else {
+    alias.basePath = normalizePath(normalize(`${configDir}/${outDir}`));
+    alias.isExtra = false;
   }
 });
 console.log(`aliases: ${JSON.stringify(aliases, null, 2)}`);

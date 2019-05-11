@@ -9,7 +9,7 @@
     "baseUrl": "./src",
     "paths": {
       "@commons": ["lib/commons/index.ts"],
-      "custom/*": ["../custom_modules/*"],
+      "custom/*": ["custom_modules/*"],
       "extra": ["../../src/index.test"]
     }
   },
