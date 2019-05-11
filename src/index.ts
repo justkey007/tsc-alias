@@ -25,7 +25,7 @@ const { project } = program as {
   project?: string;
 };
 
-console.log = () => {};
+// console.log = () => {};
 console.info('***tsc-alias starting***');
 
 const configFile = resolve(process.cwd(), project ? project : 'tsconfig.json');
@@ -83,8 +83,12 @@ const aliases = Object.keys(paths)
     } else {
       basePath = normalizePath(normalize(`${configDir}/${baseUrl}/${outDir}`));
     }
+    let prefix = alias.replace(/\*$/, '');
+    if (prefix[prefix.length - 1] === '/') {
+      prefix = prefix.substring(0, prefix.length - 1);
+    }
     return {
-      prefix: alias.replace(/\*$/, '').replace(/\//g, ''),
+      prefix,
       basePath,
       paths: _paths,
       isExtra,

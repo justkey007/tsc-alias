@@ -1,10 +1,10 @@
 {
   "name": "tsc-alias",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Replace absolute paths to relative paths after typescript compilation",
   "main": "bin/index.js",
   "module": "bin/index.js",
-  "types": "bin/index.d.ts",
+  "types": "@types/index.d.ts",
   "bin": {
     "tsc-alias": "bin/index.js"
   },
@@ -51,7 +51,6 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
-    "@types/globby": "^9.1.0",
     "commander": "^2.19.0",
     "globby": "^8.0.2",
     "normalize-path": "^3.0.0"
