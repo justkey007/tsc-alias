@@ -62,6 +62,7 @@ const confDirParentFolderName: string = basename(configDir);
 
 let hasExtraModule = false;
 let configDirInOutPath: string = null;
+let relConfDirPathInOutPath;
 
 const aliases = Object.keys(paths)
   .map((alias) => {
@@ -69,26 +70,55 @@ const aliases = Object.keys(paths)
       path.replace(/\*$/, '').replace('ts', 'js')
     );
 
-    let isExtra = false;
-    let basePath;
-    if (normalize(_paths[0]).includes('..')) {
-      hasExtraModule = true;
-      isExtra = true;
-      basePath = normalizePath(
-        getPathThatEndsUp(
-          walk(
-            normalizePath(normalize(`${configDir}/${baseUrl}/${outDir}`)),
-            confDirParentFolderName
-          ),
+    const path = _paths[0];
+
+    const isExtra = null;
+    const basePath = null;
+    if (normalize(path).includes('..')) {
+      const dirs =
+        walk(
+          normalizePath(normalize(`${configDir}/${outDir}`)),
           confDirParentFolderName
-        )
-      );
-      if (!configDirInOutPath) {
-        configDirInOutPath = basePath;
+        ) || [];
+
+      let outOfProject = false;
+      let i = 0;
+      while (i < dirs.length && !outOfProject) {
+        const dir = dirs[i];
+        const indexOfOutFolder = dir.indexOf(normalizePath(outDir));
+        if (dir.lastIndexOf(confDirParentFolderName) > indexOfOutFolder) {
+          outOfProject = true;
+        }
+        i++;
       }
-    } else {
-      basePath = normalizePath(normalize(`${configDir}/${baseUrl}/${outDir}`));
+
+      if (outOfProject && !configDirInOutPath) {
+        configDirInOutPath = normalizePath(
+          getPathThatEndsUp(dirs, confDirParentFolderName)
+        );
+        hasExtraModule = true;
+
+        // Find relative path access of configDir in outPath
+        if (configDirInOutPath) {
+          const stepsbackPath = relative(configDirInOutPath, outPath);
+          const splitStepBackPath = normalizePath(stepsbackPath).split('/');
+          const nbOfStepBack = splitStepBackPath.length;
+          const splitConfDirInOutPath = configDirInOutPath.split('/');
+
+          let i = 1;
+          const splitRelPath: string[] = [];
+          while (i <= nbOfStepBack) {
+            splitRelPath.unshift(
+              splitConfDirInOutPath[splitConfDirInOutPath.length - i]
+            );
+            i++;
+          }
+          relConfDirPathInOutPath = splitRelPath.join('/');
+          console.log('===>relParentPath', relConfDirPathInOutPath);
+        }
+      }
     }
+
     let prefix = alias.replace(/\*$/, '');
     if (prefix[prefix.length - 1] === '/') {
       prefix = prefix.substring(0, prefix.length - 1);
@@ -96,32 +126,42 @@ const aliases = Object.keys(paths)
     return {
       prefix,
       basePath,
+      path,
       paths: _paths,
       isExtra,
     };
   })
   .filter(({ prefix }) => prefix);
-console.log(`aliases: ${JSON.stringify(aliases, null, 2)}`);
 
-// Find relative path access of configDir in outPath
-let relConfDirPathInOutPath;
-if (configDirInOutPath) {
-  const stepsbackPath = relative(configDirInOutPath, outPath);
-  const splitStepBackPath = normalizePath(stepsbackPath).split('/');
-  const nbOfStepBack = splitStepBackPath.length;
-  const splitConfDirInOutPath = configDirInOutPath.split('/');
-
-  let i = 1;
-  const splitRelPath: string[] = [];
-  while (i <= nbOfStepBack) {
-    splitRelPath.unshift(
-      splitConfDirInOutPath[splitConfDirInOutPath.length - i]
+/*********** Find basepath of aliases *****************/
+aliases.forEach((alias) => {
+  if (normalize(alias.path).includes('..')) {
+    const tempBasePath = normalizePath(
+      normalize(
+        `${configDir}/${outDir}/${
+          hasExtraModule && relConfDirPathInOutPath
+            ? relConfDirPathInOutPath
+            : ''
+        }/${baseUrl}`
+      )
     );
-    i++;
+    if (existsSync(`tempBasePath/${alias.path}`)) {
+      alias.isExtra = false;
+      alias.basePath = tempBasePath;
+    } else {
+      alias.isExtra = true;
+      alias.basePath = normalizePath(
+        normalize(`${tempBasePath}/${alias.path}`)
+      );
+    }
+  } else if (hasExtraModule) {
+    alias.isExtra = false;
+    alias.basePath = normalizePath(
+      normalize(`${configDir}/${outDir}/${relConfDirPathInOutPath}/${baseUrl}`)
+    );
   }
-  relConfDirPathInOutPath = splitRelPath.join('/');
-  console.log('===>relParentPath', relConfDirPathInOutPath);
-}
+});
+console.log(`aliases: ${JSON.stringify(aliases, null, 2)}`);
 
 const requireRegex = /(?:import|require)\(['"]([^'"]*)['"]\)/g;
 const importRegex = /(?:import|from) ['"]([^'"]*)['"]/g;
@@ -141,11 +181,7 @@ const replaceImportStatement = ({
   if (index > -1 && isAlias) {
     let absoluteAliasPath;
     absoluteAliasPath = normalizePath(
-      normalize(
-        `${alias.basePath}/${
-          hasExtraModule && !alias.isExtra ? relConfDirPathInOutPath + '/' : ''
-        }${alias.paths[0]}`
-      )
+      normalize(`${alias.basePath}/${alias.path}`)
     );
 
     console.log('abs', absoluteAliasPath);

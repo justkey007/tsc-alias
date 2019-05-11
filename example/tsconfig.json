@@ -6,11 +6,11 @@
     "strict": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "@commons": ["src/lib/commons/index.ts"],
-      "custom/*": ["custom_modules/*"],
-      "extra": ["../src/index.test"]
+      "@commons": ["lib/commons/index.ts"],
+      "custom/*": ["../custom_modules/*"],
+      "extra": ["../../src/index.test"]
     }
   },
   "exclude": ["node_modules"]
