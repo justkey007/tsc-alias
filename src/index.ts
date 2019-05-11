@@ -29,7 +29,6 @@ console.log = () => {};
 console.info('***tsc-alias starting***');
 
 const configFile = resolve(process.cwd(), project ? project : 'tsconfig.json');
-console.info(configFile);
 
 if (!existsSync(configFile)) {
   throw new Error(
