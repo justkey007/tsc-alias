@@ -2,7 +2,7 @@
 
 // tslint:disable no-console
 import * as program from 'commander';
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { sync } from 'globby';
 import * as normalizePath from 'normalize-path';
 import { basename, dirname, normalize, relative, resolve } from 'path';
@@ -29,6 +29,13 @@ console.log = () => {};
 console.info('***tsc-alias starting***');
 
 const configFile = resolve(process.cwd(), project ? project : 'tsconfig.json');
+console.info(configFile);
+
+if (!existsSync(configFile)) {
+  throw new Error(
+    'No valid tsconfig.json file. Specify one by tsc-alias -p tsconfig.json!'
+  );
+}
 console.log(`tsconfig.json: ${configFile}`);
 
 const { baseUrl, outDir, paths } = loadConfig(configFile);
