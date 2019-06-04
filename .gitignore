@@ -80,5 +80,4 @@ dist
 # next.js build output
 .next
 
-bin
 @types
