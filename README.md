@@ -2,6 +2,10 @@
 
 Replace absolute paths to relative paths after typescript compilation (tsc) during compile-time. You can add aliases that reference other projects outside your tsconfig.json project by providing a relative path to the baseUrl.
 
+[![npm version](https://badge.fury.io/js/tsc-alias.svg)](https://badge.fury.io/js/tsc-alias)
+[![Dependency Status](https://david-dm.org/justkey007/tsc-alias.svg)](https://david-dm.org/justkey007/tsc-alias)
+[![License](https://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+
 ## Comparison to [tsconfig-paths](https://github.com/dividab/tsconfig-paths)
 
 \+ Compile time (no runtime dependencies)
