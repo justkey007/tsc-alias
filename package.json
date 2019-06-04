@@ -1,28 +1,20 @@
 {
   "name": "tsc-alias",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "Replace absolute paths to relative paths after typescript compilation",
-  "main": "bin/index.js",
-  "module": "bin/index.js",
-  "types": "@types/index.d.ts",
+  "main": "src/index.js",
+  "module": "src/index.js",
   "bin": {
-    "tsc-alias": "bin/index.js"
+    "tsc-alias": "src/bin/index.js"
   },
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "build:watch": "tsc -w -p ./tsconfig.json",
-    "clear": "rm -rf ./lib ./cjs ./coverage",
-    "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\"",
-    "lint": "tslint -c ./tslint.json \"src/**/*\"",
-    "lint:fix": "tslint --fix -c ./tslint.json \"src/**/*\"",
-    "start": "yarn clear && yarn format && yarn lint:fix && yarn test && yarn build",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/justkey007/tsc-alias.git"
   },
   "keywords": [
     "typescript",
@@ -40,19 +32,14 @@
   },
   "homepage": "https://github.com/justkey007/tsc-alias.git",
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.12.0",
-    "jest": "^24.5.0",
-    "prettier": "^1.16.4",
-    "ts-jest": "^24.0.0",
-    "tslint": "^5.14.0",
-    "tslint-config-airbnb": "^5.11.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.4000"
+    "@types/node": "^11.12.0"
   },
   "dependencies": {
+    "@jfonx/console-utils": "^1.0.3",
+    "@jfonx/file-utils": "^1.0.0",
+    "chokidar": "^3.0.0",
     "commander": "^2.19.0",
-    "globby": "^8.0.2",
+    "globby": "^9.2.0",
     "normalize-path": "^3.0.0"
   }
 }

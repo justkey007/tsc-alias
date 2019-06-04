@@ -8,14 +8,14 @@ Replace absolute paths to relative paths after typescript compilation (tsc) duri
 
 ## Getting Started
 
-First, install tsc-alias as devDependency using npm or yarn.
+First, install tsc-alias as devDependency using npm.
 
 ```sh
 npm install -g tsc-alias
-#or
+```
+
+```
 npm install --save-dev tsc-alias
-# or
-yarn add -D tsc-alias
 ```
 
 ## Add it to your build scripts in package.json
@@ -25,9 +25,55 @@ yarn add -D tsc-alias
   "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
 }
 
-#or
+================ OR ===================
 
 "scripts": {
   "build": "tsc && tsc-alias",
+  "build:watch": "tsc -w && tsc-alias -w"
 }
 ```
+
+## API
+
+### Installation
+
+```sh
+npm install tsc-alias
+```
+
+### Usage
+
+```typescript
+import { replaceTscAliasPaths } from 'tsc-alias';
+
+replaceTscAliasPaths(options?);
+```
+
+Here are all the available options:
+
+<table>
+  <thead>
+  <tr>
+    <th>Option</th>
+    <th>Description</th>
+    <th>Default Value</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>configFile</td>
+      <td>path to tsconfig.json</td>
+      <td><code>'tsconfig.json'</code></td>
+    </tr>
+    <tr>
+      <td>watch</td>
+      <td>Observe file changes</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td>outDir</td>
+      <td>Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)</td>
+      <td><code>tsconfig.compilerOptions.outDir</code></td>
+    </tr>
+  </tbody>
+</table>

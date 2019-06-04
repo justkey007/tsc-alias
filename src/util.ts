@@ -1,4 +1,5 @@
-import { readdirSync, statSync } from 'fs';
+import { FileUtils } from '@jfonx/file-utils';
+import { sync } from 'globby';
 import { dirname, resolve } from 'path';
 
 export interface IRawTSConfig {
@@ -21,7 +22,7 @@ export const mapPaths = (
   mapper: (x: string) => string
 ): { [key: string]: string[] } => {
   const dest = {} as { [key: string]: string[] };
-  Object.keys(paths).forEach((key) => {
+  Object.keys(paths).forEach(key => {
     dest[key] = paths[key].map(mapper);
   });
   return dest;
@@ -33,9 +34,9 @@ export const loadConfig = (file: string): ITSConfig => {
     compilerOptions: { baseUrl, outDir, paths } = {
       baseUrl: undefined,
       outDir: undefined,
-      paths: undefined,
-    },
-  } = require(file) as IRawTSConfig;
+      paths: undefined
+    }
+  } = FileUtils.toObject(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
   if (baseUrl) {
@@ -52,53 +53,32 @@ export const loadConfig = (file: string): ITSConfig => {
     const parentConfig = loadConfig(resolve(dirname(file), ext));
     return {
       ...parentConfig,
-      ...config,
+      ...config
     };
   }
 
   return config;
 };
 
-export function walk(dir: string, stopOn = ''): string[] {
-  let results: string[] = [];
-  const list = readdirSync(dir);
-
-  for (let file of list) {
-    const dirName = file;
-    file = dir + '/' + file;
-    if (dirName === stopOn) {
-      results.push(file);
-      break;
-    }
-    const stat = statSync(file);
-    stopOn;
-    if (stat && stat.isDirectory() && dirName !== stopOn) {
-      /* Recurse into a subdirectory */
-      results = results.concat(walk(file, stopOn));
-      results.push(file);
-    } else {
-      /* Is a file */
-    }
-  }
-  return results;
-}
-
-export function getPathThatEndsUp(
-  paths: string[],
-  ending: string
+export function getProjectDirPathInOutDir(
+  outDir: string,
+  projectDir: string
 ): string | undefined {
-  let splitPath: string[];
-  let found = false;
-  let i = 0;
-  while (!found && i < paths.length) {
-    splitPath = paths[i].split('/');
-    if (splitPath.lastIndexOf(ending) === splitPath.length - 1) {
-      found = true;
+  const dirs = sync(
+    [
+      `${outDir}/**/${projectDir}`,
+      `!${outDir}/**/${projectDir}/**/${projectDir}`,
+      `!${outDir}/**/node_modules`
+    ],
+    {
+      dot: true,
+      onlyDirectories: true
     }
-    i++;
-  }
-  if (found) {
-    return paths[i - 1];
-  }
-  return undefined;
+  );
+
+  /* Rechercher le chemin le plus long */
+  dirs.sort((dirA, dirB) => {
+    return dirB.split('/').length - dirA.split('/').length;
+  });
+  return dirs[0];
 }

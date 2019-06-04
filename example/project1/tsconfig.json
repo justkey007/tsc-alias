@@ -10,7 +10,7 @@
     "paths": {
       "@commons": ["lib/commons/index.ts"],
       "custom/*": ["custom_modules/*"],
-      "extra": ["../../src/index.test"]
+      "extra": ["../../project2/index"]
     }
   },
   "exclude": ["node_modules"]
