@@ -15,7 +15,8 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "pretty": true
+    "pretty": true,
+    "newLine": "lf"
   },
   "exclude": [
     "src/test.ts",
