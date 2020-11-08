@@ -14,7 +14,6 @@
     "build:watch": "tsc -w",
     "clean": "rimraf dist",
     "prepublish": "npm run build",
-    "version": "",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\""
   },
