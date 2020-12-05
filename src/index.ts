@@ -9,7 +9,7 @@ import {
   isAbsolute,
   normalize,
   relative,
-  resolve
+  resolve,
 } from 'path';
 import { getProjectDirPathInOutDir, loadConfig } from './util';
 
@@ -19,7 +19,7 @@ export function replaceTscAliasPaths(
     outDir?: string;
     watch?: boolean;
   } = {
-    watch: false
+    watch: false,
   }
 ) {
   console.log('=== tsc-alias starting ===');
@@ -63,8 +63,8 @@ export function replaceTscAliasPaths(
   let relConfDirPathInOutPath;
 
   const aliases = Object.keys(paths)
-    .map(alias => {
-      const _paths = paths[alias as keyof typeof paths].map(path => {
+    .map((alias) => {
+      const _paths = paths[alias as keyof typeof paths].map((path) => {
         path = path.replace(/\*$/, '').replace('.ts', '');
         if (isAbsolute(path)) {
           path = relative(configDir, path);
@@ -115,13 +115,13 @@ export function replaceTscAliasPaths(
         basePath,
         path,
         paths: _paths,
-        isExtra
+        isExtra,
       };
     })
     .filter(({ prefix }) => prefix);
 
   /*********** Find basepath of aliases *****************/
-  aliases.forEach(alias => {
+  aliases.forEach((alias) => {
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
@@ -160,7 +160,7 @@ export function replaceTscAliasPaths(
   const replaceImportStatement = ({
     orig,
     file,
-    alias
+    alias,
   }: {
     orig: string;
     file: string;
@@ -170,16 +170,16 @@ export function replaceTscAliasPaths(
     const index = orig.indexOf(alias.prefix);
     const isAlias = requiredModule.split('/').indexOf(alias.prefix) === 0;
     if (index > -1 && isAlias) {
-      let absoluteAliasPath;
+      let absoluteAliasPath: string;
       absoluteAliasPath = normalizePath(
         normalize(`${alias.basePath}/${alias.path}`)
       );
 
-      let relativeAliasPath = normalizePath(
+      let relativeAliasPath: string = normalizePath(
         relative(dirname(file), absoluteAliasPath)
       );
 
-      if (relativeAliasPath[0] !== '.') {
+      if (!relativeAliasPath.startsWith('.')) {
         relativeAliasPath = './' + relativeAliasPath;
       }
 
@@ -187,35 +187,36 @@ export function replaceTscAliasPaths(
         orig.substring(0, index) +
         relativeAliasPath +
         orig.substring(index + alias.prefix.length);
-      return modulePath;
+
+      return modulePath.replace(/\/\//g, '/');
     }
     return orig;
   };
 
   const replaceAlias = (file: string): boolean => {
-    const text = readFileSync(file, 'utf8');
-    let newText = text;
+    const code = readFileSync(file, 'utf8');
+    let tempCode = code;
     for (const alias of aliases) {
       const replacementParams = {
         file,
-        alias
+        alias,
       };
-      newText = newText
-        .replace(requireRegex, orig =>
+      tempCode = tempCode
+        .replace(requireRegex, (orig) =>
           replaceImportStatement({
             orig,
-            ...replacementParams
+            ...replacementParams,
           })
         )
-        .replace(importRegex, orig =>
+        .replace(importRegex, (orig) =>
           replaceImportStatement({
             orig,
-            ...replacementParams
+            ...replacementParams,
           })
         );
     }
-    if (text !== newText) {
-      writeFileSync(file, newText, 'utf8');
+    if (code !== tempCode) {
+      writeFileSync(file, tempCode, 'utf8');
       return true;
     }
     return false;
@@ -224,11 +225,11 @@ export function replaceTscAliasPaths(
   // Finding files and changing alias paths
   const globPattern = [
     `${outPath}/**/*.{js,jsx,ts,tsx}`,
-    `!${outPath}/**/node_modules`
+    `!${outPath}/**/node_modules`,
   ];
   const files = sync(globPattern, {
     dot: true,
-    onlyFiles: true
+    onlyFiles: true,
   });
 
   const flen = files.length;
@@ -245,10 +246,10 @@ export function replaceTscAliasPaths(
     Output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
-    filesWatcher.on('change', file => {
+    filesWatcher.on('change', (file) => {
       replaceAlias(file);
     });
-    tsconfigWatcher.on('change', _ => {
+    tsconfigWatcher.on('change', (_) => {
       Output.clear();
       filesWatcher.close();
       tsconfigWatcher.close();

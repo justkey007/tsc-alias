@@ -35,6 +35,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
+
 # Bower dependency directory (https://bower.io/)
 bower_components
 
@@ -44,9 +45,8 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directories
-node_modules/
-jspm_packages/
+# Ignore test node_modules
+!example/node_modules
 
 # TypeScript v1 declaration files
 typings/

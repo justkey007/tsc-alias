@@ -15,7 +15,7 @@
     "clean": "rimraf dist",
     "prepublish": "npm run build",
     "postversion": "git push && git push --tags && npm publish",
-    "format": "prettier --write \"./*.{js,jsx,ts,tsx}\" \"./src/**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"**/*.{js,ts}\""
   },
   "repository": {
     "type": "git",
@@ -41,11 +41,14 @@
     "@jfonx/file-utils": "^1.0.0",
     "chokidar": "^3.0.0",
     "commander": "^2.19.0",
+    "find-node-modules": "^2.1.0",
     "globby": "^9.2.0",
     "normalize-path": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^11.12.0",
-    "rimraf": "^3.0.2"
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.1.2"
   }
 }

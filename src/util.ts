@@ -1,6 +1,7 @@
 import { FileUtils } from '@jfonx/file-utils';
+import * as findNodeModulesPath from 'find-node-modules';
 import { sync } from 'globby';
-import { dirname, resolve } from 'path';
+import { dirname, join } from 'path';
 
 export interface IRawTSConfig {
   extends?: string;
@@ -22,7 +23,7 @@ export const mapPaths = (
   mapper: (x: string) => string
 ): { [key: string]: string[] } => {
   const dest = {} as { [key: string]: string[] };
-  Object.keys(paths).forEach(key => {
+  Object.keys(paths).forEach((key) => {
     dest[key] = paths[key].map(mapper);
   });
   return dest;
@@ -34,8 +35,8 @@ export const loadConfig = (file: string): ITSConfig => {
     compilerOptions: { baseUrl, outDir, paths } = {
       baseUrl: undefined,
       outDir: undefined,
-      paths: undefined
-    }
+      paths: undefined,
+    },
   } = FileUtils.toObject(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
@@ -50,10 +51,20 @@ export const loadConfig = (file: string): ITSConfig => {
   }
 
   if (ext) {
-    const parentConfig = loadConfig(resolve(dirname(file), ext));
+    let parentConfig: ITSConfig;
+    if (ext.startsWith('.')) {
+      parentConfig = loadConfig(join(dirname(file), ext));
+    } else {
+      const tsConfigDir = dirname(file);
+      const node_modules = findNodeModulesPath({ cwd: tsConfigDir })[0];
+      const nodeModulesTsConfig = !ext.includes('.json') ? `${ext}.json` : ext;
+      parentConfig = loadConfig(
+        join(tsConfigDir, node_modules, nodeModulesTsConfig)
+      );
+    }
     return {
       ...parentConfig,
-      ...config
+      ...config,
     };
   }
 
@@ -68,11 +79,11 @@ export function getProjectDirPathInOutDir(
     [
       `${outDir}/**/${projectDir}`,
       `!${outDir}/**/${projectDir}/**/${projectDir}`,
-      `!${outDir}/**/node_modules`
+      `!${outDir}/**/node_modules`,
     ],
     {
       dot: true,
-      onlyDirectories: true
+      onlyDirectories: true,
     }
   );
 
