@@ -180,12 +180,7 @@ export function replaceTscAliasPaths(
       );
 
       if (relativeAliasPath[0] !== '.') {
-        if (relativeAliasPath.length === 0) {
-          relativeAliasPath = '.'
-        }
-        else {
-          relativeAliasPath = './' + relativeAliasPath;
-        }
+        relativeAliasPath = './' + relativeAliasPath;
       }
 
       const modulePath =
