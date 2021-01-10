@@ -42,7 +42,7 @@
     "commander": "^2.19.0",
     "find-node-modules": "^2.1.0",
     "globby": "^9.2.0",
-    "normalize-path": "^3.0.0"
+    "normalize-path": "^3.0.0",
     "tsconfig": "^7.0.0"
   },
   "devDependencies": {
