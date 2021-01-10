@@ -38,12 +38,12 @@
   "homepage": "https://github.com/justkey007/tsc-alias.git",
   "dependencies": {
     "@jfonx/console-utils": "^1.0.3",
-    "@jfonx/file-utils": "^1.0.0",
     "chokidar": "^3.0.0",
     "commander": "^2.19.0",
     "find-node-modules": "^2.1.0",
     "globby": "^9.2.0",
-    "normalize-path": "^3.0.0"
+    "normalize-path": "^3.0.0",
+    "tsconfig": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^11.12.0",

@@ -1,6 +1,5 @@
 dependencies:
   '@jfonx/console-utils': 1.0.3
-  '@jfonx/file-utils': 1.0.0
   chokidar: 3.0.1
   commander: 2.20.0
   find-node-modules: 2.1.0
@@ -10,6 +9,7 @@ devDependencies:
   '@types/node': 11.13.13
   prettier: 2.2.1
   rimraf: 3.0.2
+  tsconfig: 7.0.0
   typescript: 4.1.2
 lockfileVersion: 5.2
 packages:
@@ -19,12 +19,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-/XbnqjWc7yNZVLAJJO9rimfIz9DYte+cj3EF9hwhIv7vw6ok2t3cjl0huYsmD89srKH03vWjeqAcIH86CuYj3g==
-  /@jfonx/file-utils/1.0.0:
-    dependencies:
-      '@jfonx/console-utils': 1.0.3
-    dev: false
-    resolution:
-      integrity: sha512-+gqUMbScweBpWKoQGlERJgqFH1jtWwVCqRMCpHLvJyHRTxxoNIdjdeQM+c/iv9ExRYNBU/mJgCjFYbCte6U9bw==
   /@mrmlnc/readdir-enhanced/2.2.1:
     dependencies:
       call-me-maybe: 1.0.1
@@ -59,6 +53,14 @@ packages:
   /@types/node/11.13.13:
     resolution:
       integrity: sha512-GFWH7e4Q/OGLAO545bupVju+nE1YtLSwYAdLfSzAXnTPqoqKoXCOEtB7Cluvg9B/h2nGLhyzCDyCInYvrOE2nw==
+  /@types/strip-bom/3.0.0:
+    dev: true
+    resolution:
+      integrity: sha1-FKjsOVbC6B7bdSB5CuzyHCkK69I=
+  /@types/strip-json-comments/0.0.30:
+    dev: true
+    resolution:
+      integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==
   /anymatch/3.0.2:
     dependencies:
       normalize-path: 3.0.0
@@ -1116,6 +1118,18 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-YICcOcv/VTNyJv1eC1IPNB8ftcY=
+  /strip-bom/3.0.0:
+    dev: true
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-IzTBjpx1n3vdVv3vfprj1YjmjtM=
+  /strip-json-comments/2.0.1:
+    dev: true
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-PFMZQukIwml8DsNEhYwobHygpgo=
   /to-object-path/0.3.0:
     dependencies:
       kind-of: 3.2.2
@@ -1152,6 +1166,15 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-FWtleNAtZ/Ki2qtqej2CXTOayOH9bHDQF+Q48VpWyDXjbYxA4Yz8iDB31zXOBUlOHHKidDbqGVrTUvQMPmBGBw==
+  /tsconfig/7.0.0:
+    dependencies:
+      '@types/strip-bom': 3.0.0
+      '@types/strip-json-comments': 0.0.30
+      strip-bom: 3.0.0
+      strip-json-comments: 2.0.1
+    dev: true
+    resolution:
+      integrity: sha512-vZXmzPrL+EmC4T/4rVlT2jNVMWCi/O4DIiSj3UHg1OE5kCKbk4mfrXc6dZksLgRM/TZlKnousKH9bbTazUWRRw==
   /typescript/4.1.2:
     dev: true
     engines:
@@ -1201,7 +1224,6 @@ packages:
       integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 specifiers:
   '@jfonx/console-utils': ^1.0.3
-  '@jfonx/file-utils': ^1.0.0
   '@types/node': ^11.12.0
   chokidar: ^3.0.0
   commander: ^2.19.0
@@ -1210,4 +1232,5 @@ specifiers:
   normalize-path: ^3.0.0
   prettier: ^2.2.1
   rimraf: ^3.0.2
+  tsconfig: ^7.0.0
   typescript: ^4.1.2

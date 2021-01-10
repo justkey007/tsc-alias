@@ -1,4 +1,4 @@
-import { FileUtils } from '@jfonx/file-utils';
+import { loadSync } from 'tsconfig'
 import * as findNodeModulesPath from 'find-node-modules';
 import { sync } from 'globby';
 import { dirname, join } from 'path';
@@ -37,7 +37,7 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       paths: undefined,
     },
-  } = FileUtils.toObject(file) as IRawTSConfig;
+  } = loadSync(file).config as IRawTSConfig;
 
   const config: ITSConfig = {};
   if (baseUrl) {
