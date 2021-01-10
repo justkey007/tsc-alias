@@ -43,12 +43,12 @@
     "find-node-modules": "^2.1.0",
     "globby": "^9.2.0",
     "normalize-path": "^3.0.0"
+    "tsconfig": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^11.12.0",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "tsconfig": "^7.0.0",
     "typescript": "^4.1.2"
   }
 }
