@@ -82,3 +82,6 @@ temp
 .next
 
 @types
+
+# JetBrains ide file
+.idea
