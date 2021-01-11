@@ -1,4 +1,4 @@
-import { FileUtils } from '@jfonx/file-utils';
+import * as FileUtils from '@jfonx/file-utils';
 import * as findNodeModulesPath from 'find-node-modules';
 import { sync } from 'globby';
 import { dirname, join } from 'path';
