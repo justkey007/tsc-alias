@@ -132,7 +132,7 @@ export function replaceTscAliasPaths(
           }/${baseUrl}`
         )
       );
-      if (existsSync(`tempBasePath/${alias.path}`)) {
+      if (existsSync(`${tempBasePath}/${alias.path}`)) {
         alias.isExtra = false;
         alias.basePath = tempBasePath;
       } else {
