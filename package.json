@@ -10,11 +10,8 @@
     "tsc-alias": "dist/bin/index.js"
   },
   "scripts": {
-    "build": "npm run clean && tsc",
-    "build:watch": "tsc -w",
-    "clean": "rimraf dist",
-    "prepublish": "npm run build",
-    "release:patch": "npm test && npm version patch",
+    "build:dev": "tsc -w",
+    "release:patch": "tsc && npm test && npm version patch",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "test": "jest"
