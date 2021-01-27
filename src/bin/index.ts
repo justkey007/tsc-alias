@@ -1,9 +1,12 @@
 #! /usr/bin/env node
 import * as program from 'commander';
 import { replaceTscAliasPaths } from '..';
+
+const { version } = require('../../package.json');
+
 program
   .name('tsc-alias')
-  .version('1.1.0')
+  .version(version)
   .option('-p, --project <file>', 'path to tsconfig.json')
   .option('-w, --watch', 'Observe file changes')
   .option(
