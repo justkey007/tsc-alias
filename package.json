@@ -1,6 +1,6 @@
 {
   "name": "tsc-alias",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Replace absolute paths to relative paths after typescript compilation",
   "main": "dist/index.js",
   "files": [
