@@ -11,7 +11,12 @@ import {
   relative,
   resolve,
 } from 'path';
-import { getProjectDirPathInOutDir, loadConfig } from './util';
+import {
+  existsResolvedAlias,
+  getAbsoluteAliasPath,
+  getProjectDirPathInOutDir,
+  loadConfig,
+} from './helpers';
 
 export function replaceTscAliasPaths(
   options: {
@@ -22,7 +27,7 @@ export function replaceTscAliasPaths(
     watch: false,
   }
 ) {
-  console.log('=== tsc-alias starting ===');
+  Output.info('=== tsc-alias starting ===');
   if (!options.configFile) {
     options.configFile = resolve(process.cwd(), 'tsconfig.json');
   } else {
@@ -65,7 +70,7 @@ export function replaceTscAliasPaths(
   const aliases = Object.keys(paths)
     .map((alias) => {
       const _paths = paths[alias as keyof typeof paths].map((path) => {
-        path = path.replace(/\*$/, '').replace('.ts', '');
+        path = path.replace(/\*$/, '').replace('.t', '.j');
         if (isAbsolute(path)) {
           path = relative(configDir, path);
         }
@@ -132,14 +137,16 @@ export function replaceTscAliasPaths(
           }/${baseUrl}`
         )
       );
-      if (existsSync(`${tempBasePath}/${alias.path}`)) {
+
+      const absoluteBasePath = normalizePath(
+        normalize(`${tempBasePath}/${alias.path}`)
+      );
+      if (existsResolvedAlias(absoluteBasePath)) {
         alias.isExtra = false;
         alias.basePath = tempBasePath;
       } else {
         alias.isExtra = true;
-        alias.basePath = normalizePath(
-          normalize(`${tempBasePath}/${alias.path}`)
-        );
+        alias.basePath = absoluteBasePath;
       }
     } else if (hasExtraModule) {
       alias.isExtra = false;
@@ -170,11 +177,7 @@ export function replaceTscAliasPaths(
     const index = orig.indexOf(alias.prefix);
     const isAlias = requiredModule.split('/').indexOf(alias.prefix) === 0;
     if (index > -1 && isAlias) {
-      let absoluteAliasPath: string;
-      absoluteAliasPath = normalizePath(
-        normalize(`${alias.basePath}/${alias.path}`)
-      );
-
+      let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
       let relativeAliasPath: string = normalizePath(
         relative(dirname(file), absoluteAliasPath)
       );

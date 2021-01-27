@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "start": "npm run build && node ./dist/index.js"
+  }
+}

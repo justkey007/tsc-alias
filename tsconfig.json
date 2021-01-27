@@ -22,7 +22,7 @@
     "**/*.spec.ts",
     "**/tests",
     "**/dist",
-    "**/example",
+    "**/projects",
     "node_modules"
   ],
   "include": ["**/*.ts", "**/package.json"]
