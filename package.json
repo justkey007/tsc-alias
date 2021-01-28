@@ -14,7 +14,7 @@
     "release:patch": "tsc && npm test && npm version patch",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"**/*.{js,ts}\"",
-    "test": "jest"
+    "test": "tsc && npm link && jest && npm unlink && rimraf package-lock.json"
   },
   "repository": {
     "type": "git",
