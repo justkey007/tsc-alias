@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build:dev": "tsc -w",
-    "clean": "npm uninstall -g . && rimraf dist && tsc && npm i -g .",
+    "clean": "npm unlink && rimraf dist && tsc && npm link && rimraf package-lock.json",
     "release:patch": "npm test && npm version patch",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"**/*.{js,ts}\"",
