@@ -46,7 +46,7 @@ bower_components
 build/Release
 
 # Ignore test node_modules
-!example/node_modules
+!projects/project1/node_modules
 
 # TypeScript v1 declaration files
 typings/
