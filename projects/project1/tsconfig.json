@@ -1,5 +1,4 @@
 {
-  "extends": "@jkm/tsconfig", /* from node_modules */
   "compilerOptions": {
     "outDir": "dist",
     "target": "es5",
