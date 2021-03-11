@@ -9,13 +9,13 @@ import {
   isAbsolute,
   normalize,
   relative,
-  resolve,
+  resolve
 } from 'path';
 import {
   existsResolvedAlias,
   getAbsoluteAliasPath,
   getProjectDirPathInOutDir,
-  loadConfig,
+  loadConfig
 } from './helpers';
 
 export function replaceTscAliasPaths(
@@ -24,8 +24,8 @@ export function replaceTscAliasPaths(
     outDir?: string;
     watch?: boolean;
   } = {
-    watch: false,
-  }
+      watch: false,
+    }
 ) {
   Output.info('=== tsc-alias starting ===');
   if (!options.configFile) {
@@ -130,10 +130,9 @@ export function replaceTscAliasPaths(
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
-          `${configDir}/${outDir}/${
-            hasExtraModule && relConfDirPathInOutPath
-              ? relConfDirPathInOutPath
-              : ''
+          `${configDir}/${outDir}/${hasExtraModule && relConfDirPathInOutPath
+            ? relConfDirPathInOutPath
+            : ''
           }/${baseUrl}`
         )
       );
@@ -175,7 +174,7 @@ export function replaceTscAliasPaths(
   }): string => {
     const requiredModule = orig.split(/"|'/)[1];
     const index = orig.indexOf(alias.prefix);
-    const isAlias = requiredModule.split('/').indexOf(alias.prefix) === 0;
+    const isAlias = requiredModule.startsWith(alias.prefix);
     if (index > -1 && isAlias) {
       let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
       let relativeAliasPath: string = normalizePath(
