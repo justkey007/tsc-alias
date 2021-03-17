@@ -36,8 +36,8 @@ export const loadConfig = (file: string): ITSConfig => {
     compilerOptions: { baseUrl, outDir, paths } = {
       baseUrl: undefined,
       outDir: undefined,
-      paths: undefined,
-    },
+      paths: undefined
+    }
   } = FileUtils.toObject(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
@@ -65,7 +65,7 @@ export const loadConfig = (file: string): ITSConfig => {
     }
     return {
       ...parentConfig,
-      ...config,
+      ...config
     };
   }
 
@@ -80,11 +80,11 @@ export function getProjectDirPathInOutDir(
     [
       `${outDir}/**/${projectDir}`,
       `!${outDir}/**/${projectDir}/**/${projectDir}`,
-      `!${outDir}/**/node_modules`,
+      `!${outDir}/**/node_modules`
     ],
     {
       dot: true,
-      onlyDirectories: true,
+      onlyDirectories: true
     }
   );
 
@@ -101,7 +101,7 @@ export function existsResolvedAlias(path: string): boolean {
   const globPattern = [`${path}.{js,jsx}`];
   const files = sync(globPattern, {
     dot: true,
-    onlyFiles: true,
+    onlyFiles: true
   });
 
   if (files.length) return true;

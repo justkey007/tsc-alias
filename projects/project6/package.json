@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "npm i && tsc && tsc-alias",
+    "start": "npm run build && node ./dist/index.js"
+  },
+  "dependencies": {
+    "@esfx/collections-hashmap": "^1.0.0-pre.17"
+  }
+}

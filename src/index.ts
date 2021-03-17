@@ -24,8 +24,8 @@ export function replaceTscAliasPaths(
     outDir?: string;
     watch?: boolean;
   } = {
-      watch: false,
-    }
+    watch: false
+  }
 ) {
   Output.info('=== tsc-alias starting ===');
   if (!options.configFile) {
@@ -120,7 +120,7 @@ export function replaceTscAliasPaths(
         basePath,
         path,
         paths: _paths,
-        isExtra,
+        isExtra
       };
     })
     .filter(({ prefix }) => prefix);
@@ -130,9 +130,10 @@ export function replaceTscAliasPaths(
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
-          `${configDir}/${outDir}/${hasExtraModule && relConfDirPathInOutPath
-            ? relConfDirPathInOutPath
-            : ''
+          `${configDir}/${outDir}/${
+            hasExtraModule && relConfDirPathInOutPath
+              ? relConfDirPathInOutPath
+              : ''
           }/${baseUrl}`
         )
       );
@@ -166,7 +167,7 @@ export function replaceTscAliasPaths(
   const replaceImportStatement = ({
     orig,
     file,
-    alias,
+    alias
   }: {
     orig: string;
     file: string;
@@ -174,7 +175,9 @@ export function replaceTscAliasPaths(
   }): string => {
     const requiredModule = orig.split(/"|'/)[1];
     const index = orig.indexOf(alias.prefix);
-    const isAlias = requiredModule.startsWith(alias.prefix);
+    const isAlias = requiredModule.includes('/')
+      ? requiredModule.startsWith(alias.prefix + '/')
+      : requiredModule.startsWith(alias.prefix);
     if (index > -1 && isAlias) {
       let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
       let relativeAliasPath: string = normalizePath(
@@ -201,19 +204,19 @@ export function replaceTscAliasPaths(
     for (const alias of aliases) {
       const replacementParams = {
         file,
-        alias,
+        alias
       };
       tempCode = tempCode
         .replace(requireRegex, (orig) =>
           replaceImportStatement({
             orig,
-            ...replacementParams,
+            ...replacementParams
           })
         )
         .replace(importRegex, (orig) =>
           replaceImportStatement({
             orig,
-            ...replacementParams,
+            ...replacementParams
           })
         );
     }
@@ -227,11 +230,11 @@ export function replaceTscAliasPaths(
   // Finding files and changing alias paths
   const globPattern = [
     `${outPath}/**/*.{js,jsx,ts,tsx}`,
-    `!${outPath}/**/node_modules`,
+    `!${outPath}/**/node_modules`
   ];
   const files = sync(globPattern, {
     dot: true,
-    onlyFiles: true,
+    onlyFiles: true
   });
 
   const flen = files.length;

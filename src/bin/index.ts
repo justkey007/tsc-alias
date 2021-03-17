@@ -18,5 +18,5 @@ program
 replaceTscAliasPaths({
   configFile: program.project,
   watch: !!program.watch,
-  outDir: program.directory,
+  outDir: program.directory
 });
