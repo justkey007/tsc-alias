@@ -12,7 +12,7 @@
   "scripts": {
     "prepare": "husky install",
     "build:dev": "tsc -w",
-    "clean": "npm unlink && rimraf dist && tsc && npm link && rimraf package-lock.json",
+    "clean": "npm unlink tsc-alias && rimraf dist && tsc && npm link && rimraf package-lock.json",
     "release:patch": "npm version patch",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"**/*.{js,ts}\"",
