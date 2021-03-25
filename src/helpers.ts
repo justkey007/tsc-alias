@@ -56,12 +56,7 @@ export const loadConfig = (file: string): ITSConfig => {
     if (ext.startsWith('.')) {
       parentConfig = loadConfig(join(dirname(file), ext));
     } else {
-      const tsConfigDir = dirname(file);
-      const node_modules = findNodeModulesPath({ cwd: tsConfigDir })[0];
-      const nodeModulesTsConfig = !ext.includes('.json') ? `${ext}.json` : ext;
-      parentConfig = loadConfig(
-        join(tsConfigDir, node_modules, nodeModulesTsConfig)
-      );
+      parentConfig = loadConfig(resolveTsConfigExtendsPath(ext, file));
     }
     return {
       ...parentConfig,
@@ -71,6 +66,20 @@ export const loadConfig = (file: string): ITSConfig => {
 
   return config;
 };
+
+export function resolveTsConfigExtendsPath(ext: string, file: string): string {
+  const tsConfigDir = dirname(file);
+  const node_modules = findNodeModulesPath({ cwd: tsConfigDir })[0];
+  const targetPath = join(tsConfigDir, node_modules, ext);
+  if (ext.endsWith('.json')) {
+    return targetPath;
+  }
+  let isDirectory = false;
+  try {
+    isDirectory = fs.lstatSync(targetPath).isDirectory();
+  } catch (err) {}
+  return isDirectory ? join(targetPath, 'tsconfig.json') : `${targetPath}.json`;
+}
 
 export function getProjectDirPathInOutDir(
   outDir: string,
