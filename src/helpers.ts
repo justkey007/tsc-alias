@@ -126,11 +126,18 @@ export function getAbsoluteAliasPath(
     .filter((part) => !part.match(/^\.$|^\s*$/));
 
   let aliasPathPart = aliasPathParts.shift() || '';
+
+  let pathExists: boolean;
   while (
-    !fs.existsSync(join(basePath, aliasPathPart)) &&
+    !(pathExists = fs.existsSync(join(basePath, aliasPathPart))) &&
     aliasPathParts.length
   ) {
     aliasPathPart = aliasPathParts.shift();
   }
-  return join(basePath, aliasPathPart, aliasPathParts.join('/'));
+
+  return join(
+    basePath,
+    pathExists ? aliasPathPart : '',
+    aliasPathParts.join('/')
+  );
 }

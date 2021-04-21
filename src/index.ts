@@ -65,7 +65,7 @@ export function replaceTscAliasPaths(
 
   let hasExtraModule = false;
   let configDirInOutPath: string = null;
-  let relConfDirPathInOutPath;
+  let relConfDirPathInOutPath: string;
 
   const aliases = Object.keys(paths)
     .map((alias) => {
@@ -229,7 +229,7 @@ export function replaceTscAliasPaths(
 
   // Finding files and changing alias paths
   const globPattern = [
-    `${outPath}/**/*.{js,jsx,d.ts,d.tsx}`,
+    `${outPath}/**/*.{js,jsx,ts,tsx}`,
     `!${outPath}/**/node_modules`
   ];
   const files = sync(globPattern, {
