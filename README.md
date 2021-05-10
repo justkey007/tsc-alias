@@ -32,7 +32,7 @@ npm install --save-dev tsc-alias
 
 "scripts": {
   "build": "tsc && tsc-alias",
-  "build:watch": "tsc -w && tsc-alias -w"
+  "build:watch": "tsc -w & tsc-alias -w"
 }
 ```
 
