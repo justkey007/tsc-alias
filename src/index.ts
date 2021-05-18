@@ -23,11 +23,13 @@ export function replaceTscAliasPaths(
     configFile?: string;
     outDir?: string;
     watch?: boolean;
+    silent?: boolean;
   } = {
-    watch: false
+    watch: false,
+    silent: false
   }
 ) {
-  Output.info('=== tsc-alias starting ===');
+  if (!options.silent) Output.info('=== tsc-alias starting ===');
   if (!options.configFile) {
     options.configFile = resolve(process.cwd(), 'tsconfig.json');
   } else {
@@ -246,16 +248,16 @@ export function replaceTscAliasPaths(
     }
   }
 
-  Output.info(`${replaceCount} files were affected!`);
+  if (!options.silent) Output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
-    Output.info('[Watching for file changes...]');
+    if (!options.silent) Output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
     filesWatcher.on('change', (file) => {
       replaceAlias(file);
     });
     tsconfigWatcher.on('change', (_) => {
-      Output.clear();
+      if (!options.silent) Output.clear();
       filesWatcher.close();
       tsconfigWatcher.close();
       replaceTscAliasPaths(options);

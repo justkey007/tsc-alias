@@ -78,5 +78,10 @@ Here are all the available options:
       <td>Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)</td>
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
+    <tr>
+      <td>silent</td>
+      <td>Reduced terminal output</td>
+      <td><code>false</code></td>
+    </tr>
   </tbody>
 </table>

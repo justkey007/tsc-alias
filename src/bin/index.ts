@@ -13,10 +13,12 @@ program
     '--dir, --directory <dir>',
     'Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)'
   )
+  .option('-s, --silent', 'reduced terminal output')
   .parse(process.argv);
 
 replaceTscAliasPaths({
   configFile: program.project,
   watch: !!program.watch,
-  outDir: program.directory
+  outDir: program.directory,
+  silent: program.silent
 });
