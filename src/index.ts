@@ -1,4 +1,3 @@
-import { Output } from '@jfonx/console-utils';
 import { watch } from 'chokidar';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { sync } from 'globby';
@@ -17,6 +16,7 @@ import {
   getProjectDirPathInOutDir,
   loadConfig
 } from './helpers';
+import { Output } from './utils';
 
 export function replaceTscAliasPaths(
   options: {
@@ -29,7 +29,9 @@ export function replaceTscAliasPaths(
     silent: false
   }
 ) {
-  if (!options.silent) Output.info('=== tsc-alias starting ===');
+  const output = new Output(options.silent);
+
+  output.info('=== tsc-alias starting ===');
   if (!options.configFile) {
     options.configFile = resolve(process.cwd(), 'tsconfig.json');
   } else {
@@ -41,7 +43,7 @@ export function replaceTscAliasPaths(
   const configFile = options.configFile;
 
   if (!existsSync(configFile)) {
-    Output.error(`Invalid file path => ${configFile}`, true);
+    output.error(`Invalid file path => ${configFile}`, true);
   }
 
   let { baseUrl, outDir, paths } = loadConfig(configFile);
@@ -50,13 +52,13 @@ export function replaceTscAliasPaths(
   }
 
   if (!baseUrl) {
-    Output.error('compilerOptions.baseUrl is not set', true);
+    output.error('compilerOptions.baseUrl is not set', true);
   }
   if (!paths) {
-    Output.error('compilerOptions.paths is not set', true);
+    output.error('compilerOptions.paths is not set', true);
   }
   if (!outDir) {
-    Output.error('compilerOptions.outDir is not set', true);
+    output.error('compilerOptions.outDir is not set', true);
   }
 
   const configDir: string = normalizePath(dirname(configFile));
@@ -248,16 +250,16 @@ export function replaceTscAliasPaths(
     }
   }
 
-  if (!options.silent) Output.info(`${replaceCount} files were affected!`);
+  output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
-    if (!options.silent) Output.info('[Watching for file changes...]');
+    output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
     filesWatcher.on('change', (file) => {
       replaceAlias(file);
     });
     tsconfigWatcher.on('change', (_) => {
-      if (!options.silent) Output.clear();
+      output.clear();
       filesWatcher.close();
       tsconfigWatcher.close();
       replaceTscAliasPaths(options);
