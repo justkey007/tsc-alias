@@ -16,7 +16,11 @@ import {
   getProjectDirPathInOutDir,
   loadConfig
 } from './helpers';
-import { Output, resolveFullImportPaths } from './utils';
+import {
+  Output,
+  resolveFullImportPaths,
+  replaceSourceImportPaths
+} from './utils';
 
 export interface ReplaceTscAliasPathsOptions {
   configFile?: string;
@@ -168,9 +172,6 @@ export function replaceTscAliasPaths(
     }
   });
 
-  const requireRegex = /(?:import|require)\(['"]([^'"]*)['"]\)/g;
-  const importRegex = /(?:import|from) ['"]([^'"]*)['"]/g;
-
   const replaceImportStatement = ({
     orig,
     file,
@@ -213,19 +214,12 @@ export function replaceTscAliasPaths(
         file,
         alias
       };
-      tempCode = tempCode
-        .replace(requireRegex, (orig) =>
-          replaceImportStatement({
-            orig,
-            ...replacementParams
-          })
-        )
-        .replace(importRegex, (orig) =>
-          replaceImportStatement({
-            orig,
-            ...replacementParams
-          })
-        );
+      tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
+        replaceImportStatement({
+          orig,
+          ...replacementParams
+        })
+      );
     }
 
     // Fully resolve all import paths (not just aliased ones)
