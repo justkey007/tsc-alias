@@ -13,6 +13,10 @@ program
     '--dir, --directory <dir>',
     'Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)'
   )
+  .option(
+    '-f, --resolve-full-paths',
+    'Attempt to fully resolve import paths if the corresponding .js file can be found'
+  )
   .option('-s, --silent', 'reduced terminal output')
   .parse(process.argv);
 
@@ -20,5 +24,6 @@ replaceTscAliasPaths({
   configFile: program.project,
   watch: !!program.watch,
   outDir: program.directory,
-  silent: program.silent
+  silent: program.silent,
+  resolveFullPaths: program.resolveFullPaths
 });

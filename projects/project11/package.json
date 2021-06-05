@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "npm i && tsc && tsc-alias --resolve-full-paths",
+    "start": "npm run build && node ./dist/project11/src/index.js"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.0"
+  }
+}

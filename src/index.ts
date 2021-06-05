@@ -16,15 +16,18 @@ import {
   getProjectDirPathInOutDir,
   loadConfig
 } from './helpers';
-import { Output } from './utils';
+import { Output, resolveFullImportPaths } from './utils';
+
+export interface ReplaceTscAliasPathsOptions {
+  configFile?: string;
+  outDir?: string;
+  watch?: boolean;
+  silent?: boolean;
+  resolveFullPaths?: boolean;
+}
 
 export function replaceTscAliasPaths(
-  options: {
-    configFile?: string;
-    outDir?: string;
-    watch?: boolean;
-    silent?: boolean;
-  } = {
+  options: ReplaceTscAliasPathsOptions = {
     watch: false,
     silent: false
   }
@@ -202,7 +205,7 @@ export function replaceTscAliasPaths(
     return orig;
   };
 
-  const replaceAlias = (file: string): boolean => {
+  const replaceAlias = (file: string, resolveFullPath?: boolean): boolean => {
     const code = readFileSync(file, 'utf8');
     let tempCode = code;
     for (const alias of aliases) {
@@ -224,6 +227,13 @@ export function replaceTscAliasPaths(
           })
         );
     }
+
+    // Fully resolve all import paths (not just aliased ones)
+    // *after* the aliases are resolved
+    if (resolveFullPath) {
+      tempCode = resolveFullImportPaths(tempCode, file);
+    }
+
     if (code !== tempCode) {
       writeFileSync(file, tempCode, 'utf8');
       return true;
@@ -245,7 +255,7 @@ export function replaceTscAliasPaths(
   let replaceCount = 0;
   for (let i = 0; i < flen; i += 1) {
     const file = files[i];
-    if (replaceAlias(file)) {
+    if (replaceAlias(file, options?.resolveFullPaths)) {
       replaceCount++;
     }
   }
@@ -256,7 +266,7 @@ export function replaceTscAliasPaths(
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
     filesWatcher.on('change', (file) => {
-      replaceAlias(file);
+      replaceAlias(file, options?.resolveFullPaths);
     });
     tsconfigWatcher.on('change', (_) => {
       output.clear();
