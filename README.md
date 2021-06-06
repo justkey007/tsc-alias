@@ -79,6 +79,11 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
     <tr>
+      <td>resolveFullPaths</td>
+      <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
       <td>silent</td>
       <td>Reduced terminal output</td>
       <td><code>false</code></td>
