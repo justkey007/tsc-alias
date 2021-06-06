@@ -30,6 +30,8 @@ export interface ReplaceTscAliasPathsOptions {
   resolveFullPaths?: boolean;
 }
 
+type Assertion = (claim: any, message: string) => asserts claim;
+
 export function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
     watch: false,
@@ -49,24 +51,18 @@ export function replaceTscAliasPaths(
 
   const configFile = options.configFile;
 
-  if (!existsSync(configFile)) {
-    output.error(`Invalid file path => ${configFile}`, true);
-  }
+  const assert: Assertion = (claim, message) =>
+    claim || output.error(message, true);
+
+  assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
   let { baseUrl, outDir, paths } = loadConfig(configFile);
   if (options.outDir) {
     outDir = options.outDir;
   }
-
-  if (!baseUrl) {
-    output.error('compilerOptions.baseUrl is not set', true);
-  }
-  if (!paths) {
-    output.error('compilerOptions.paths is not set', true);
-  }
-  if (!outDir) {
-    output.error('compilerOptions.outDir is not set', true);
-  }
+  assert(baseUrl, 'compilerOptions.baseUrl is not set');
+  assert(paths, 'compilerOptions.paths is not set');
+  assert(outDir, 'compilerOptions.outDir is not set');
 
   const configDir: string = normalizePath(dirname(configFile));
 
