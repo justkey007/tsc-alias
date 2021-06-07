@@ -19,7 +19,8 @@ import {
 import {
   Output,
   resolveFullImportPaths,
-  replaceSourceImportPaths
+  replaceSourceImportPaths,
+  newStringRegex
 } from './utils';
 
 export interface ReplaceTscAliasPathsOptions {
@@ -177,7 +178,11 @@ export function replaceTscAliasPaths(
     file: string;
     alias: typeof aliases[0];
   }): string => {
-    const requiredModule = orig.split(/"|'/)[1];
+    const requiredModule = orig.match(newStringRegex())?.groups?.path;
+    assert(
+      typeof requiredModule == 'string',
+      `Unexpected import statement pattern ${orig}`
+    );
     const index = orig.indexOf(alias.prefix);
     const isAlias = requiredModule.includes('/')
       ? requiredModule.startsWith(alias.prefix + '/')
