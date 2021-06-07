@@ -31,8 +31,8 @@ import { resolve, join, dirname } from 'path';
 
 export type StringReplacer = (importStatement: string) => string;
 
-const anyQuote = '["\'`]';
-const notQuote = '[^"\'`]';
+const anyQuote = '["\']';
+const notQuote = '[^"\']';
 const importString = `(?:${anyQuote}${notQuote}+${anyQuote})`;
 
 // Separate patterns for each style of import statement,
