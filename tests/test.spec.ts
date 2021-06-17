@@ -17,12 +17,13 @@ var module = require
 (
   '1'
 )  ;
-import module from ('2');
+import module from '2';
 import "3"
 
 imported ("invalid/import")
 
-import theDefault, {namedExport} from ("4")
+import theDefault, {namedExport} from
+    "4"
 import {
   extraLinesOhNo
 } from '5'
@@ -68,6 +69,17 @@ it(`Import regex matches import statements`, () => {
   expectedImportPaths.forEach((expectedPath, i) => {
     expect(expectedPath).toEqual(foundImportPaths[i]);
   });
+});
+
+it(`Import regex does not match edge cases from keywords in strings`, function () {
+  const testCase = `
+    'a string with keyword from '
+    // The from keyword in that string can cause
+    // a match up to the next quote, since the regex does not
+    // know that the keyword is in a string context
+    'another string using same quote type'
+  `;
+  expect(newImportStatementRegex().exec(testCase)?.[0]).toBeUndefined();
 });
 
 // Run tests on projects. 9-11 are for testing fullpath file resolution
