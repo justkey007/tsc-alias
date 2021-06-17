@@ -32,15 +32,15 @@ import { resolve, join, dirname } from 'path';
 export type StringReplacer = (importStatement: string) => string;
 
 const anyQuote = '["\']';
-const notQuote = '[^"\']';
-const importString = `(?:${anyQuote}${notQuote}+${anyQuote})`;
+const pathStringContent = `[^"'\r\n]+`;
+const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 
 // Separate patterns for each style of import statement,
 // wrapped in non-capturing groups,
 // so that they can be strung together in one big pattern.
 const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*${importString}\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
-const fromStyle = `(?:\\bfrom\\s+${notQuote}*?${importString})`;
+const fromStyle = `(?:\\bfrom\\s+${importString})`;
 
 const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle].join(
   '|'
@@ -114,7 +114,7 @@ class ImportPathResolver {
 
   static newStringRegex() {
     return new RegExp(
-      `(?<pathWithQuotes>${anyQuote}(?<path>${notQuote}+)${anyQuote})`
+      `(?<pathWithQuotes>${anyQuote}(?<path>${pathStringContent})${anyQuote})`
     );
   }
 
