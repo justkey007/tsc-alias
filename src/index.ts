@@ -17,10 +17,10 @@ import {
   loadConfig
 } from './helpers';
 import {
+  newStringRegex,
   Output,
-  resolveFullImportPaths,
   replaceSourceImportPaths,
-  newStringRegex
+  resolveFullImportPaths
 } from './utils';
 
 export interface ReplaceTscAliasPathsOptions {
@@ -197,12 +197,15 @@ export function replaceTscAliasPaths(
         relativeAliasPath = './' + relativeAliasPath;
       }
 
-      const modulePath =
+      const newImportScript =
         orig.substring(0, index) +
         relativeAliasPath +
+        '/' +
         orig.substring(index + alias.prefix.length);
 
-      return modulePath.replace(/\/\//g, '/');
+      const modulePath = newImportScript.match(newStringRegex()).groups.path;
+
+      return newImportScript.replace(modulePath, normalizePath(modulePath));
     }
     return orig;
   };
