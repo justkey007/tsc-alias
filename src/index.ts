@@ -200,6 +200,7 @@ export function replaceTscAliasPaths(
       const modulePath =
         orig.substring(0, index) +
         relativeAliasPath +
+        '/' +
         orig.substring(index + alias.prefix.length);
 
       return modulePath.replace(/\/\//g, '/');
