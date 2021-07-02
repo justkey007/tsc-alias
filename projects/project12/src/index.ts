@@ -1,3 +1,3 @@
-import { Controller } from '@index';
+import { Controller } from '@controllers/index';
 
 new Controller();

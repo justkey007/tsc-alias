@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
-import { newImportStatementRegex, newStringRegex } from '../dist/utils';
+import { newImportStatementRegex, newStringRegex } from '../src/utils';
 
 const projectsRoot = join(__dirname, '../projects');
 

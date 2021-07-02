@@ -120,9 +120,6 @@ export function replaceTscAliasPaths(
       }
 
       let prefix = alias.replace(/\*$/, '');
-      if (prefix[prefix.length - 1] === '/') {
-        prefix = prefix.substring(0, prefix.length - 1);
-      }
       return {
         prefix,
         basePath,
@@ -183,11 +180,9 @@ export function replaceTscAliasPaths(
       typeof requiredModule == 'string',
       `Unexpected import statement pattern ${orig}`
     );
-    const index = orig.indexOf(alias.prefix);
-    const isAlias = requiredModule.includes('/')
-      ? requiredModule.startsWith(alias.prefix + '/')
-      : requiredModule.startsWith(alias.prefix);
-    if (index > -1 && isAlias) {
+    const isAlias = requiredModule.startsWith(alias.prefix);
+
+    if (isAlias) {
       let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
       let relativeAliasPath: string = normalizePath(
         relative(dirname(file), absoluteAliasPath)
@@ -197,6 +192,7 @@ export function replaceTscAliasPaths(
         relativeAliasPath = './' + relativeAliasPath;
       }
 
+      const index = orig.indexOf(alias.prefix);
       const newImportScript =
         orig.substring(0, index) +
         relativeAliasPath +
