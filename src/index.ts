@@ -120,7 +120,9 @@ export function replaceTscAliasPaths(
       }
 
       let prefix = alias.replace(/\*$/, '');
+
       return {
+        shouldPrefixMatchWildly: alias.endsWith('*'),
         prefix,
         basePath,
         path,
@@ -180,7 +182,17 @@ export function replaceTscAliasPaths(
       typeof requiredModule == 'string',
       `Unexpected import statement pattern ${orig}`
     );
-    const isAlias = requiredModule.startsWith(alias.prefix);
+    const isAlias = alias.shouldPrefixMatchWildly
+      ? // if the alias is like alias*
+        // beware that typescript expects requiredModule be more than just alias
+        requiredModule.startsWith(alias.prefix) &&
+        requiredModule !== alias.prefix
+      : // need to be a bit more careful if the alias doesn't ended with a *
+        // in this case the statement must be like either
+        // require('alias') or require('alias/path');
+        // but not require('aliaspath');
+        requiredModule === alias.prefix ||
+        requiredModule.startsWith(alias.prefix + '/');
 
     if (isAlias) {
       let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
