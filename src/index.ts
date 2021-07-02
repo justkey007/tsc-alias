@@ -78,7 +78,7 @@ export function replaceTscAliasPaths(
   const aliases = Object.keys(paths)
     .map((alias) => {
       const _paths = paths[alias as keyof typeof paths].map((path) => {
-        path = path.replace(/\*$/, '').replace('.t', '.j');
+        path = path.replace(/\*$/, '').replace(/\.ts(x)?$/, '.js$1');
         if (isAbsolute(path)) {
           path = relative(configDir, path);
         }
