@@ -130,7 +130,9 @@ export function replaceTscAliasPaths(
         isExtra
       };
     })
-    .filter(({ prefix }) => prefix);
+    .filter(({ prefix }) => prefix)
+    // When two aliases have starting strings in common, we treat the longest alias first.
+    .sort((alias1, alias2) => alias2.prefix.length - alias1.prefix.length);
 
   /*********** Find basepath of aliases *****************/
   aliases.forEach((alias) => {
