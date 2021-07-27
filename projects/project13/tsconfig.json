@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@*": ["./src/*"],
+      "@router": ["./src/controllers/index.ts"],
+      "@aaaaaa": ["./src/aaaaaa/index.ts"],
+      "@bbbbbb": ["./src/bbbbbb/index.ts"],
+      "@cccccc": ["./src/cccccc/index.ts"],
+      "@dddddd": ["./src/dddddd/index.ts"],
+      "@eeeeee": ["./src/eeeeee/index.ts"],
+      "@ffffff": ["./src/ffffff/index.ts"],
+      "@gggggg": ["./src/gggggg/index.ts"],
+      "@hhhhhh": ["./src/hhhhhh/index.ts"]
+    }
+  }
+}
