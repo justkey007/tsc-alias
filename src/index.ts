@@ -1,5 +1,5 @@
 import { watch } from 'chokidar';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, promises as fsp } from 'fs';
 import { sync } from 'globby';
 import * as normalizePath from 'normalize-path';
 import {
@@ -33,7 +33,7 @@ export interface ReplaceTscAliasPathsOptions {
 
 type Assertion = (claim: any, message: string) => asserts claim;
 
-export function replaceTscAliasPaths(
+export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
     watch: false,
     silent: false
@@ -220,8 +220,8 @@ export function replaceTscAliasPaths(
     return orig;
   };
 
-  const replaceAlias = (file: string, resolveFullPath?: boolean): boolean => {
-    const code = readFileSync(file, 'utf8');
+  const replaceAlias = async (file: string, resolveFullPath?: boolean): Promise<boolean> => {
+    const code = await fsp.readFile(file, 'utf8');
     let tempCode = code;
     for (const alias of aliases) {
       const replacementParams = {
@@ -243,7 +243,7 @@ export function replaceTscAliasPaths(
     }
 
     if (code !== tempCode) {
-      writeFileSync(file, tempCode, 'utf8');
+      await fsp.writeFile(file, tempCode, 'utf8');
       return true;
     }
     return false;
@@ -259,22 +259,22 @@ export function replaceTscAliasPaths(
     onlyFiles: true
   });
 
-  const flen = files.length;
-  let replaceCount = 0;
-  for (let i = 0; i < flen; i += 1) {
-    const file = files[i];
-    if (replaceAlias(file, options?.resolveFullPaths)) {
-      replaceCount++;
-    }
-  }
+  // Make array with promises for file changes
+  // Wait for all promises to resolve
+  const replaceList = await Promise.all(
+    files.map((file) => replaceAlias(file, options?.resolveFullPaths))
+  );
+  
+  // Count all changed files
+  const replaceCount = replaceList.reduce((prev, curr) => (curr ? ++prev : prev), 0);
 
   output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
-    filesWatcher.on('change', (file) => {
-      replaceAlias(file, options?.resolveFullPaths);
+    filesWatcher.on('change', async (file) => {
+      await replaceAlias(file, options?.resolveFullPaths);
     });
     tsconfigWatcher.on('change', (_) => {
       output.clear();

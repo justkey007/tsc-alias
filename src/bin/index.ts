@@ -18,7 +18,7 @@ program
     'Attempt to fully resolve import paths if the corresponding .js file can be found'
   )
   .option('-s, --silent', 'reduced terminal output')
-  .parse(process.argv);
+  .parseAsync(process.argv);
 
 replaceTscAliasPaths({
   configFile: program.project,
