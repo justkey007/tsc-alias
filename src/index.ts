@@ -61,6 +61,9 @@ export async function replaceTscAliasPaths(
   if (options.outDir) {
     outDir = options.outDir;
   }
+  if (!baseUrl) {
+    baseUrl = "./";
+  }
   assert(baseUrl, 'compilerOptions.baseUrl is not set');
   assert(paths, 'compilerOptions.paths is not set');
   assert(outDir, 'compilerOptions.outDir is not set');
