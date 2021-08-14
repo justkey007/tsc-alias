@@ -62,7 +62,7 @@ export async function replaceTscAliasPaths(
     outDir = options.outDir;
   }
   if (!baseUrl) {
-    baseUrl = "./";
+    baseUrl = './';
   }
   assert(baseUrl, 'compilerOptions.baseUrl is not set');
   assert(paths, 'compilerOptions.paths is not set');
@@ -223,7 +223,10 @@ export async function replaceTscAliasPaths(
     return orig;
   };
 
-  const replaceAlias = async (file: string, resolveFullPath?: boolean): Promise<boolean> => {
+  const replaceAlias = async (
+    file: string,
+    resolveFullPath?: boolean
+  ): Promise<boolean> => {
     const code = await fsp.readFile(file, 'utf8');
     let tempCode = code;
     for (const alias of aliases) {
@@ -267,9 +270,12 @@ export async function replaceTscAliasPaths(
   const replaceList = await Promise.all(
     files.map((file) => replaceAlias(file, options?.resolveFullPaths))
   );
-  
+
   // Count all changed files
-  const replaceCount = replaceList.reduce((prev, curr) => (curr ? ++prev : prev), 0);
+  const replaceCount = replaceList.reduce(
+    (prev, curr) => (curr ? ++prev : prev),
+    0
+  );
 
   output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
