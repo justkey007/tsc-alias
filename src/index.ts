@@ -282,6 +282,9 @@ export async function replaceTscAliasPaths(
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
+    filesWatcher.on('add', async (file) => {
+      await replaceAlias(file, options?.resolveFullPaths);
+    });
     filesWatcher.on('change', async (file) => {
       await replaceAlias(file, options?.resolveFullPaths);
     });
