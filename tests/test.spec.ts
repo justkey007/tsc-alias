@@ -83,7 +83,7 @@ it(`Import regex does not match edge cases from keywords in strings`, function (
 });
 
 // Run tests on projects. 9-11 are for testing fullpath file resolution
-[1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].forEach((value) => {
+[1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].forEach((value) => {
   it(`Project ${value} runs after alias resolution`, () => {
     runTestProject(value);
   });

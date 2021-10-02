@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "cd ./packages/project1 && npm run-script build",
+    "start": "cd ./packages/project1 && npm run-script start"
+  }
+}
