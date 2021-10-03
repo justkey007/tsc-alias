@@ -1,0 +1,24 @@
+{
+    "extends": "@tsconfig/node14/tsconfig.json",
+    "include": [
+        "index.ts"
+    ],
+    "compilerOptions": {
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "paths": {
+            "myproject/*": [
+                "./*"
+            ],
+            "@commons": [
+                "lib/commons/index.ts"
+            ],
+            "custom/*": [
+                "custom_modules/*"
+            ],
+            "extra": [
+                "../../project2/index"
+            ]
+        }
+    }
+}

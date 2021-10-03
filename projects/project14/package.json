@@ -1,7 +1,10 @@
 {
-  "private": true,
-  "scripts": {
-    "build": "cd ./packages/project1 && npm run-script build",
-    "start": "cd ./packages/project1 && npm run-script start"
-  }
+    "name": "root-package",
+    "scripts": {
+        "build": "npm run build -ws",
+        "start": "npm install && npm run build && npm run start -ws"
+    },
+    "workspaces": [
+        "./packages/*"
+    ]
 }
