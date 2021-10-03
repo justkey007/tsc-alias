@@ -5,8 +5,8 @@
        "start": "node ./dist/index.js"
     },
    "dependencies": {
-      "@tsconfig/node14": "^1.0.0",
-      "@types/node": "^16.10.2"
+      "@tsconfig/node14": "1.0.0",
+      "@types/node": "16.10.2"
     }
   }
   
