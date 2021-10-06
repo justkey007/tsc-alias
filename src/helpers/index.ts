@@ -117,6 +117,7 @@ export function getProjectDirPathInOutDir(
   return dirs.reduce((prev, curr) =>
     (prev.split('/').length > curr.split('/').length) ? prev : curr,
     dirs[0]
+  );
 }
 
 export function existsResolvedAlias(path: string): boolean {
