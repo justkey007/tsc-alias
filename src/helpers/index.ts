@@ -101,7 +101,7 @@ export function getProjectDirPathInOutDir(
   outDir: string,
   projectDir: string
 ): string | undefined {
-  const dirs = sync(
+  const dirs: string[] = sync(
     [
       `${outDir}/**/${projectDir}`,
       `!${outDir}/**/${projectDir}/**/${projectDir}`,
@@ -114,10 +114,9 @@ export function getProjectDirPathInOutDir(
   );
 
   // Find the longest path
-  dirs.sort((dirA, dirB) => {
-    return dirB.split('/').length - dirA.split('/').length;
-  });
-  return dirs[0];
+  return dirs.reduce((prev, curr) =>
+    (prev.split('/').length > curr.split('/').length) ? prev : curr,
+    dirs[0]
 }
 
 export function existsResolvedAlias(path: string): boolean {
