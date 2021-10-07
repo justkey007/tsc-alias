@@ -6,11 +6,7 @@ import { dirname, join } from 'path';
 
 export interface IRawTSConfig {
   extends?: string;
-  compilerOptions?: {
-    baseUrl?: string;
-    outDir?: string;
-    paths?: { [key: string]: string[] };
-  };
+  compilerOptions?: ITSConfig;
 }
 
 export interface ITSConfig {
@@ -41,26 +37,16 @@ export const loadConfig = (file: string): ITSConfig => {
   } = loadFile(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
-  if (baseUrl) {
-    config.baseUrl = baseUrl;
-  }
-  if (outDir) {
-    config.outDir = outDir;
-  }
-  if (paths) {
-    config.paths = paths;
-  }
+  if (baseUrl) config.baseUrl = baseUrl;
+  if (outDir) config.outDir = outDir;
+  if (paths) config.paths = paths;
 
   if (ext) {
-    let parentConfig: ITSConfig;
-    if (ext.startsWith('.')) {
-      parentConfig = loadConfig(join(dirname(file), ext));
-    } else {
-      parentConfig = loadConfig(resolveTsConfigExtendsPath(ext, file));
-    }
     return {
-      ...parentConfig,
-      ...config
+      ...(ext.startsWith('.') ?
+        loadConfig(join(dirname(file), ext)) :
+        loadConfig(resolveTsConfigExtendsPath(ext, file))),
+      ...config,
     };
   }
 
@@ -129,8 +115,7 @@ export function existsResolvedAlias(path: string): boolean {
     onlyFiles: true
   });
 
-  if (files.length) return true;
-  return false;
+  return !!files.length;
 }
 
 export function getAbsoluteAliasPath(
