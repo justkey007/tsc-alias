@@ -1,4 +1,4 @@
-import * as FileUtils from '@jfonx/file-utils';
+import { Json } from "mylas";
 import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import { sync } from 'globby';
@@ -38,7 +38,7 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       paths: undefined
     }
-  } = FileUtils.toObject(file) as IRawTSConfig;
+  } = loadFile(file) as IRawTSConfig;
 
   const config: ITSConfig = {};
   if (baseUrl) {
@@ -156,4 +156,12 @@ export function getAbsoluteAliasPath(
     pathExists ? aliasPathPart : '',
     aliasPathParts.join('/')
   );
+}
+
+function loadFile(file: string) {
+  if (!fs.existsSync(file)) {
+    console.log(`${/*BgRed*/"\x1b[41m"} Error: ${/*Reset*/"\x1b[0m"} ${/*FgRed*/"\x1b[31m"}File ${file} not found${/*Reset*/"\x1b[0m"}`);
+    process.exit();
+  }
+  return Json.loadS(file, true);
 }

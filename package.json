@@ -38,12 +38,11 @@
   },
   "homepage": "https://github.com/justkey007/tsc-alias.git",
   "dependencies": {
-    "@jfonx/console-utils": "^1.0.3",
-    "@jfonx/file-utils": "^3.0.1",
     "chokidar": "^3.5.0",
     "commander": "^6.2.1",
     "find-node-modules": "^2.1.0",
     "globby": "^11.0.2",
+    "mylas": "^2.1.4",
     "normalize-path": "^3.0.0"
   },
   "devDependencies": {
