@@ -41,7 +41,7 @@
     "chokidar": "^3.5.2",
     "commander": "^8.2.0",
     "find-node-modules": "^2.1.2",
-    "globby": "^11.0.2",
+    "globby": "^11.0.4",
     "mylas": "^2.1.4",
     "normalize-path": "^3.0.0"
   },
