@@ -27,6 +27,11 @@ export const mapPaths = (
 };
 
 export const loadConfig = (file: string): ITSConfig => {
+  if (!fs.existsSync(file)) {
+    //           [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
+    console.log(`\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`);
+    process.exit();
+  }
   const {
     extends: ext,
     compilerOptions: { baseUrl, outDir, paths } = {
@@ -34,7 +39,7 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       paths: undefined
     }
-  } = loadFile(file) as IRawTSConfig;
+  } = Json.loadS<IRawTSConfig>(file, true);
 
   const config: ITSConfig = {};
   if (baseUrl) config.baseUrl = baseUrl;
@@ -87,7 +92,7 @@ export function getProjectDirPathInOutDir(
   outDir: string,
   projectDir: string
 ): string | undefined {
-  const dirs: string[] = sync(
+  const dirs = sync(
     [
       `${outDir}/**/${projectDir}`,
       `!${outDir}/**/${projectDir}/**/${projectDir}`,
@@ -109,8 +114,7 @@ export function getProjectDirPathInOutDir(
 export function existsResolvedAlias(path: string): boolean {
   if (fs.existsSync(path)) return true;
 
-  const globPattern = [`${path}.{js,jsx}`];
-  const files = sync(globPattern, {
+  const files = sync([`${path}.{js,jsx}`], {
     dot: true,
     onlyFiles: true
   });
@@ -141,12 +145,4 @@ export function getAbsoluteAliasPath(
     pathExists ? aliasPathPart : '',
     aliasPathParts.join('/')
   );
-}
-
-function loadFile(file: string) {
-  if (!fs.existsSync(file)) {
-    console.log(`${/*BgRed*/"\x1b[41m"} Error: ${/*Reset*/"\x1b[0m"} ${/*FgRed*/"\x1b[31m"}File ${file} not found${/*Reset*/"\x1b[0m"}`);
-    process.exit();
-  }
-  return Json.loadS(file, true);
 }

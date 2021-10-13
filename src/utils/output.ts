@@ -7,7 +7,8 @@ export class Output {
   }
 
   error(message: string, exitProcess = false) {
-    if (!this.silent) console.log(`${/**BgRed*/"\x1b[41m"} Error: ${/**Reset*/"\x1b[0m"} ${/**FgRed*/"\x1b[31m"}${message}${/**Reset*/"\x1b[0m"}\n`);
+    // if not silent log:          [BgRed_] Error: [Reset] [FgRed_]${message}[Reset][LF]
+    if (!this.silent) console.log(`\x1b[41m Error: \x1b[0m \x1b[31m${message}\x1b[0m\n`);
     if (exitProcess) process.exit(1);
   }
 
