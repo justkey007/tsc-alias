@@ -1,4 +1,4 @@
-import * as FileUtils from '@jfonx/file-utils';
+import { Json } from "mylas";
 import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import { sync } from 'globby';
@@ -6,11 +6,7 @@ import { dirname, join } from 'path';
 
 export interface IRawTSConfig {
   extends?: string;
-  compilerOptions?: {
-    baseUrl?: string;
-    outDir?: string;
-    paths?: { [key: string]: string[] };
-  };
+  compilerOptions?: ITSConfig;
 }
 
 export interface ITSConfig {
@@ -31,6 +27,11 @@ export const mapPaths = (
 };
 
 export const loadConfig = (file: string): ITSConfig => {
+  if (!fs.existsSync(file)) {
+    //           [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
+    console.log(`\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`);
+    process.exit();
+  }
   const {
     extends: ext,
     compilerOptions: { baseUrl, outDir, paths } = {
@@ -38,29 +39,19 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       paths: undefined
     }
-  } = FileUtils.toObject(file) as IRawTSConfig;
+  } = Json.loadS<IRawTSConfig>(file, true);
 
   const config: ITSConfig = {};
-  if (baseUrl) {
-    config.baseUrl = baseUrl;
-  }
-  if (outDir) {
-    config.outDir = outDir;
-  }
-  if (paths) {
-    config.paths = paths;
-  }
+  if (baseUrl) config.baseUrl = baseUrl;
+  if (outDir) config.outDir = outDir;
+  if (paths) config.paths = paths;
 
   if (ext) {
-    let parentConfig: ITSConfig;
-    if (ext.startsWith('.')) {
-      parentConfig = loadConfig(join(dirname(file), ext));
-    } else {
-      parentConfig = loadConfig(resolveTsConfigExtendsPath(ext, file));
-    }
     return {
-      ...parentConfig,
-      ...config
+      ...(ext.startsWith('.') ?
+        loadConfig(join(dirname(file), ext)) :
+        loadConfig(resolveTsConfigExtendsPath(ext, file))),
+      ...config,
     };
   }
 
@@ -114,23 +105,21 @@ export function getProjectDirPathInOutDir(
   );
 
   // Find the longest path
-  dirs.sort((dirA, dirB) => {
-    return dirB.split('/').length - dirA.split('/').length;
-  });
-  return dirs[0];
+  return dirs.reduce((prev, curr) =>
+    (prev.split('/').length > curr.split('/').length) ? prev : curr,
+    dirs[0]
+  );
 }
 
 export function existsResolvedAlias(path: string): boolean {
   if (fs.existsSync(path)) return true;
 
-  const globPattern = [`${path}.{js,jsx}`];
-  const files = sync(globPattern, {
+  const files = sync([`${path}.{js,jsx}`], {
     dot: true,
     onlyFiles: true
   });
 
-  if (files.length) return true;
-  return false;
+  return !!files.length;
 }
 
 export function getAbsoluteAliasPath(

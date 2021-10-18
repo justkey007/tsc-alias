@@ -40,31 +40,22 @@ export async function replaceTscAliasPaths(
   }
 ) {
   const output = new Output(options.silent);
-
   output.info('=== tsc-alias starting ===');
-  if (!options.configFile) {
-    options.configFile = resolve(process.cwd(), 'tsconfig.json');
-  } else {
-    if (!isAbsolute(options.configFile)) {
-      options.configFile = resolve(process.cwd(), options.configFile);
-    }
-  }
 
-  const configFile = options.configFile;
+  const configFile = !options.configFile ?
+    resolve(process.cwd(), 'tsconfig.json') :
+    !isAbsolute(options.configFile) ?
+      resolve(process.cwd(), options.configFile) :
+      options.configFile;
 
   const assert: Assertion = (claim, message) =>
     claim || output.error(message, true);
 
   assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
-  let { baseUrl, outDir, paths } = loadConfig(configFile);
-  if (options.outDir) {
-    outDir = options.outDir;
-  }
-  if (!baseUrl) {
-    baseUrl = './';
-  }
-  assert(baseUrl, 'compilerOptions.baseUrl is not set');
+  let { baseUrl = './', outDir, paths } = loadConfig(configFile);
+  if (options.outDir) outDir = options.outDir;
+  
   assert(paths, 'compilerOptions.paths is not set');
   assert(outDir, 'compilerOptions.outDir is not set');
 
@@ -98,12 +89,10 @@ export async function replaceTscAliasPaths(
             outPath,
             confDirParentFolderName
           );
-          if (configDirInOutPath) {
-            hasExtraModule = true;
-          }
 
           // Find relative path access of configDir in outPath
           if (configDirInOutPath) {
+            hasExtraModule = true;
             const stepsbackPath = relative(configDirInOutPath, outPath);
             const splitStepBackPath = normalizePath(stepsbackPath).split('/');
             const nbOfStepBack = splitStepBackPath.length;
@@ -142,10 +131,9 @@ export async function replaceTscAliasPaths(
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
-          `${configDir}/${outDir}/${
-            hasExtraModule && relConfDirPathInOutPath
-              ? relConfDirPathInOutPath
-              : ''
+          `${configDir}/${outDir}/${hasExtraModule && relConfDirPathInOutPath
+            ? relConfDirPathInOutPath
+            : ''
           }/${baseUrl}`
         )
       );
@@ -282,12 +270,10 @@ export async function replaceTscAliasPaths(
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
-    filesWatcher.on('add', async (file) => {
-      await replaceAlias(file, options?.resolveFullPaths);
-    });
-    filesWatcher.on('change', async (file) => {
-      await replaceAlias(file, options?.resolveFullPaths);
-    });
+    const onFileChange = async (file: string) =>
+      replaceAlias(file, options?.resolveFullPaths);
+    filesWatcher.on('add', onFileChange);
+    filesWatcher.on('change', onFileChange);
     tsconfigWatcher.on('change', (_) => {
       output.clear();
       filesWatcher.close();
