@@ -49,7 +49,7 @@ export const loadConfig = (file: string): ITSConfig => {
   if (ext) {
     return {
       ...(ext.startsWith('.') ?
-        loadConfig(join(dirname(file), ext)) :
+        loadConfig(join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)) :
         loadConfig(resolveTsConfigExtendsPath(ext, file))),
       ...config,
     };
