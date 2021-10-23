@@ -245,7 +245,7 @@ export async function replaceTscAliasPaths(
 
   // Finding files and changing alias paths
   const globPattern = [
-    `${outPath}/**/*.{mjs,cjs,js,jsx,d.mts,d.cts,d.ts,d.tsx}`,
+    `${outPath}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
     `!${outPath}/**/node_modules`
   ];
   const files = sync(globPattern, {
