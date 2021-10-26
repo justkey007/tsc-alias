@@ -42,11 +42,11 @@ export async function replaceTscAliasPaths(
   const output = new Output(options.silent);
   output.info('=== tsc-alias starting ===');
 
-  const configFile = !options.configFile ?
-    resolve(process.cwd(), 'tsconfig.json') :
-    !isAbsolute(options.configFile) ?
-      resolve(process.cwd(), options.configFile) :
-      options.configFile;
+  const configFile = !options.configFile
+    ? resolve(process.cwd(), 'tsconfig.json')
+    : !isAbsolute(options.configFile)
+    ? resolve(process.cwd(), options.configFile)
+    : options.configFile;
 
   const assert: Assertion = (claim, message) =>
     claim || output.error(message, true);
@@ -55,7 +55,7 @@ export async function replaceTscAliasPaths(
 
   let { baseUrl = './', outDir, paths } = loadConfig(configFile);
   if (options.outDir) outDir = options.outDir;
-  
+
   assert(paths, 'compilerOptions.paths is not set');
   assert(outDir, 'compilerOptions.outDir is not set');
 
@@ -131,9 +131,10 @@ export async function replaceTscAliasPaths(
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
-          `${configDir}/${outDir}/${hasExtraModule && relConfDirPathInOutPath
-            ? relConfDirPathInOutPath
-            : ''
+          `${configDir}/${outDir}/${
+            hasExtraModule && relConfDirPathInOutPath
+              ? relConfDirPathInOutPath
+              : ''
           }/${baseUrl}`
         )
       );

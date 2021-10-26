@@ -42,7 +42,9 @@ const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*${importString}\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
 
-const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle].join('|')})`;
+const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle].join(
+  '|'
+)})`;
 
 class ImportPathResolver {
   constructor(public source: string, readonly sourcePath: string) {}
@@ -102,7 +104,9 @@ class ImportPathResolver {
     }
     // Assume the path is a folder; try adding index.js
     const asFilePath = join(importPath, 'index.js');
-    return existsSync(resolve(this.sourceDir, asFilePath))? asFilePath: importPath;
+    return existsSync(resolve(this.sourceDir, asFilePath))
+      ? asFilePath
+      : importPath;
   }
 
   static newStringRegex() {
@@ -132,6 +136,8 @@ class ImportPathResolver {
 // Export aliases for the static functions
 // to make usage more friendly.
 export const resolveFullImportPaths = ImportPathResolver.resolveFullImportPaths;
-export const newImportStatementRegex = ImportPathResolver.newImportStatementRegex;
-export const replaceSourceImportPaths = ImportPathResolver.replaceSourceImportPaths;
+export const newImportStatementRegex =
+  ImportPathResolver.newImportStatementRegex;
+export const replaceSourceImportPaths =
+  ImportPathResolver.replaceSourceImportPaths;
 export const newStringRegex = ImportPathResolver.newStringRegex;

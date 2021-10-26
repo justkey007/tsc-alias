@@ -1,4 +1,4 @@
-import { Json } from "mylas";
+import { Json } from 'mylas';
 import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import { sync } from 'globby';
@@ -29,7 +29,9 @@ export const mapPaths = (
 export const loadConfig = (file: string): ITSConfig => {
   if (!fs.existsSync(file)) {
     //           [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
-    console.log(`\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`);
+    console.log(
+      `\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`
+    );
     process.exit();
   }
   const {
@@ -48,10 +50,12 @@ export const loadConfig = (file: string): ITSConfig => {
 
   if (ext) {
     return {
-      ...(ext.startsWith('.') ?
-        loadConfig(join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)) :
-        loadConfig(resolveTsConfigExtendsPath(ext, file))),
-      ...config,
+      ...(ext.startsWith('.')
+        ? loadConfig(
+            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)
+          )
+        : loadConfig(resolveTsConfigExtendsPath(ext, file))),
+      ...config
     };
   }
 
@@ -105,8 +109,9 @@ export function getProjectDirPathInOutDir(
   );
 
   // Find the longest path
-  return dirs.reduce((prev, curr) =>
-    (prev.split('/').length > curr.split('/').length) ? prev : curr,
+  return dirs.reduce(
+    (prev, curr) =>
+      prev.split('/').length > curr.split('/').length ? prev : curr,
     dirs[0]
   );
 }
