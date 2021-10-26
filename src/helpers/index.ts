@@ -114,7 +114,7 @@ export function getProjectDirPathInOutDir(
 export function existsResolvedAlias(path: string): boolean {
   if (fs.existsSync(path)) return true;
 
-  const files = sync([`${path}.{js,jsx}`], {
+  const files = sync([`${path}.{mjs,cjs,js,jsx}`], {
     dot: true,
     onlyFiles: true
   });

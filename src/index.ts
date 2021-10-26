@@ -72,7 +72,7 @@ export async function replaceTscAliasPaths(
   const aliases = Object.keys(paths)
     .map((alias) => {
       const _paths = paths[alias as keyof typeof paths].map((path) => {
-        path = path.replace(/\*$/, '').replace(/\.ts(x)?$/, '.js$1');
+        path = path.replace(/\*$/, '').replace(/\.([mc])?ts(x)?$/, '.$1js$2');
         if (isAbsolute(path)) {
           path = relative(configDir, path);
         }
@@ -245,7 +245,7 @@ export async function replaceTscAliasPaths(
 
   // Finding files and changing alias paths
   const globPattern = [
-    `${outPath}/**/*.{js,jsx,d.ts,d.tsx}`,
+    `${outPath}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
     `!${outPath}/**/node_modules`
   ];
   const files = sync(globPattern, {
