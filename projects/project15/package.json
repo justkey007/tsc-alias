@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "tsc --project ./config/tsconfig.json && tsc-alias -p ./config/tsconfig.json",
+    "start": "npm run build && node ./dist/index.js"
+  }
+}
