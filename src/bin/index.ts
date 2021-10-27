@@ -1,11 +1,21 @@
 #! /usr/bin/env node
-import { Command } from 'commander';
+import { Command, program } from 'commander';
 import { replaceTscAliasPaths } from '..';
 
 const { version } = require('../../package.json');
 
-const program: any = new Command('tsc-alias');
-program
+interface ITSCAlias extends Command {
+  project: string,
+  watch: boolean,
+  directory: string,
+  resolveFullPaths: boolean,
+  silent: boolean,
+}
+
+const TSCAlias = program as ITSCAlias;
+
+TSCAlias
+  .name('tsc-alias')
   .version(version)
   .option('-p, --project <file>', 'path to tsconfig.json')
   .option('-w, --watch', 'Observe file changes')
@@ -21,9 +31,9 @@ program
   .parseAsync(process.argv);
 
 replaceTscAliasPaths({
-  configFile: program.project,
-  watch: !!program.watch,
-  outDir: program.directory,
-  silent: !!program.silent,
-  resolveFullPaths: !!program.resolveFullPaths
+  configFile: TSCAlias.project,
+  watch: !!TSCAlias.watch,
+  outDir: TSCAlias.directory,
+  silent: !!TSCAlias.silent,
+  resolveFullPaths: !!TSCAlias.resolveFullPaths
 });
