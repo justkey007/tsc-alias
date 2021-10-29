@@ -1,11 +1,11 @@
 #! /usr/bin/env node
-import { Command } from 'commander';
+import { program } from 'commander';
 import { replaceTscAliasPaths } from '..';
 
 const { version } = require('../../package.json');
 
-const program: any = new Command('tsc-alias');
 program
+  .name('tsc-alias')
   .version(version)
   .option('-p, --project <file>', 'path to tsconfig.json')
   .option('-w, --watch', 'Observe file changes')
@@ -20,10 +20,12 @@ program
   .option('-s, --silent', 'reduced terminal output')
   .parseAsync(process.argv);
 
+const options = program.opts();
+
 replaceTscAliasPaths({
-  configFile: program.project,
-  watch: !!program.watch,
-  outDir: program.directory,
-  silent: !!program.silent,
-  resolveFullPaths: !!program.resolveFullPaths
+  configFile: options.project,
+  watch: !!options.watch,
+  outDir: options.directory,
+  silent: !!options.silent,
+  resolveFullPaths: !!options.resolveFullPaths
 });
