@@ -28,8 +28,8 @@ export const mapPaths = (
 
 export const loadConfig = (file: string): ITSConfig => {
   if (!fs.existsSync(file)) {
-    //           [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
     console.log(
+    // [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
       `\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`
     );
     process.exit();

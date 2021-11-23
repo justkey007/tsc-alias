@@ -31,6 +31,15 @@ export interface ReplaceTscAliasPathsOptions {
   resolveFullPaths?: boolean;
 }
 
+interface Alias {
+  shouldPrefixMatchWildly: boolean;
+  prefix: string;
+  basePath: string;
+  path: string;
+  paths: string[];
+  isExtra: boolean;
+}
+
 type Assertion = (claim: any, message: string) => asserts claim;
 
 export async function replaceTscAliasPaths(
@@ -56,7 +65,6 @@ export async function replaceTscAliasPaths(
   let { baseUrl = './', outDir, paths } = loadConfig(configFile);
   if (options.outDir) outDir = options.outDir;
 
-  assert(paths, 'compilerOptions.paths is not set');
   assert(outDir, 'compilerOptions.outDir is not set');
 
   const configDir: string = normalizePath(dirname(configFile));
@@ -69,7 +77,7 @@ export async function replaceTscAliasPaths(
   let configDirInOutPath: string = null;
   let relConfDirPathInOutPath: string;
 
-  const aliases = Object.keys(paths)
+  const aliases: Alias[] = Object.keys(paths)
     .map((alias) => {
       const _paths = paths[alias as keyof typeof paths].map((path) => {
         path = path.replace(/\*$/, '').replace(/\.([mc])?ts(x)?$/, '.$1js$2');
@@ -81,8 +89,6 @@ export async function replaceTscAliasPaths(
 
       const path = _paths[0];
 
-      const isExtra = null;
-      const basePath = null;
       if (normalize(path).includes('..')) {
         if (!configDirInOutPath) {
           configDirInOutPath = getProjectDirPathInOutDir(
@@ -110,16 +116,14 @@ export async function replaceTscAliasPaths(
           }
         }
       }
-
-      let prefix = alias.replace(/\*$/, '');
-
+      
       return {
         shouldPrefixMatchWildly: alias.endsWith('*'),
-        prefix,
-        basePath,
+        prefix: alias.replace(/\*$/, ''),
+        basePath: null,
         path,
         paths: _paths,
-        isExtra
+        isExtra: null
       };
     })
     .filter(({ prefix }) => prefix)
@@ -169,7 +173,7 @@ export async function replaceTscAliasPaths(
   }: {
     orig: string;
     file: string;
-    alias: typeof aliases[0];
+    alias: Alias;
   }): string => {
     const requiredModule = orig.match(newStringRegex())?.groups?.path;
     assert(
@@ -189,7 +193,7 @@ export async function replaceTscAliasPaths(
         requiredModule.startsWith(alias.prefix + '/');
 
     if (isAlias) {
-      let absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
+      const absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
       let relativeAliasPath: string = normalizePath(
         relative(dirname(file), absoluteAliasPath)
       );
@@ -212,6 +216,54 @@ export async function replaceTscAliasPaths(
     return orig;
   };
 
+  const replaceBaseUrlImport = ({
+    orig,
+    file
+  }: {
+    orig: string;
+    file: string;
+  }): string => {
+    const requiredModule = orig.match(newStringRegex())?.groups?.path;
+    assert(
+      typeof requiredModule == 'string',
+      `Unexpected import statement pattern ${orig}`
+    );
+
+    // Check if import is already resolved.
+    if (requiredModule.startsWith('.')) {
+      return orig;
+    }
+
+    // If there are files matching the target, resolve the path.
+    if (existsSync(`${outPath}/${requiredModule}`) ||
+        existsSync(`${outPath}/${requiredModule}.js`) ||
+        existsSync(`${outPath}/${requiredModule}.jsx`) ||
+        existsSync(`${outPath}/${requiredModule}.cjs`) ||
+        existsSync(`${outPath}/${requiredModule}.mjs`) ||
+        existsSync(`${outPath}/${requiredModule}.d.ts`) ||
+        existsSync(`${outPath}/${requiredModule}.d.tsx`) ||
+        existsSync(`${outPath}/${requiredModule}.d.cts`) ||
+        existsSync(`${outPath}/${requiredModule}.d.mts`)) {
+      let relativePath: string = normalizePath(
+        relative(dirname(file), getAbsoluteAliasPath(outPath, ""))
+      );
+      if (!relativePath.startsWith('.')) {
+        relativePath = './' + relativePath;
+      }
+      
+      const index = orig.indexOf(requiredModule);
+      const newImportScript = 
+        orig.substring(0, index) +
+        relativePath +
+        (relativePath.endsWith('/')? '': '/') +
+        orig.substring(index);
+
+      const modulePath = newImportScript.match(newStringRegex()).groups.path;
+      return newImportScript.replace(modulePath, normalizePath(modulePath));
+    }
+    return orig;
+  }
+
   const replaceAlias = async (
     file: string,
     resolveFullPath?: boolean
@@ -219,17 +271,20 @@ export async function replaceTscAliasPaths(
     const code = await fsp.readFile(file, 'utf8');
     let tempCode = code;
     for (const alias of aliases) {
-      const replacementParams = {
-        file,
-        alias
-      };
       tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
         replaceImportStatement({
           orig,
-          ...replacementParams
+          file,
+          alias
         })
       );
     }
+    tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
+      replaceBaseUrlImport({
+        orig,
+        file
+      })
+    );
 
     // Fully resolve all import paths (not just aliased ones)
     // *after* the aliases are resolved
@@ -272,7 +327,7 @@ export async function replaceTscAliasPaths(
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(configFile);
     const onFileChange = async (file: string) =>
-      replaceAlias(file, options?.resolveFullPaths);
+      await replaceAlias(file, options?.resolveFullPaths);
     filesWatcher.on('add', onFileChange);
     filesWatcher.on('change', onFileChange);
     tsconfigWatcher.on('change', (_) => {
