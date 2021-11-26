@@ -165,6 +165,7 @@ export async function replaceTscAliasPaths(
       alias.isExtra = false;
     }
 
+    // Add all aliases to AliasTrie.
     AliasTrie.add(alias.prefix, alias);
   });
 
@@ -274,8 +275,11 @@ export async function replaceTscAliasPaths(
     let tempCode = code;
 
     tempCode = replaceSourceImportPaths(tempCode, file, (orig) => {
-      const requiredModule = orig.match(newStringRegex())?.groups?.path;
-      const alias = AliasTrie.search(requiredModule);
+      // Lookup which alias should be used for this given requiredModule.
+      const alias = AliasTrie.search(
+        orig.match(newStringRegex())?.groups?.path
+      );
+      // If an alias is found replace it or return the original.
       return alias
         ? replaceImportStatement({
           orig,

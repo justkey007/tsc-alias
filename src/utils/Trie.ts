@@ -1,3 +1,7 @@
+/**
+ * TrieNode is a prefix tree.
+ * [Trie](https://en.wikipedia.org/wiki/Trie)
+ */
 export class TrieNode<T> {
     private childeren: Map<string, TrieNode<T>>;
     public data: T | null;
@@ -7,6 +11,12 @@ export class TrieNode<T> {
         this.data = null;
     }
 
+    /**
+     * add adds an alias to the prefix tree.
+     * @param name the prefix of the alias.
+     * @param data the alias data.
+     * @returns void.
+     */
     public add(name: string, data: T) {
         if (name.length <= 0) return;
         const node = this.childeren.has(name[0])
@@ -20,6 +30,11 @@ export class TrieNode<T> {
         this.childeren.set(name[0], node);
     }
 
+    /**
+     * search searches the prefix tree for the most correct alias data for a given prefix.
+     * @param name the prefix to search for.
+     * @returns the alias data or null.
+     */
     public search(name: string): T | null {
         if (name.length <= 0) return null;
 
