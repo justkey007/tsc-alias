@@ -20,7 +20,8 @@ import {
   newStringRegex,
   Output,
   replaceSourceImportPaths,
-  resolveFullImportPaths
+  resolveFullImportPaths,
+  TrieNode
 } from './utils';
 
 export interface ReplaceTscAliasPathsOptions {
@@ -77,9 +78,11 @@ export async function replaceTscAliasPaths(
   let configDirInOutPath: string = null;
   let relConfDirPathInOutPath: string;
 
-  const aliases: Alias[] = Object.keys(paths)
+  const AliasTrie = new TrieNode<Alias>();
+
+  Object.keys(paths)
     .map((alias) => {
-      const _paths = paths[alias as keyof typeof paths].map((path) => {
+      const _paths = paths[alias].map((path) => {
         path = path.replace(/\*$/, '').replace(/\.([mc])?ts(x)?$/, '.$1js$2');
         if (isAbsolute(path)) {
           path = relative(configDir, path);
@@ -127,11 +130,8 @@ export async function replaceTscAliasPaths(
       };
     })
     .filter(({ prefix }) => prefix)
-    // When two aliases have starting strings in common, we treat the longest alias first.
-    .sort((alias1, alias2) => alias2.prefix.length - alias1.prefix.length);
-
-  /*********** Find basepath of aliases *****************/
-  aliases.forEach((alias) => {
+    /*********** Find basepath of aliases *****************/
+    .forEach((alias) => {
     if (normalize(alias.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
@@ -164,6 +164,8 @@ export async function replaceTscAliasPaths(
       alias.basePath = normalizePath(normalize(`${configDir}/${outDir}`));
       alias.isExtra = false;
     }
+
+    AliasTrie.add(alias.prefix, alias);
   });
 
   const replaceImportStatement = ({
@@ -262,7 +264,7 @@ export async function replaceTscAliasPaths(
       return newImportScript.replace(modulePath, normalizePath(modulePath));
     }
     return orig;
-  }
+  };
 
   const replaceAlias = async (
     file: string,
@@ -270,15 +272,19 @@ export async function replaceTscAliasPaths(
   ): Promise<boolean> => {
     const code = await fsp.readFile(file, 'utf8');
     let tempCode = code;
-    for (const alias of aliases) {
-      tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
-        replaceImportStatement({
+
+    tempCode = replaceSourceImportPaths(tempCode, file, (orig) => {
+      const requiredModule = orig.match(newStringRegex())?.groups?.path;
+      const alias = AliasTrie.search(requiredModule);
+      return alias
+        ? replaceImportStatement({
           orig,
           file,
           alias
         })
-      );
-    }
+        : orig;
+    });
+
     tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
       replaceBaseUrlImport({
         orig,
