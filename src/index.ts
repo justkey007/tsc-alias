@@ -238,15 +238,7 @@ export async function replaceTscAliasPaths(
     }
 
     // If there are files matching the target, resolve the path.
-    if (existsSync(`${outPath}/${requiredModule}`) ||
-        existsSync(`${outPath}/${requiredModule}.js`) ||
-        existsSync(`${outPath}/${requiredModule}.jsx`) ||
-        existsSync(`${outPath}/${requiredModule}.cjs`) ||
-        existsSync(`${outPath}/${requiredModule}.mjs`) ||
-        existsSync(`${outPath}/${requiredModule}.d.ts`) ||
-        existsSync(`${outPath}/${requiredModule}.d.tsx`) ||
-        existsSync(`${outPath}/${requiredModule}.d.cts`) ||
-        existsSync(`${outPath}/${requiredModule}.d.mts`)) {
+    if (existsResolvedAlias(`${outPath}/${requiredModule}`)) {
       let relativePath: string = normalizePath(
         relative(dirname(file), getAbsoluteAliasPath(outPath, ""))
       );

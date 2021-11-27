@@ -117,14 +117,15 @@ export function getProjectDirPathInOutDir(
 }
 
 export function existsResolvedAlias(path: string): boolean {
-  if (fs.existsSync(path)) return true;
-
-  const files = sync([`${path}.{mjs,cjs,js,jsx}`], {
-    dot: true,
-    onlyFiles: true
-  });
-
-  return !!files.length;
+  return fs.existsSync(`${path}`) ||
+    fs.existsSync(`${path}.js`) ||
+    fs.existsSync(`${path}.jsx`) ||
+    fs.existsSync(`${path}.cjs`) ||
+    fs.existsSync(`${path}.mjs`) ||
+    fs.existsSync(`${path}.d.ts`) ||
+    fs.existsSync(`${path}.d.tsx`) ||
+    fs.existsSync(`${path}.d.cts`) ||
+    fs.existsSync(`${path}.d.mts`);
 }
 
 export function getAbsoluteAliasPath(
