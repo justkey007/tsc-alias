@@ -196,25 +196,36 @@ export async function replaceTscAliasPaths(
         requiredModule.startsWith(alias.prefix + '/');
 
     if (isAlias) {
-      const absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.path);
-      let relativeAliasPath: string = normalizePath(
-        relative(dirname(file), absoluteAliasPath)
-      );
+      for (let i = 0; i < alias.paths.length; i++) {
+        const absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.paths[i]);
 
-      if (!relativeAliasPath.startsWith('.')) {
-        relativeAliasPath = './' + relativeAliasPath;
+        // Check if path is valid.
+        if (!existsResolvedAlias(alias.prefix.length == requiredModule.length
+          ? normalizePath(absoluteAliasPath)
+          : normalizePath(`${absoluteAliasPath}/${requiredModule.replace(new RegExp(`^${alias.prefix}`), '')}`))
+        ) {
+          continue;
+        }
+
+        let relativeAliasPath: string = normalizePath(
+          relative(dirname(file), absoluteAliasPath)
+        );
+
+        if (!relativeAliasPath.startsWith('.')) {
+          relativeAliasPath = './' + relativeAliasPath;
+        }
+
+        const index = orig.indexOf(alias.prefix);
+        const newImportScript =
+          orig.substring(0, index) +
+          relativeAliasPath +
+          '/' +
+          orig.substring(index + alias.prefix.length);
+
+        const modulePath = newImportScript.match(newStringRegex()).groups.path;
+
+        return newImportScript.replace(modulePath, normalizePath(modulePath));
       }
-
-      const index = orig.indexOf(alias.prefix);
-      const newImportScript =
-        orig.substring(0, index) +
-        relativeAliasPath +
-        '/' +
-        orig.substring(index + alias.prefix.length);
-
-      const modulePath = newImportScript.match(newStringRegex()).groups.path;
-
-      return newImportScript.replace(modulePath, normalizePath(modulePath));
     }
     return orig;
   };
@@ -250,7 +261,7 @@ export async function replaceTscAliasPaths(
       const newImportScript = 
         orig.substring(0, index) +
         relativePath +
-        (relativePath.endsWith('/')? '': '/') +
+        '/' +
         orig.substring(index);
 
       const modulePath = newImportScript.match(newStringRegex()).groups.path;
