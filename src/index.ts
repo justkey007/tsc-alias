@@ -119,7 +119,7 @@ export async function replaceTscAliasPaths(
           }
         }
       }
-      
+
       return {
         shouldPrefixMatchWildly: alias.endsWith('*'),
         prefix: alias.replace(/\*$/, ''),
@@ -132,42 +132,42 @@ export async function replaceTscAliasPaths(
     .filter(({ prefix }) => prefix)
     /*********** Find basepath of aliases *****************/
     .forEach((alias) => {
-    if (normalize(alias.path).includes('..')) {
-      const tempBasePath = normalizePath(
-        normalize(
-          `${configDir}/${outDir}/${
-            hasExtraModule && relConfDirPathInOutPath
-              ? relConfDirPathInOutPath
-              : ''
-          }/${baseUrl}`
-        )
-      );
+      if (normalize(alias.path).includes('..')) {
+        const tempBasePath = normalizePath(
+          normalize(
+            `${configDir}/${outDir}/${
+              hasExtraModule && relConfDirPathInOutPath
+                ? relConfDirPathInOutPath
+                : ''
+            }/${baseUrl}`
+          )
+        );
 
-      const absoluteBasePath = normalizePath(
-        normalize(`${tempBasePath}/${alias.path}`)
-      );
-      if (existsResolvedAlias(absoluteBasePath)) {
+        const absoluteBasePath = normalizePath(
+          normalize(`${tempBasePath}/${alias.path}`)
+        );
+        if (existsResolvedAlias(absoluteBasePath)) {
+          alias.isExtra = false;
+          alias.basePath = tempBasePath;
+        } else {
+          alias.isExtra = true;
+          alias.basePath = absoluteBasePath;
+        }
+      } else if (hasExtraModule) {
         alias.isExtra = false;
-        alias.basePath = tempBasePath;
+        alias.basePath = normalizePath(
+          normalize(
+            `${configDir}/${outDir}/${relConfDirPathInOutPath}/${baseUrl}`
+          )
+        );
       } else {
-        alias.isExtra = true;
-        alias.basePath = absoluteBasePath;
+        alias.basePath = normalizePath(normalize(`${configDir}/${outDir}`));
+        alias.isExtra = false;
       }
-    } else if (hasExtraModule) {
-      alias.isExtra = false;
-      alias.basePath = normalizePath(
-        normalize(
-          `${configDir}/${outDir}/${relConfDirPathInOutPath}/${baseUrl}`
-        )
-      );
-    } else {
-      alias.basePath = normalizePath(normalize(`${configDir}/${outDir}`));
-      alias.isExtra = false;
-    }
 
-    // Add all aliases to AliasTrie.
-    AliasTrie.add(alias.prefix, alias);
-  });
+      // Add all aliases to AliasTrie.
+      AliasTrie.add(alias.prefix, alias);
+    });
 
   const replaceImportStatement = ({
     orig,
@@ -197,12 +197,23 @@ export async function replaceTscAliasPaths(
 
     if (isAlias) {
       for (let i = 0; i < alias.paths.length; i++) {
-        const absoluteAliasPath = getAbsoluteAliasPath(alias.basePath, alias.paths[i]);
+        const absoluteAliasPath = getAbsoluteAliasPath(
+          alias.basePath,
+          alias.paths[i]
+        );
 
         // Check if path is valid.
-        if (!existsResolvedAlias(alias.prefix.length == requiredModule.length
-          ? normalizePath(absoluteAliasPath)
-          : normalizePath(`${absoluteAliasPath}/${requiredModule.replace(new RegExp(`^${alias.prefix}`), '')}`))
+        if (
+          !existsResolvedAlias(
+            alias.prefix.length == requiredModule.length
+              ? normalizePath(absoluteAliasPath)
+              : normalizePath(
+                  `${absoluteAliasPath}/${requiredModule.replace(
+                    new RegExp(`^${alias.prefix}`),
+                    ''
+                  )}`
+                )
+          )
         ) {
           continue;
         }
@@ -251,18 +262,15 @@ export async function replaceTscAliasPaths(
     // If there are files matching the target, resolve the path.
     if (existsResolvedAlias(`${outPath}/${requiredModule}`)) {
       let relativePath: string = normalizePath(
-        relative(dirname(file), getAbsoluteAliasPath(outPath, ""))
+        relative(dirname(file), getAbsoluteAliasPath(outPath, ''))
       );
       if (!relativePath.startsWith('.')) {
         relativePath = './' + relativePath;
       }
-      
+
       const index = orig.indexOf(requiredModule);
-      const newImportScript = 
-        orig.substring(0, index) +
-        relativePath +
-        '/' +
-        orig.substring(index);
+      const newImportScript =
+        orig.substring(0, index) + relativePath + '/' + orig.substring(index);
 
       const modulePath = newImportScript.match(newStringRegex()).groups.path;
       return newImportScript.replace(modulePath, normalizePath(modulePath));
@@ -285,10 +293,10 @@ export async function replaceTscAliasPaths(
       // If an alias is found replace it or return the original.
       return alias
         ? replaceImportStatement({
-          orig,
-          file,
-          alias
-        })
+            orig,
+            file,
+            alias
+          })
         : orig;
     });
 

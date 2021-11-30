@@ -1,3 +1,3 @@
+export * from './Import-path-resolver';
 export * from './output';
-export * from './ImportPathResolver';
-export * from './Trie';
+export * from './trie';

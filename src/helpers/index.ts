@@ -29,7 +29,7 @@ export const mapPaths = (
 export const loadConfig = (file: string): ITSConfig => {
   if (!fs.existsSync(file)) {
     console.log(
-    // [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
+      // [BgRed_] Error: [Reset] [FgRed_]File ${file} not found[Reset]
       `\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`
     );
     process.exit();
@@ -117,7 +117,8 @@ export function getProjectDirPathInOutDir(
 }
 
 export function existsResolvedAlias(path: string): boolean {
-  return fs.existsSync(`${path}`) ||
+  return (
+    fs.existsSync(`${path}`) ||
     fs.existsSync(`${path}.js`) ||
     fs.existsSync(`${path}.jsx`) ||
     fs.existsSync(`${path}.cjs`) ||
@@ -125,7 +126,8 @@ export function existsResolvedAlias(path: string): boolean {
     fs.existsSync(`${path}.d.ts`) ||
     fs.existsSync(`${path}.d.tsx`) ||
     fs.existsSync(`${path}.d.cts`) ||
-    fs.existsSync(`${path}.d.mts`);
+    fs.existsSync(`${path}.d.mts`)
+  );
 }
 
 export function getAbsoluteAliasPath(
