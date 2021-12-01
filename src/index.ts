@@ -6,7 +6,6 @@ import {
   basename,
   dirname,
   isAbsolute,
-  join,
   normalize,
   relative,
   resolve
@@ -53,19 +52,19 @@ export async function replaceTscAliasPaths(
 
   output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
-  let { baseUrl = './', outDir, paths } = loadConfig(configFile);
-  if (options.outDir) outDir = options.outDir;
+  const { baseUrl = './', outDir, paths } = loadConfig(configFile);
+  const _outDir = options.outDir ?? outDir;
 
-  output.assert(outDir, 'compilerOptions.outDir is not set');
+  output.assert(_outDir, 'compilerOptions.outDir is not set');
 
   const configDir: string = normalizePath(dirname(configFile));
 
   const config: IConfig = {
     configFile: configFile,
     baseUrl: baseUrl,
-    outDir: outDir,
+    outDir: _outDir,
     configDir: configDir,
-    outPath: normalizePath(normalize(configDir + '/' + outDir)),
+    outPath: normalizePath(normalize(configDir + '/' + _outDir)),
     confDirParentFolderName: basename(configDir),
     hasExtraModule: false,
     configDirInOutPath: null,
@@ -180,7 +179,7 @@ export async function replaceTscAliasPaths(
       await replaceAlias(file, options?.resolveFullPaths);
     filesWatcher.on('add', onFileChange);
     filesWatcher.on('change', onFileChange);
-    tsconfigWatcher.on('change', (_) => {
+    tsconfigWatcher.on('change', () => {
       output.clear();
       filesWatcher.close();
       tsconfigWatcher.close();
