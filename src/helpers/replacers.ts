@@ -1,23 +1,21 @@
 import * as normalizePath from 'normalize-path';
 import { dirname, relative } from 'path';
-import { existsResolvedAlias, getAbsoluteAliasPath } from '.';
-import { Assertion, Alias, IConfig } from '../interfaces';
+import { Alias, IConfig } from '../interfaces';
 import { newStringRegex } from '../utils';
 
-export function replaceImportStatement(
-  {
-    orig,
-    file,
-    alias
-  }: {
-    orig: string;
-    file: string;
-    alias: Alias;
-  },
-  assert: Assertion
-): string {
+export function replaceImportStatement({
+  orig,
+  file,
+  alias,
+  config
+}: {
+  orig: string;
+  file: string;
+  alias: Alias;
+  config: IConfig;
+}) {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
-  assert(
+  config.output.assert(
     typeof requiredModule == 'string',
     `Unexpected import statement pattern ${orig}`
   );
@@ -34,14 +32,14 @@ export function replaceImportStatement(
 
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
-      const absoluteAliasPath = getAbsoluteAliasPath(
+      const absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(
         alias.paths[i].basePath,
         alias.paths[i].path
       );
 
       // Check if path is valid.
       if (
-        !existsResolvedAlias(
+        !config.pathCache.existsResolvedAlias(
           alias.prefix.length == requiredModule.length
             ? normalizePath(absoluteAliasPath)
             : normalizePath(
@@ -78,19 +76,17 @@ export function replaceImportStatement(
   return orig;
 }
 
-export function replaceBaseUrlImport(
-  {
-    orig,
-    file
-  }: {
-    orig: string;
-    file: string;
-  },
-  assert: Assertion,
-  config: IConfig
-): string {
+export function replaceBaseUrlImport({
+  orig,
+  file,
+  config
+}: {
+  orig: string;
+  file: string;
+  config: IConfig;
+}): string {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
-  assert(
+  config.output.assert(
     typeof requiredModule == 'string',
     `Unexpected import statement pattern ${orig}`
   );
@@ -101,9 +97,14 @@ export function replaceBaseUrlImport(
   }
 
   // If there are files matching the target, resolve the path.
-  if (existsResolvedAlias(`${config.outPath}/${requiredModule}`)) {
+  if (
+    config.pathCache.existsResolvedAlias(`${config.outPath}/${requiredModule}`)
+  ) {
     let relativePath: string = normalizePath(
-      relative(dirname(file), getAbsoluteAliasPath(config.outPath, ''))
+      relative(
+        dirname(file),
+        config.pathCache.getAbsoluteAliasPath(config.outPath, '')
+      )
     );
     if (!relativePath.startsWith('.')) {
       relativePath = './' + relativePath;

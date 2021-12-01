@@ -21,6 +21,7 @@ import { ReplaceTscAliasPathsOptions, Alias, IConfig } from './interfaces';
 import {
   newStringRegex,
   Output,
+  PathCache,
   replaceSourceImportPaths,
   resolveFullImportPaths,
   TrieNode
@@ -62,7 +63,9 @@ export async function replaceTscAliasPaths(
     confDirParentFolderName: basename(configDir),
     hasExtraModule: false,
     configDirInOutPath: null,
-    relConfDirPathInOutPath: null
+    relConfDirPathInOutPath: null,
+    pathCache: new PathCache(!options.watch),
+    output: output
   };
 
   const AliasTrie = new TrieNode<Alias>();
@@ -118,26 +121,21 @@ export async function replaceTscAliasPaths(
       );
       // If an alias is found replace it or return the original.
       return alias
-        ? replaceImportStatement(
-            {
-              orig,
-              file,
-              alias
-            },
-            output.assert
-          )
+        ? replaceImportStatement({
+            orig,
+            file,
+            alias,
+            config
+          })
         : orig;
     });
 
     tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
-      replaceBaseUrlImport(
-        {
-          orig,
-          file
-        },
-        output.assert,
+      replaceBaseUrlImport({
+        orig,
+        file,
         config
-      )
+      })
     );
 
     // Fully resolve all import paths (not just aliased ones)
@@ -170,10 +168,7 @@ export async function replaceTscAliasPaths(
   );
 
   // Count all changed files
-  const replaceCount = replaceList.reduce(
-    (prev, curr) => (curr ? ++prev : prev),
-    0
-  );
+  const replaceCount = replaceList.filter(Boolean).length;
 
   output.info(`${replaceCount} files were affected!`);
   if (options.watch) {

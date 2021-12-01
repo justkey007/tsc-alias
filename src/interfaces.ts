@@ -1,3 +1,5 @@
+import { Output, PathCache } from './utils';
+
 export interface IRawTSConfig {
   extends?: string;
   compilerOptions?: ITSConfig;
@@ -25,6 +27,8 @@ export interface IConfig {
   hasExtraModule: boolean;
   configDirInOutPath: string;
   relConfDirPathInOutPath: string;
+  pathCache: PathCache;
+  output: Output;
 }
 
 export interface ReplaceTscAliasPathsOptions {

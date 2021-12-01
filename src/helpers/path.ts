@@ -1,6 +1,5 @@
-import * as fs from 'fs';
 import { sync } from 'globby';
-import { join, normalize, relative } from 'path';
+import { normalize, relative } from 'path';
 import { AliasPath, IConfig, PathLike, StringReplacer } from '../interfaces';
 import * as normalizePath from 'normalize-path';
 
@@ -33,45 +32,6 @@ export function getProjectDirPathInOutDir(
     (prev, curr) =>
       prev.split('/').length > curr.split('/').length ? prev : curr,
     dirs[0]
-  );
-}
-
-export function existsResolvedAlias(path: string): boolean {
-  return (
-    fs.existsSync(`${path}`) ||
-    fs.existsSync(`${path}.js`) ||
-    fs.existsSync(`${path}.jsx`) ||
-    fs.existsSync(`${path}.cjs`) ||
-    fs.existsSync(`${path}.mjs`) ||
-    fs.existsSync(`${path}.d.ts`) ||
-    fs.existsSync(`${path}.d.tsx`) ||
-    fs.existsSync(`${path}.d.cts`) ||
-    fs.existsSync(`${path}.d.mts`)
-  );
-}
-
-export function getAbsoluteAliasPath(
-  basePath: string,
-  aliasPath: string
-): string {
-  const aliasPathParts = aliasPath
-    .split('/')
-    .filter((part) => !part.match(/^\.$|^\s*$/));
-
-  let aliasPathPart = aliasPathParts.shift() || '';
-
-  let pathExists: boolean;
-  while (
-    !(pathExists = fs.existsSync(join(basePath, aliasPathPart))) &&
-    aliasPathParts.length
-  ) {
-    aliasPathPart = aliasPathParts.shift();
-  }
-
-  return join(
-    basePath,
-    pathExists ? aliasPathPart : '',
-    aliasPathParts.join('/')
   );
 }
 
@@ -129,7 +89,7 @@ export function findBasePathOfAlias(config: IConfig) {
       const absoluteBasePath = normalizePath(
         normalize(`${tempBasePath}/${aliasPath.path}`)
       );
-      if (existsResolvedAlias(absoluteBasePath)) {
+      if (config.pathCache.existsResolvedAlias(absoluteBasePath)) {
         aliasPath.isExtra = false;
         aliasPath.basePath = tempBasePath;
       } else {
