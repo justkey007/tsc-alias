@@ -42,17 +42,7 @@ export class TrieNode<T> {
     return node
       ? name.length == 1
         ? node.data
-        : this.compare(node.search(name.substring(1)), node.data)
+        : node.search(name.substring(1)) ?? node.data
       : this.data;
-  }
-
-  /**
-   * compares a and b.
-   * @param a first element to compare.
-   * @param b second element to compare.
-   * @returns first element if true otherwise the second.
-   */
-  private compare(a: T | null, b: T | null): T | null {
-    return a ? a : b;
   }
 }

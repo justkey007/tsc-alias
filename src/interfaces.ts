@@ -1,4 +1,4 @@
-import { Output, PathCache } from './utils';
+import { Output, PathCache, TrieNode } from './utils';
 
 export interface IRawTSConfig {
   extends?: string;
@@ -29,6 +29,8 @@ export interface IConfig {
   relConfDirPathInOutPath: string;
   pathCache: PathCache;
   output: Output;
+  aliasTrie: TrieNode<Alias>;
+  replacers: AliasReplacer[];
 }
 
 export interface ReplaceTscAliasPathsOptions {
@@ -37,6 +39,7 @@ export interface ReplaceTscAliasPathsOptions {
   watch?: boolean;
   silent?: boolean;
   resolveFullPaths?: boolean;
+  replacers?: string[];
 }
 
 export interface Alias {
@@ -52,3 +55,11 @@ export interface AliasPath {
 }
 
 export type Assertion = (claim: any, message: string) => asserts claim;
+
+export interface AliasReplacerArguments {
+  orig: string;
+  file: string;
+  config: IConfig;
+}
+
+export type AliasReplacer = (args: AliasReplacerArguments) => string;

@@ -1,24 +1,58 @@
 import * as normalizePath from 'normalize-path';
-import { dirname, relative } from 'path';
-import { Alias, IConfig } from '../interfaces';
+import * as findNodeModulesPath from 'find-node-modules';
+import { dirname, join, relative } from 'path';
+import { AliasReplacerArguments, IConfig } from '../interfaces';
 import { newStringRegex } from '../utils';
+import { existsSync } from 'fs';
+
+export function importReplacers(files: string[], config: IConfig) {
+  const dir = process.cwd();
+  const node_modules: string[] = findNodeModulesPath({ cwd: dir });
+
+  files.forEach(async (file) => {
+    // Try to import replacer.
+    const tryImportReplacer = async (targetPath: string) => {
+      const replacerModule = await import(targetPath);
+      config.replacers.push(replacerModule.default);
+      config.output.info(`Added replacer "${file}"`);
+    };
+
+    // Look for replacer in cwd.
+    const path = normalizePath(dir + '/' + file);
+    if (existsSync(path)) {
+      try {
+        await tryImportReplacer(path);
+        return;
+      } catch {}
+    }
+
+    // Look for replacer in node_modules.
+    for (const targetPath of node_modules.map((v) => join(dir, v, file))) {
+      try {
+        await tryImportReplacer(targetPath);
+        return;
+      } catch {}
+    }
+
+    config.output.error(`Failed to import replacer "${file}"`);
+  });
+}
 
 export function replaceImportStatement({
   orig,
   file,
-  alias,
   config
-}: {
-  orig: string;
-  file: string;
-  alias: Alias;
-  config: IConfig;
-}) {
+}: AliasReplacerArguments) {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
   config.output.assert(
     typeof requiredModule == 'string',
     `Unexpected import statement pattern ${orig}`
   );
+  // Lookup which alias should be used for this given requiredModule.
+  const alias = config.aliasTrie.search(requiredModule);
+  // If an alias isn't found the original.
+  if (!alias) return orig;
+
   const isAlias = alias.shouldPrefixMatchWildly
     ? // if the alias is like alias*
       // beware that typescript expects requiredModule be more than just alias
@@ -80,11 +114,7 @@ export function replaceBaseUrlImport({
   orig,
   file,
   config
-}: {
-  orig: string;
-  file: string;
-  config: IConfig;
-}): string {
+}: AliasReplacerArguments): string {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
   config.output.assert(
     typeof requiredModule == 'string',

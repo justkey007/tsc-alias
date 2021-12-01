@@ -6,20 +6,26 @@ import {
   basename,
   dirname,
   isAbsolute,
+  join,
   normalize,
   relative,
   resolve
 } from 'path';
 import {
   findBasePathOfAlias,
+  importReplacers,
   loadConfig,
   relativeOutPathToConfigDir,
   replaceBaseUrlImport,
   replaceImportStatement
 } from './helpers';
-import { ReplaceTscAliasPathsOptions, Alias, IConfig } from './interfaces';
 import {
-  newStringRegex,
+  ReplaceTscAliasPathsOptions,
+  Alias,
+  IConfig,
+  AliasReplacer
+} from './interfaces';
+import {
   Output,
   PathCache,
   replaceSourceImportPaths,
@@ -28,7 +34,7 @@ import {
 } from './utils';
 
 // export interfaces for api use.
-export { ReplaceTscAliasPathsOptions };
+export { ReplaceTscAliasPathsOptions, AliasReplacer };
 
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
@@ -65,41 +71,50 @@ export async function replaceTscAliasPaths(
     configDirInOutPath: null,
     relConfDirPathInOutPath: null,
     pathCache: new PathCache(!options.watch),
-    output: output
+    output: output,
+    aliasTrie: new TrieNode<Alias>(),
+    replacers: [replaceImportStatement, replaceBaseUrlImport]
   };
 
-  const AliasTrie = new TrieNode<Alias>();
+  // Import user replacers.
+  if (options.replacers) {
+    importReplacers(options.replacers, config);
+  }
 
-  Object.keys(paths)
-    .map((alias) => {
-      return {
-        shouldPrefixMatchWildly: alias.endsWith('*'),
-        prefix: alias.replace(/\*$/, ''),
-        // Normalize paths.
-        paths: paths[alias].map((path) => {
-          path = path.replace(/\*$/, '').replace(/\.([mc])?ts(x)?$/, '.$1js$2');
-          if (isAbsolute(path)) {
-            path = relative(config.configDir, path);
-          }
+  if (paths) {
+    Object.keys(paths)
+      .map((alias) => {
+        return {
+          shouldPrefixMatchWildly: alias.endsWith('*'),
+          prefix: alias.replace(/\*$/, ''),
+          // Normalize paths.
+          paths: paths[alias].map((path) => {
+            path = path
+              .replace(/\*$/, '')
+              .replace(/\.([mc])?ts(x)?$/, '.$1js$2');
+            if (isAbsolute(path)) {
+              path = relative(config.configDir, path);
+            }
 
-          if (normalize(path).includes('..') && !config.configDirInOutPath) {
-            relativeOutPathToConfigDir(config);
-          }
+            if (normalize(path).includes('..') && !config.configDirInOutPath) {
+              relativeOutPathToConfigDir(config);
+            }
 
-          return path;
-        })
-      };
-    })
-    .forEach((alias) => {
-      if (alias.prefix) {
-        // Add all aliases to AliasTrie.
-        AliasTrie.add(alias.prefix, {
-          ...alias,
-          // Find basepath of aliases.
-          paths: alias.paths.map(findBasePathOfAlias(config))
-        });
-      }
-    });
+            return path;
+          })
+        };
+      })
+      .forEach((alias) => {
+        if (alias.prefix) {
+          // Add all aliases to AliasTrie.
+          config.aliasTrie.add(alias.prefix, {
+            ...alias,
+            // Find basepath of aliases.
+            paths: alias.paths.map(findBasePathOfAlias(config))
+          });
+        }
+      });
+  }
 
   /**
    * replaceAlias replaces aliases in file.
@@ -114,29 +129,15 @@ export async function replaceTscAliasPaths(
     const code = await fsp.readFile(file, 'utf8');
     let tempCode = code;
 
-    tempCode = replaceSourceImportPaths(tempCode, file, (orig) => {
-      // Lookup which alias should be used for this given requiredModule.
-      const alias = AliasTrie.search(
-        orig.match(newStringRegex())?.groups?.path
+    config.replacers.forEach((replacer) => {
+      tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
+        replacer({
+          orig,
+          file,
+          config
+        })
       );
-      // If an alias is found replace it or return the original.
-      return alias
-        ? replaceImportStatement({
-            orig,
-            file,
-            alias,
-            config
-          })
-        : orig;
     });
-
-    tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
-      replaceBaseUrlImport({
-        orig,
-        file,
-        config
-      })
-    );
 
     // Fully resolve all import paths (not just aliased ones)
     // *after* the aliases are resolved
