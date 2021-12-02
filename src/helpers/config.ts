@@ -14,9 +14,10 @@ export const loadConfig = (file: string): ITSConfig => {
   }
   const {
     extends: ext,
-    compilerOptions: { baseUrl, outDir, paths } = {
+    compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
       baseUrl: undefined,
       outDir: undefined,
+      declarationDir: undefined,
       paths: undefined
     }
   } = Json.loadS<IRawTSConfig>(file, true);
@@ -25,6 +26,7 @@ export const loadConfig = (file: string): ITSConfig => {
   if (baseUrl) config.baseUrl = baseUrl;
   if (outDir) config.outDir = outDir;
   if (paths) config.paths = paths;
+  if (declarationDir) config.declarationDir = declarationDir;
 
   if (ext) {
     return {

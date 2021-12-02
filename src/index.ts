@@ -38,11 +38,12 @@ export { ReplaceTscAliasPathsOptions, AliasReplacer };
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
     watch: false,
-    silent: false
+    silent: false,
+    declarationDir: undefined,
+    output: undefined
   }
 ) {
-  const output = new Output(options.silent);
-  output.info('=== tsc-alias starting ===');
+  const output = options.output ?? new Output(options.silent);
 
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')
@@ -52,8 +53,11 @@ export async function replaceTscAliasPaths(
 
   output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
-  const { baseUrl = './', outDir, paths } = loadConfig(configFile);
+  const { baseUrl = './', outDir, declarationDir, paths } = loadConfig(configFile);
   const _outDir = options.outDir ?? outDir;
+  if (declarationDir && _outDir !== declarationDir) {
+    options.declarationDir ??= declarationDir;
+  }
 
   output.assert(_outDir, 'compilerOptions.outDir is not set');
 
@@ -184,6 +188,14 @@ export async function replaceTscAliasPaths(
       filesWatcher.close();
       tsconfigWatcher.close();
       replaceTscAliasPaths(options);
+    });
+  }
+  if (options.declarationDir) {
+    replaceTscAliasPaths({
+      ...options,
+      outDir: options.declarationDir,
+      declarationDir: undefined,
+      output: config.output
     });
   }
 }

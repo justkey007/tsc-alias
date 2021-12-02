@@ -14,6 +14,7 @@ export type StringReplacer = (importStatement: string) => string;
 export interface ITSConfig {
   baseUrl?: string;
   outDir?: string;
+  declarationDir?: string;
   paths?: PathLike;
 }
 
@@ -36,10 +37,12 @@ export interface IConfig {
 export interface ReplaceTscAliasPathsOptions {
   configFile?: string;
   outDir?: string;
+  declarationDir?: string;
   watch?: boolean;
   silent?: boolean;
   resolveFullPaths?: boolean;
   replacers?: string[];
+  output?: Output;
 }
 
 export interface Alias {

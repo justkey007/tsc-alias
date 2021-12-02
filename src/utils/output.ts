@@ -1,5 +1,7 @@
 export class Output {
-  constructor(private silent = false) {}
+  constructor(private silent = false) {
+    this.info('=== tsc-alias starting ===');
+  }
 
   info(message: string) {
     if (this.silent) return;
