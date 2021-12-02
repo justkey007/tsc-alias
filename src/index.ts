@@ -53,7 +53,12 @@ export async function replaceTscAliasPaths(
 
   output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
-  const { baseUrl = './', outDir, declarationDir, paths } = loadConfig(configFile);
+  const {
+    baseUrl = './',
+    outDir,
+    declarationDir,
+    paths
+  } = loadConfig(configFile);
   const _outDir = options.outDir ?? outDir;
   if (declarationDir && _outDir !== declarationDir) {
     options.declarationDir ??= declarationDir;
