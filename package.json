@@ -39,23 +39,23 @@
   "homepage": "https://github.com/justkey007/tsc-alias.git",
   "dependencies": {
     "chokidar": "^3.5.2",
-    "commander": "^8.2.0",
+    "commander": "^8.3.0",
     "find-node-modules": "^2.1.2",
     "globby": "^11.0.4",
-    "mylas": "^2.1.4",
+    "mylas": "^2.1.6",
     "normalize-path": "^3.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.2",
-    "@types/node": "^16.10.5",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.11",
     "@types/rimraf": "^3.0.2",
     "@types/shelljs": "^0.8.9",
-    "husky": "^7.0.2",
-    "jest": "^27.2.5",
-    "prettier": "^2.4.1",
+    "husky": "^7.0.4",
+    "jest": "^27.4.2",
+    "prettier": "^2.5.0",
     "rimraf": "^3.0.2",
     "shelljs": "^0.8.4",
-    "ts-jest": "^27.0.5",
-    "typescript": "^4.4.4"
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2"
   }
 }
