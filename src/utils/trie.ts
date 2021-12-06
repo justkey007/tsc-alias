@@ -20,7 +20,7 @@ export class TrieNode<T> {
   public add(name: string, data: T) {
     if (name.length <= 0) return;
     const node = this.children.has(name[0])
-      ? this.children.get(name[0])!
+      ? this.children.get(name[0])
       : new TrieNode<T>();
     if (name.length == 1) {
       node.data = data;
@@ -39,15 +39,10 @@ export class TrieNode<T> {
     if (name.length <= 0) return null;
 
     const node = this.children.get(name[0]);
-    if (node) {
-      if (name.length == 1) {
-        return node.data;
-      } else {
-        const result = node.search(name.substring(1));
-        return result ? result : node.data;
-      }
-    } else {
-      return this.data;
-    }
+    return node
+      ? name.length == 1
+        ? node.data
+        : node.search(name.substring(1)) ?? node.data
+      : this.data;
   }
 }

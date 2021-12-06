@@ -18,6 +18,7 @@ program
     'Attempt to fully resolve import paths if the corresponding .js file can be found'
   )
   .option('-s, --silent', 'reduced terminal output')
+  .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
   .parseAsync(process.argv);
 
 const options = program.opts();
@@ -27,5 +28,6 @@ replaceTscAliasPaths({
   watch: !!options.watch,
   outDir: options.directory,
   silent: !!options.silent,
-  resolveFullPaths: !!options.resolveFullPaths
+  resolveFullPaths: !!options.resolveFullPaths,
+  replacers: options.replacer
 });

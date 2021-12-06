@@ -28,10 +28,9 @@
 import { existsSync } from 'fs';
 import * as normalizePath from 'normalize-path';
 import { resolve, join, dirname } from 'path';
+import { StringReplacer } from '../interfaces';
 
-export type StringReplacer = (importStatement: string) => string;
-
-const anyQuote = '["\']';
+const anyQuote = `["']`;
 const pathStringContent = `[^"'\r\n]+`;
 const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 
@@ -43,7 +42,7 @@ const globalStyle = `(?:\\bimport\\s+${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
 
 const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle].join(
-  '|'
+  `|`
 )})`;
 
 class ImportPathResolver {
