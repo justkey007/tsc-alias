@@ -14,9 +14,7 @@ import {
   findBasePathOfAlias,
   importReplacers,
   loadConfig,
-  relativeOutPathToConfigDir,
-  replaceBaseUrlImport,
-  replaceImportStatement
+  relativeOutPathToConfigDir
 } from './helpers';
 import {
   ReplaceTscAliasPathsOptions,
@@ -57,7 +55,8 @@ export async function replaceTscAliasPaths(
     baseUrl = './',
     outDir,
     declarationDir,
-    paths
+    paths,
+    replacers
   } = loadConfig(configFile);
   const _outDir = options.outDir ?? outDir;
   if (declarationDir && _outDir !== declarationDir) {
@@ -81,13 +80,11 @@ export async function replaceTscAliasPaths(
     pathCache: new PathCache(!options.watch),
     output: output,
     aliasTrie: new TrieNode<Alias>(),
-    replacers: [replaceImportStatement, replaceBaseUrlImport]
+    replacers: []
   };
 
-  // Import user replacers.
-  if (options.replacers) {
-    importReplacers(options.replacers, config);
-  }
+  // Import replacers.
+  await importReplacers(config, replacers, options.replacers);
 
   if (paths) {
     Object.keys(paths)

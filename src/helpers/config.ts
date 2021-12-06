@@ -19,7 +19,8 @@ export const loadConfig = (file: string): ITSConfig => {
       outDir: undefined,
       declarationDir: undefined,
       paths: undefined
-    }
+    },
+    'tsc-alias': TSCReplacers
   } = Json.loadS<IRawTSConfig>(file, true);
 
   const config: ITSConfig = {};
@@ -27,6 +28,7 @@ export const loadConfig = (file: string): ITSConfig => {
   if (outDir) config.outDir = outDir;
   if (paths) config.paths = paths;
   if (declarationDir) config.declarationDir = declarationDir;
+  if (TSCReplacers?.replacers) config.replacers = TSCReplacers.replacers;
 
   if (ext) {
     return {
