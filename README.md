@@ -95,7 +95,7 @@ Here are all the available options:
     </tr>
     <tr>
       <td>replacers</td>
-      <td>Files to import as extra replacers</td>
+      <td>Files to import as extra replacers <a href="https://github.com/justkey007/tsc-alias/discussions/73">More info</a></td>
       <td><code>[]</code></td>
     </tr>
     <tr>
