@@ -26,12 +26,9 @@ export async function importReplacers(
   };
 
   cmdReplacers?.forEach((v) => {
-    merged = {
-      ...merged,
-      v: {
-        enabled: true,
-        file: v
-      }
+    merged[v] = {
+      enabled: true,
+      file: v
     };
   });
 

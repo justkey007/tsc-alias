@@ -79,6 +79,11 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
     <tr>
+      <td>declarationDir</td>
+      <td>Works the same as outDir but for declarationDir</td>
+      <td><code>tsconfig.compilerOptions.declarationDir</code></td>
+    </tr>
+    <tr>
       <td>resolveFullPaths</td>
       <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
       <td><code>false</code></td>
@@ -87,6 +92,16 @@ Here are all the available options:
       <td>silent</td>
       <td>Reduced terminal output</td>
       <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td>replacers</td>
+      <td>Files to import as extra replacers</td>
+      <td><code>[]</code></td>
+    </tr>
+    <tr>
+      <td>output</td>
+      <td>The output object tsc-alias will send logs to.</td>
+      <td><code>new Output(options.silent)</code></td>
     </tr>
   </tbody>
 </table>
