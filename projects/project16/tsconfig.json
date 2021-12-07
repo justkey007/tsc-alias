@@ -15,5 +15,13 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
+  },
+  "tsc-alias": {
+    "replacers": {
+      "default": {
+        "enabled": false
+        //"file": "" // File not needed for default replacers.
+      }
+    }
   }
 }

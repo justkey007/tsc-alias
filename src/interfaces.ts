@@ -3,6 +3,9 @@ import { Output, PathCache, TrieNode } from './utils';
 export interface IRawTSConfig {
   extends?: string;
   compilerOptions?: ITSConfig;
+  'tsc-alias': {
+    replacers?: ReplacerOptions;
+  };
 }
 
 export type PathLike = {
@@ -16,6 +19,7 @@ export interface ITSConfig {
   outDir?: string;
   declarationDir?: string;
   paths?: PathLike;
+  replacers?: ReplacerOptions;
 }
 
 export interface IConfig {
@@ -66,3 +70,10 @@ export interface AliasReplacerArguments {
 }
 
 export type AliasReplacer = (args: AliasReplacerArguments) => string;
+
+export interface ReplacerOptions {
+  [key: string]: {
+    enabled: boolean;
+    file?: string;
+  };
+}
