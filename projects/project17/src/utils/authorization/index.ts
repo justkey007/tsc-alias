@@ -1,2 +1,2 @@
-const a = "testa";
+const a = 'testa';
 export { a };
