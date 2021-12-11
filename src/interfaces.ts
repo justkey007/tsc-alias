@@ -5,6 +5,8 @@ export interface IRawTSConfig {
   compilerOptions?: ITSConfig;
   'tsc-alias': {
     replacers?: ReplacerOptions;
+    resolveFullPaths?: boolean;
+    verbose?: boolean;
   };
 }
 
@@ -20,6 +22,8 @@ export interface ITSConfig {
   declarationDir?: string;
   paths?: PathLike;
   replacers?: ReplacerOptions;
+  resolveFullPaths?: boolean;
+  verbose?: boolean;
 }
 
 export interface IConfig {

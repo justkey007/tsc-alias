@@ -6,9 +6,9 @@ import { IRawTSConfig, ITSConfig } from '../interfaces';
 
 export const loadConfig = (file: string): ITSConfig => {
   if (!fs.existsSync(file)) {
-    console.log(
+    console.error(
       //[BgRed] Error: [Reset] [FgRed_]File ${file} not found[Reset]
-      `\x1b[41m Error: \x1b[0m \x1b[31mFile ${file} not found\x1b[0m`
+      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31mFile ${file} not found\x1b[0m\n`
     );
     process.exit();
   }
@@ -20,7 +20,7 @@ export const loadConfig = (file: string): ITSConfig => {
       declarationDir: undefined,
       paths: undefined
     },
-    'tsc-alias': TSCReplacers
+    'tsc-alias': TSCAliasConfig
   } = Json.loadS<IRawTSConfig>(file, true);
 
   const config: ITSConfig = {};
@@ -28,7 +28,10 @@ export const loadConfig = (file: string): ITSConfig => {
   if (outDir) config.outDir = outDir;
   if (paths) config.paths = paths;
   if (declarationDir) config.declarationDir = declarationDir;
-  if (TSCReplacers?.replacers) config.replacers = TSCReplacers.replacers;
+  if (TSCAliasConfig?.replacers) config.replacers = TSCAliasConfig.replacers;
+  if (TSCAliasConfig?.resolveFullPaths)
+    config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
+  if (TSCAliasConfig?.verbose) config.verbose = TSCAliasConfig.verbose;
 
   if (ext) {
     return {
@@ -40,10 +43,6 @@ export const loadConfig = (file: string): ITSConfig => {
       ...config
     };
   }
-
-  console.log('--------------------');
-  console.dir(config, { depth: 10 });
-  console.log('--------------------');
 
   return config;
 };

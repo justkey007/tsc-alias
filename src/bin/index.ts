@@ -17,7 +17,10 @@ program
     '-f, --resolve-full-paths',
     'Attempt to fully resolve import paths if the corresponding .js file can be found'
   )
-  .option('-s, --silent', 'Reduced terminal output (default) [deprecated]')
+  .option(
+    '-s, --silent',
+    'Reduced terminal output (default: true) [deprecated]'
+  )
   .option('-v, --verbose', 'Additional information is output to the terminal')
   .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
   .parseAsync(process.argv);

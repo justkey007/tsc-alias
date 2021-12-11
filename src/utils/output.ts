@@ -12,7 +12,9 @@ export class Output {
 
   error(message: string, exitProcess = false) {
     //           [BgRed_] Error: [Reset] [FgRed_]${message}[Reset][LF]
-    console.log(`\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m\n`);
+    console.error(
+      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m\n`
+    );
 
     if (exitProcess) process.exit(1);
   }
