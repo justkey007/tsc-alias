@@ -12,10 +12,10 @@ export async function importReplacers(
   const dir = process.cwd();
   const node_modules: string[] = findNodeModulesPath({ cwd: dir });
   const defaultReplacers: ReplacerOptions = {
-    BaseUrl: {
+    default: {
       enabled: true
     },
-    default: {
+    BaseUrl: {
       enabled: true
     }
   };
