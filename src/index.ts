@@ -36,12 +36,12 @@ export { ReplaceTscAliasPathsOptions, AliasReplacer };
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
     watch: false,
-    silent: false,
+    verbose: false,
     declarationDir: undefined,
     output: undefined
   }
 ) {
-  const output = options.output ?? new Output(options.silent);
+  const output = options.output ?? new Output(options.verbose);
 
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')

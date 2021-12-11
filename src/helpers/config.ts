@@ -41,6 +41,10 @@ export const loadConfig = (file: string): ITSConfig => {
     };
   }
 
+  console.log('--------------------');
+  console.dir(config, { depth: 10 });
+  console.log('--------------------');
+
   return config;
 };
 

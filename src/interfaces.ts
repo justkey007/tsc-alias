@@ -43,7 +43,7 @@ export interface ReplaceTscAliasPathsOptions {
   outDir?: string;
   declarationDir?: string;
   watch?: boolean;
-  silent?: boolean;
+  verbose?: boolean;
   resolveFullPaths?: boolean;
   replacers?: string[];
   output?: Output;
