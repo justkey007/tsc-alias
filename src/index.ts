@@ -36,12 +36,12 @@ export { ReplaceTscAliasPathsOptions, AliasReplacer };
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
     watch: false,
-    silent: false,
+    verbose: false,
     declarationDir: undefined,
     output: undefined
   }
 ) {
-  const output = options.output ?? new Output(options.silent);
+  const output = options.output ?? new Output(options.verbose);
 
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')
@@ -56,8 +56,17 @@ export async function replaceTscAliasPaths(
     outDir,
     declarationDir,
     paths,
-    replacers
+    replacers,
+    resolveFullPaths,
+    verbose
   } = loadConfig(configFile);
+
+  output.setVerbose(verbose);
+
+  if (options.resolveFullPaths || resolveFullPaths) {
+    options.resolveFullPaths = true;
+  }
+
   const _outDir = options.outDir ?? outDir;
   if (declarationDir && _outDir !== declarationDir) {
     options.declarationDir ??= declarationDir;
@@ -178,6 +187,7 @@ export async function replaceTscAliasPaths(
 
   output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
+    output.setVerbose(true);
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(config.configFile);

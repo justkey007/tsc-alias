@@ -1,0 +1,8 @@
+{
+  "name": "project18",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "start": "npm run build && node ./dist/src/index.js"
+  }
+}

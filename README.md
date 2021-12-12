@@ -90,7 +90,12 @@ Here are all the available options:
     </tr>
     <tr>
       <td>silent</td>
-      <td>Reduced terminal output</td>
+      <td>Reduced terminal output. This is a deprecated option and no longer has any effect.</td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td>verbose</td>
+      <td>Additional information is output to the terminal</td>
       <td><code>false</code></td>
     </tr>
     <tr>
@@ -105,3 +110,26 @@ Here are all the available options:
     </tr>
   </tbody>
 </table>
+
+### Configuration via `tsconfig.json` Example
+```json
+{
+  "compilerOptions": {
+    ...
+  },
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true,
+    "replacers": {
+      "exampleReplacer": {
+        "enabled": true,
+        "file": "./exampleReplacer.js"
+      },
+      "otherReplacer": {
+        "enabled": true,
+        "file": "./otherReplacer.js"
+      }
+    }
+  }
+}
+```

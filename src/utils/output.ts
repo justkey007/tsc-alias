@@ -1,17 +1,21 @@
 export class Output {
-  constructor(private silent = false) {
-    this.info('=== tsc-alias starting ===');
+  constructor(private verbose = false) {}
+
+  setVerbose(value: boolean) {
+    this.verbose = value;
   }
 
   info(message: string) {
-    if (this.silent) return;
-    console.log(`Info: ${message}`);
+    if (!this.verbose) return;
+    console.log(`tsc-alias info: ${message}`);
   }
 
   error(message: string, exitProcess = false) {
-    if (!this.silent)
-      //           [BgRed_] Error: [Reset] [FgRed_]${message}[Reset][LF]
-      console.log(`\x1b[41m Error: \x1b[0m \x1b[31m${message}\x1b[0m\n`);
+    //           [BgRed_] Error: [Reset] [FgRed_]${message}[Reset][LF]
+    console.error(
+      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m\n`
+    );
+
     if (exitProcess) process.exit(1);
   }
 
