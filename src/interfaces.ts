@@ -26,7 +26,7 @@ export interface ITSConfig {
   verbose?: boolean;
 }
 
-export interface IConfig {
+export interface IProjectConfig {
   configFile: string;
   baseUrl: string;
   outDir: string;
@@ -37,6 +37,9 @@ export interface IConfig {
   configDirInOutPath: string;
   relConfDirPathInOutPath: string;
   pathCache: PathCache;
+}
+
+export interface IConfig extends IProjectConfig {
   output: Output;
   aliasTrie: TrieNode<Alias>;
   replacers: AliasReplacer[];
@@ -51,6 +54,7 @@ export interface ReplaceTscAliasPathsOptions {
   resolveFullPaths?: boolean;
   replacers?: string[];
   output?: Output;
+  aliasTrie?: TrieNode<Alias>;
 }
 
 export interface Alias {
