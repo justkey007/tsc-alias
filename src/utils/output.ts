@@ -12,7 +12,7 @@ export class Output {
 
   error(message: string, exitProcess = false) {
     console.error(
-    // [BgRed_]tsc-alias error:[Reset] [FgRed_]${message}[Reset][LF]
+      //[BgRed]tsc-alias error:[Reset] [FgRed_]${message}[Reset][LF]
       `\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m\n`
     );
 

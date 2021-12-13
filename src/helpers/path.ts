@@ -1,6 +1,11 @@
 import { sync } from 'globby';
 import { normalize, relative } from 'path';
-import { AliasPath, IConfig, PathLike, StringReplacer } from '../interfaces';
+import {
+  AliasPath,
+  IProjectConfig,
+  PathLike,
+  StringReplacer
+} from '../interfaces';
 import * as normalizePath from 'normalize-path';
 
 export const mapPaths = (paths: PathLike, mapper: StringReplacer): PathLike => {
@@ -39,7 +44,7 @@ export function getProjectDirPathInOutDir(
  * relativeOutPathToConfigDir
  * Finds relative path access of configDir in outPath
  */
-export function relativeOutPathToConfigDir(config: IConfig) {
+export function relativeOutPathToConfigDir(config: IProjectConfig) {
   config.configDirInOutPath = getProjectDirPathInOutDir(
     config.outPath,
     config.confDirParentFolderName
@@ -71,7 +76,7 @@ export function relativeOutPathToConfigDir(config: IConfig) {
  * @param aliasPath The alias path.
  * @param config config object with all config values.
  */
-export function findBasePathOfAlias(config: IConfig) {
+export function findBasePathOfAlias(config: IProjectConfig) {
   return (path: string) => {
     const aliasPath = { path } as AliasPath;
     if (normalize(aliasPath.path).includes('..')) {
