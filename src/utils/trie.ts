@@ -1,3 +1,7 @@
+import { isAbsolute, normalize, relative } from 'path';
+import { findBasePathOfAlias, relativeOutPathToConfigDir } from '../helpers';
+import { Alias, IProjectConfig, PathLike } from '../interfaces';
+
 /**
  * TrieNode is a prefix tree.
  * [Trie](https://en.wikipedia.org/wiki/Trie)
@@ -44,5 +48,56 @@ export class TrieNode<T> {
         ? node.data
         : node.search(name.substring(1)) ?? node.data
       : this.data;
+  }
+
+  /**
+   * buildAliasTrie builds an alias trie
+   * @param config projectConfig is an object with config details
+   * @param paths the paths to put into the trie
+   * @returns a TrieNode with the paths/aliases inside
+   */
+  static buildAliasTrie(
+    config: IProjectConfig,
+    paths?: PathLike
+  ): TrieNode<Alias> {
+    const aliasTrie = new this<Alias>();
+    if (paths) {
+      Object.keys(paths)
+        .map((alias) => {
+          return {
+            shouldPrefixMatchWildly: alias.endsWith('*'),
+            prefix: alias.replace(/\*$/, ''),
+            // Normalize paths.
+            paths: paths[alias].map((path) => {
+              path = path
+                .replace(/\*$/, '')
+                .replace(/\.([mc])?ts(x)?$/, '.$1js$2');
+              if (isAbsolute(path)) {
+                path = relative(config.configDir, path);
+              }
+
+              if (
+                normalize(path).includes('..') &&
+                !config.configDirInOutPath
+              ) {
+                relativeOutPathToConfigDir(config);
+              }
+
+              return path;
+            })
+          };
+        })
+        .forEach((alias) => {
+          if (alias.prefix) {
+            // Add all aliases to AliasTrie.
+            aliasTrie.add(alias.prefix, {
+              ...alias,
+              // Find basepath of aliases.
+              paths: alias.paths.map(findBasePathOfAlias(config))
+            });
+          }
+        });
+    }
+    return aliasTrie;
   }
 }

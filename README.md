@@ -106,7 +106,7 @@ Here are all the available options:
     <tr>
       <td>output</td>
       <td>The output object tsc-alias will send logs to.</td>
-      <td><code>new Output(options.silent)</code></td>
+      <td><code>new Output(options.verbose)</code></td>
     </tr>
   </tbody>
 </table>

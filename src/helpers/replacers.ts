@@ -2,7 +2,8 @@ import * as normalizePath from 'normalize-path';
 import * as findNodeModulesPath from 'find-node-modules';
 import { join } from 'path';
 import { IConfig, ReplacerOptions } from '../interfaces';
-import { existsSync } from 'fs';
+import { existsSync, promises as fsp } from 'fs';
+import { replaceSourceImportPaths, resolveFullImportPaths } from '../utils';
 
 export async function importReplacers(
   config: IConfig,
@@ -74,4 +75,41 @@ export async function importReplacers(
       config.output.error(`Failed to import replacer "${file}"`);
     }
   }
+}
+
+/**
+ * replaceAlias replaces aliases in file.
+ * @param file file to replace aliases in.
+ * @param resolveFullPath if tsc-alias should resolve the full path
+ * @returns if something has been replaced.
+ */
+export async function replaceAlias(
+  config: IConfig,
+  file: string,
+  resolveFullPath?: boolean
+): Promise<boolean> {
+  const code = await fsp.readFile(file, 'utf8');
+  let tempCode = code;
+
+  config.replacers.forEach((replacer) => {
+    tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
+      replacer({
+        orig,
+        file,
+        config
+      })
+    );
+  });
+
+  // Fully resolve all import paths (not just aliased ones)
+  // *after* the aliases are resolved
+  if (resolveFullPath) {
+    tempCode = resolveFullImportPaths(tempCode, file);
+  }
+
+  if (code !== tempCode) {
+    await fsp.writeFile(file, tempCode, 'utf8');
+    return true;
+  }
+  return false;
 }
