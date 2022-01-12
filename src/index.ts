@@ -8,12 +8,19 @@ import {
   ReplaceTscAliasPathsOptions,
   IConfig,
   AliasReplacer,
-  IProjectConfig
+  IProjectConfig,
+  AliasReplacerArguments
 } from './interfaces';
 import { Output, PathCache, TrieNode } from './utils';
 
 // export interfaces for api use.
-export { ReplaceTscAliasPathsOptions, AliasReplacer };
+export {
+  ReplaceTscAliasPathsOptions,
+  AliasReplacer,
+  AliasReplacerArguments,
+  IConfig,
+  IProjectConfig
+};
 
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = {
