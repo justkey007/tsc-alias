@@ -1,21 +1,15 @@
 import { Json } from 'mylas';
 import * as findNodeModulesPath from 'find-node-modules';
-import * as normalizePath from 'normalize-path';
 import * as fs from 'fs';
-import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path';
-import {
-  IConfig,
-  IProjectConfig,
-  IRawTSConfig,
-  ITSConfig,
-  ReplaceTscAliasPathsOptions
-} from '../interfaces';
-import { Output, PathCache, TrieNode } from '../utils';
-import { importReplacers } from '.';
+import { dirname, join } from 'path';
+import { IRawTSConfig, ITSConfig } from '../interfaces';
 
-const loadConfig = (file: string, output: Output): ITSConfig => {
+export const loadConfig = (file: string): ITSConfig => {
   if (!fs.existsSync(file)) {
-    output.error(`File ${file} not found`);
+    console.error(
+      //[BgRed] Error: [Reset] [FgRed_]File ${file} not found[Reset]
+      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31mFile ${file} not found\x1b[0m\n`
+    );
     process.exit();
   }
   const {
@@ -43,10 +37,9 @@ const loadConfig = (file: string, output: Output): ITSConfig => {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
-            output
+            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)
           )
-        : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
+        : loadConfig(resolveTsConfigExtendsPath(ext, file))),
       ...config
     };
   }
@@ -82,71 +75,4 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
       }
     }
   }
-}
-
-export async function initConfig(options: ReplaceTscAliasPathsOptions) {
-  const output = options.output ?? new Output(options.verbose);
-
-  const configFile = !options.configFile
-    ? resolve(process.cwd(), 'tsconfig.json')
-    : !isAbsolute(options.configFile)
-    ? resolve(process.cwd(), options.configFile)
-    : options.configFile;
-
-  output.assert(
-    fs.existsSync(configFile),
-    `Invalid file path => ${configFile}`
-  );
-
-  const {
-    baseUrl = './',
-    outDir,
-    declarationDir,
-    paths,
-    replacers,
-    resolveFullPaths,
-    verbose
-  } = loadConfig(configFile, output);
-
-  output.setVerbose(verbose);
-
-  if (options.resolveFullPaths || resolveFullPaths) {
-    options.resolveFullPaths = true;
-  }
-
-  const _outDir = options.outDir ?? outDir;
-  if (declarationDir && _outDir !== declarationDir) {
-    options.declarationDir ??= declarationDir;
-  }
-
-  output.assert(_outDir, 'compilerOptions.outDir is not set');
-
-  const configDir: string = normalizePath(dirname(configFile));
-
-  // config with project details and paths
-  const projectConfig: IProjectConfig = {
-    configFile: configFile,
-    baseUrl: baseUrl,
-    outDir: _outDir,
-    configDir: configDir,
-    outPath: normalizePath(normalize(configDir + '/' + _outDir)),
-    confDirParentFolderName: basename(configDir),
-    hasExtraModule: false,
-    configDirInOutPath: null,
-    relConfDirPathInOutPath: null,
-    pathCache: new PathCache(!options.watch),
-    output: output
-  };
-
-  const config: IConfig = {
-    ...projectConfig,
-    aliasTrie:
-      options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
-    replacers: []
-  };
-
-  // Import replacers.
-  await importReplacers(config, replacers, options.replacers);
-
-  return config;
 }

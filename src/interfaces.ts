@@ -37,10 +37,10 @@ export interface IProjectConfig {
   configDirInOutPath: string;
   relConfDirPathInOutPath: string;
   pathCache: PathCache;
-  output: Output;
 }
 
 export interface IConfig extends IProjectConfig {
+  output: Output;
   aliasTrie: TrieNode<Alias>;
   replacers: AliasReplacer[];
 }
