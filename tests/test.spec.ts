@@ -134,7 +134,6 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
     onlyFiles: true
   });
 
-
   expect(files.length).toBeGreaterThan(0);
 
   files.map((filePath) => {
