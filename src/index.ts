@@ -3,7 +3,12 @@ import { existsSync } from 'fs';
 import { sync } from 'globby';
 import * as normalizePath from 'normalize-path';
 import { basename, dirname, isAbsolute, normalize, resolve } from 'path';
-import { importReplacers, loadConfig, replaceAlias } from './helpers';
+import {
+  importReplacers,
+  loadConfig,
+  replaceAlias,
+  replaceFile
+} from './helpers';
 import {
   ReplaceTscAliasPathsOptions,
   IConfig,
@@ -49,7 +54,7 @@ export async function replaceTscAliasPaths(
     replacers,
     resolveFullPaths,
     verbose
-  } = loadConfig(configFile);
+  } = loadConfig(configFile, output);
 
   output.setVerbose(verbose);
 
@@ -104,7 +109,7 @@ export async function replaceTscAliasPaths(
   // Make array with promises for file changes
   // Wait for all promises to resolve
   const replaceList = await Promise.all(
-    files.map((file) => replaceAlias(config, file, options?.resolveFullPaths))
+    files.map((file) => replaceFile(config, file, options?.resolveFullPaths))
   );
 
   // Count all changed files
@@ -117,7 +122,7 @@ export async function replaceTscAliasPaths(
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(config.configFile);
     const onFileChange = async (file: string) =>
-      await replaceAlias(config, file, options?.resolveFullPaths);
+      await replaceFile(config, file, options?.resolveFullPaths);
     filesWatcher.on('add', onFileChange);
     filesWatcher.on('change', onFileChange);
     tsconfigWatcher.on('change', () => {

@@ -3,13 +3,11 @@ import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import { dirname, join } from 'path';
 import { IRawTSConfig, ITSConfig } from '../interfaces';
+import { Output } from '../utils';
 
-export const loadConfig = (file: string): ITSConfig => {
+export const loadConfig = (file: string, output: Output): ITSConfig => {
   if (!fs.existsSync(file)) {
-    console.error(
-      //[BgRed] Error: [Reset] [FgRed_]File ${file} not found[Reset]
-      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31mFile ${file} not found\x1b[0m\n`
-    );
+    output.error(`File ${file} not found`);
     process.exit();
   }
   const {
@@ -37,9 +35,10 @@ export const loadConfig = (file: string): ITSConfig => {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)
+            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
+            output
           )
-        : loadConfig(resolveTsConfigExtendsPath(ext, file))),
+        : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
       ...config
     };
   }
