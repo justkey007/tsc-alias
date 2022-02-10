@@ -2,6 +2,13 @@ import { join } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
 import { newImportStatementRegex, newStringRegex } from '../src/utils';
+import { sync } from 'globby';
+import { prepareConfig } from '../src/helpers/config-preparer';
+import {
+  ReplaceTscAliasPathsOptions,
+  prepareSingleFileReplaceTscAliasPaths
+} from '../src';
+import { readFileSync, writeFileSync } from 'fs';
 
 const projectsRoot = join(__dirname, '../projects');
 
@@ -90,3 +97,56 @@ it(`Import regex does not match edge cases from keywords in strings`, function (
     });
   }
 );
+
+it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
+  const projectDir = join(projectsRoot, `project19`);
+  const outPath = join(projectDir, 'dist');
+  const basePath = join(projectDir, 'dist-base');
+
+  rimraf.sync(outPath);
+  rimraf.sync(basePath);
+
+  const runTask = (task: string) => {
+    shell.exec(task, {
+      cwd: projectDir,
+      silent: true
+    });
+  };
+
+  runTask('npm run build');
+  runTask('npm run build:tsc-base');
+
+  const options: ReplaceTscAliasPathsOptions = {
+    configFile: join(projectDir, 'tsconfig.json'),
+    resolveFullPaths: true
+  };
+  const config = await prepareConfig(options);
+
+  const runFile = await prepareSingleFileReplaceTscAliasPaths(options);
+
+  // Finding files and changing alias paths
+  const globPattern = [
+    `${basePath}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
+    `!${basePath}/**/node_modules`
+  ];
+  const files = sync(globPattern, {
+    dot: true,
+    onlyFiles: true
+  });
+
+  console.log(
+    JSON.stringify({ files, outPath, basePath, options, config }, null, 2)
+  );
+
+  expect(files.length).toBeGreaterThan(0);
+
+  files.map((filePath) => {
+    const altFilePath = filePath.replace(basePath, outPath);
+    const fileContents = readFileSync(filePath, 'utf8');
+    const expectedContents = readFileSync(altFilePath, 'utf8');
+    const newContents = runFile({ fileContents, filePath });
+    expect(newContents).toEqual(expectedContents);
+  });
+
+  expect.assertions(files.length + 1);
+});

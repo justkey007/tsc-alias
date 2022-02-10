@@ -79,6 +79,7 @@ export async function importReplacers(
 
 /**
  * replaceAlias replaces aliases in file.
+ * @param config configuration
  * @param file file to replace aliases in.
  * @param resolveFullPath if tsc-alias should resolve the full path
  * @returns if something has been replaced.
@@ -89,6 +90,29 @@ export async function replaceAlias(
   resolveFullPath?: boolean
 ): Promise<boolean> {
   const code = await fsp.readFile(file, 'utf8');
+  const tempCode = replaceAliasString(config, file, code, resolveFullPath);
+
+  if (code !== tempCode) {
+    await fsp.writeFile(file, tempCode, 'utf8');
+    return true;
+  }
+  return false;
+}
+
+/**
+ * replaceAliasString  replaces aliases in the given code content and returns the changed code.
+ * @param config configuration
+ * @param file path of the file to replace aliases in.
+ * @param code contents of the file to replace aliases in.
+ * @param resolveFullPath if tsc-alias should resolve the full path
+ * @returns content of the file with any replacements possible applied.
+ */
+export function replaceAliasString(
+  config: IConfig,
+  file: string,
+  code: string,
+  resolveFullPath?: boolean
+): string {
   let tempCode = code;
 
   config.replacers.forEach((replacer) => {
@@ -107,9 +131,5 @@ export async function replaceAlias(
     tempCode = resolveFullImportPaths(tempCode, file);
   }
 
-  if (code !== tempCode) {
-    await fsp.writeFile(file, tempCode, 'utf8');
-    return true;
-  }
-  return false;
+  return tempCode;
 }
