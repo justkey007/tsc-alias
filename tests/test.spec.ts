@@ -120,7 +120,6 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
     configFile: join(projectDir, 'tsconfig.json'),
     resolveFullPaths: true
   };
-  const config = await prepareConfig(options);
 
   const runFile = await prepareSingleFileReplaceTscAliasPaths(options);
 
