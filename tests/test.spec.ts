@@ -134,9 +134,6 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
     onlyFiles: true
   });
 
-  console.log(
-    JSON.stringify({ files, outPath, basePath, options, config }, null, 2)
-  );
 
   expect(files.length).toBeGreaterThan(0);
 
