@@ -103,7 +103,7 @@ export async function replaceFile(
 /**
  * replaceAlias replaces aliases in string.
  * @param config the tsc-alias config.
- * @param file source file as resolve origin.
+ * @param file source filepath as resolve origin.
  * @param code the source code string.
  * @param resolveFullPath if tsc-alias should resolve the full path.
  * @returns the source code string with replaced aliases.
