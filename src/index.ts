@@ -18,14 +18,16 @@ export {
   IProjectConfig
 };
 
+const defaultOptions: ReplaceTscAliasPathsOptions = {
+  watch: false,
+  verbose: false,
+  declarationDir: undefined,
+  output: undefined,
+  aliasTrie: undefined
+};
+
 export async function replaceTscAliasPaths(
-  options: ReplaceTscAliasPathsOptions = {
-    watch: false,
-    verbose: false,
-    declarationDir: undefined,
-    output: undefined,
-    aliasTrie: undefined
-  }
+  options: ReplaceTscAliasPathsOptions = defaultOptions
 ) {
   const config: IConfig = await initConfig(options);
 
@@ -75,3 +77,18 @@ export async function replaceTscAliasPaths(
     });
   }
 }
+
+export async function replaceInString(
+  options: ReplaceTscAliasPathsOptions = defaultOptions,
+  filepath: string,
+  source: string,
+  config?: IConfig
+): Promise<string> {
+  const finalConfig: IConfig = config ?? (await initConfig(options));
+
+  return replaceAlias(finalConfig, filepath, source, options?.resolveFullPaths);
+}
+
+export const getConfig = (
+  options: ReplaceTscAliasPathsOptions = defaultOptions
+): Promise<IConfig> => initConfig(options);
