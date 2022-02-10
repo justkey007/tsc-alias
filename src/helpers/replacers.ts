@@ -78,44 +78,21 @@ export async function importReplacers(
 }
 
 /**
- * replaceFile replaces aliases in file.
- * @param config the tsc-alias config.
+ * replaceAlias replaces aliases in file.
  * @param file file to replace aliases in.
- * @param resolveFullPath if tsc-alias should resolve the full path.
+ * @param resolveFullPath if tsc-alias should resolve the full path
  * @returns if something has been replaced.
  */
-export async function replaceFile(
+export async function replaceAlias(
   config: IConfig,
   file: string,
   resolveFullPath?: boolean
 ): Promise<boolean> {
   const code = await fsp.readFile(file, 'utf8');
+  let tempCode = code;
 
-  const tempCode = replaceAlias(config, file, code, resolveFullPath);
-
-  if (code !== tempCode) {
-    await fsp.writeFile(file, tempCode, 'utf8');
-    return true;
-  }
-  return false;
-}
-
-/**
- * replaceAlias replaces aliases in string.
- * @param config the tsc-alias config.
- * @param file source filepath as resolve origin.
- * @param code the source code string.
- * @param resolveFullPath if tsc-alias should resolve the full path.
- * @returns the source code string with replaced aliases.
- */
-export function replaceAlias(
-  config: IConfig,
-  file: string,
-  code: string,
-  resolveFullPath?: boolean
-): string {
   config.replacers.forEach((replacer) => {
-    code = replaceSourceImportPaths(code, file, (orig) =>
+    tempCode = replaceSourceImportPaths(tempCode, file, (orig) =>
       replacer({
         orig,
         file,
@@ -127,8 +104,12 @@ export function replaceAlias(
   // Fully resolve all import paths (not just aliased ones)
   // *after* the aliases are resolved
   if (resolveFullPath) {
-    code = resolveFullImportPaths(code, file);
+    tempCode = resolveFullImportPaths(tempCode, file);
   }
 
-  return code;
+  if (code !== tempCode) {
+    await fsp.writeFile(file, tempCode, 'utf8');
+    return true;
+  }
+  return false;
 }
