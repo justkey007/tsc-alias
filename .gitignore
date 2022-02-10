@@ -62,6 +62,8 @@ typings/
 
 # Compiled source
 dist
+dist-base
+dist-tsc-alias
 temp
 # Optional eslint cache
 .eslintcache
@@ -86,3 +88,7 @@ temp
 package-lock.json
 
 types
+
+# Editor
+.idea
+.history

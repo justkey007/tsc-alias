@@ -133,3 +133,21 @@ Here are all the available options:
   }
 }
 ```
+
+### SingleFileReplacer
+
+We can use tsc-alias in a single file, with a function that returns the modified contents.
+
+We prepare the replacer with `prepareSingleFileReplaceTscAliasPaths()`, passing the same options that we would pass to `replaceTscAliasPaths()`. That will return a promise of a function that receives the file contents and path, and returns the transformed contents, synchronously.
+
+```typescript
+import { prepareSingleFileReplaceTscAliasPaths } from 'tsc-alias';
+
+const runFile: SingleFileReplacer = await prepareSingleFileReplaceTscAliasPaths(options?);
+
+function treatFile(filePath: string) {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const newContents = runFile({fileContents, filePath});
+  // do stuff with newContents
+}
+```

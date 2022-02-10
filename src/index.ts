@@ -1,9 +1,6 @@
 import { watch } from 'chokidar';
-import { existsSync } from 'fs';
 import { sync } from 'globby';
-import * as normalizePath from 'normalize-path';
-import { basename, dirname, isAbsolute, normalize, resolve } from 'path';
-import { importReplacers, loadConfig, replaceAlias } from './helpers';
+import { replaceAlias, replaceAliasString } from './helpers';
 import {
   ReplaceTscAliasPathsOptions,
   IConfig,
@@ -11,7 +8,7 @@ import {
   IProjectConfig,
   AliasReplacerArguments
 } from './interfaces';
-import { Output, PathCache, TrieNode } from './utils';
+import { prepareConfig } from './helpers/config-preparer';
 
 // export interfaces for api use.
 export {
@@ -22,74 +19,19 @@ export {
   IProjectConfig
 };
 
+const DEFAULT_CONFIG = {
+  watch: false,
+  verbose: false,
+  declarationDir: undefined,
+  output: undefined,
+  aliasTrie: undefined
+};
+
 export async function replaceTscAliasPaths(
-  options: ReplaceTscAliasPathsOptions = {
-    watch: false,
-    verbose: false,
-    declarationDir: undefined,
-    output: undefined,
-    aliasTrie: undefined
-  }
+  options: ReplaceTscAliasPathsOptions = { ...DEFAULT_CONFIG }
 ) {
-  const output = options.output ?? new Output(options.verbose);
-
-  const configFile = !options.configFile
-    ? resolve(process.cwd(), 'tsconfig.json')
-    : !isAbsolute(options.configFile)
-    ? resolve(process.cwd(), options.configFile)
-    : options.configFile;
-
-  output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
-
-  const {
-    baseUrl = './',
-    outDir,
-    declarationDir,
-    paths,
-    replacers,
-    resolveFullPaths,
-    verbose
-  } = loadConfig(configFile);
-
-  output.setVerbose(verbose);
-
-  if (options.resolveFullPaths || resolveFullPaths) {
-    options.resolveFullPaths = true;
-  }
-
-  const _outDir = options.outDir ?? outDir;
-  if (declarationDir && _outDir !== declarationDir) {
-    options.declarationDir ??= declarationDir;
-  }
-
-  output.assert(_outDir, 'compilerOptions.outDir is not set');
-
-  const configDir: string = normalizePath(dirname(configFile));
-
-  // config with project details and paths
-  const projectConfig: IProjectConfig = {
-    configFile: configFile,
-    baseUrl: baseUrl,
-    outDir: _outDir,
-    configDir: configDir,
-    outPath: normalizePath(normalize(configDir + '/' + _outDir)),
-    confDirParentFolderName: basename(configDir),
-    hasExtraModule: false,
-    configDirInOutPath: null,
-    relConfDirPathInOutPath: null,
-    pathCache: new PathCache(!options.watch)
-  };
-
-  const config: IConfig = {
-    ...projectConfig,
-    output: output,
-    aliasTrie:
-      options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
-    replacers: []
-  };
-
-  // Import replacers.
-  await importReplacers(config, replacers, options.replacers);
+  const config = await prepareConfig(options);
+  const output = config.output;
 
   // Finding files and changing alias paths
   const globPattern = [
@@ -136,4 +78,24 @@ export async function replaceTscAliasPaths(
       aliasTrie: config.aliasTrie
     });
   }
+}
+
+export type SingleFileReplacer = (input: {
+  fileContents: string;
+  filePath: string;
+}) => string;
+
+export async function prepareSingleFileReplaceTscAliasPaths(
+  options: ReplaceTscAliasPathsOptions = { ...DEFAULT_CONFIG }
+): Promise<SingleFileReplacer> {
+  const config = await prepareConfig(options);
+
+  return ({ fileContents, filePath }) => {
+    return replaceAliasString(
+      config,
+      filePath,
+      fileContents,
+      options?.resolveFullPaths
+    );
+  };
 }
