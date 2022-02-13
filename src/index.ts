@@ -26,6 +26,10 @@ const defaultConfig = {
   aliasTrie: undefined
 };
 
+/**
+ * replaceTscAliasPaths replaces the aliases in the project.
+ * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
+ */
 export async function replaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = { ...defaultConfig }
 ) {
@@ -84,6 +88,11 @@ export type SingleFileReplacer = (input: {
   filePath: string;
 }) => string;
 
+/**
+ * prepareSingleFileReplaceTscAliasPaths prepares a SingleFileReplacer.
+ * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
+ * @returns {Promise<SingleFileReplacer>} a SingleFileReplacer to use for replacing aliases in a single file.
+ */
 export async function prepareSingleFileReplaceTscAliasPaths(
   options: ReplaceTscAliasPathsOptions = { ...defaultConfig }
 ): Promise<SingleFileReplacer> {
