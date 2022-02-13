@@ -35,7 +35,7 @@ export async function importReplacers(
     ...replacers
   };
 
-  // Added replacers to list from command-line filepaths. 
+  // Added replacers to list from command-line filepaths.
   cmdReplacers?.forEach((v) => {
     merged[v] = {
       enabled: true,

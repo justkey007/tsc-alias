@@ -9,13 +9,13 @@ import {
   IConfig,
   IProjectConfig,
   ReplaceTscAliasPathsOptions,
-  IRawTSConfig, 
+  IRawTSConfig,
   ITSConfig
 } from '../interfaces';
 
 /**
  * prepareConfig prepares a IConfig object for tsc-alias to be used.
- * @param {ReplaceTscAliasPathsOptions} options options that are used to prepare a config object. 
+ * @param {ReplaceTscAliasPathsOptions} options options that are used to prepare a config object.
  * @returns {Promise<IConfig>} a promise of a IConfig object.
  */
 export async function prepareConfig(
@@ -29,7 +29,10 @@ export async function prepareConfig(
     ? resolve(process.cwd(), options.configFile)
     : options.configFile;
 
-  output.assert(fs.existsSync(configFile), `Invalid file path => ${configFile}`);
+  output.assert(
+    fs.existsSync(configFile),
+    `Invalid file path => ${configFile}`
+  );
 
   const {
     baseUrl = './',
