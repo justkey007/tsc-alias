@@ -3,12 +3,11 @@ import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
 import { newImportStatementRegex, newStringRegex } from '../src/utils';
 import { sync } from 'globby';
-import { prepareConfig } from '../src/helpers/config-preparer';
 import {
   ReplaceTscAliasPathsOptions,
   prepareSingleFileReplaceTscAliasPaths
 } from '../src';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
 const projectsRoot = join(__dirname, '../projects');
 
@@ -49,8 +48,7 @@ function runTestProject(projectNumber: number) {
   const projectDir = join(projectsRoot, `project${projectNumber}`);
   rimraf.sync(join(projectDir, 'dist'));
   const { code, stderr } = shell.exec('npm start', {
-    cwd: projectDir,
-    silent: true
+    cwd: projectDir
   });
   if (code !== 0) console.error(stderr);
   expect(code).toEqual(0);
@@ -108,8 +106,7 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
 
   const runTask = (task: string) => {
     shell.exec(task, {
-      cwd: projectDir,
-      silent: true
+      cwd: projectDir
     });
   };
 
