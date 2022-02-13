@@ -3,7 +3,7 @@ import { Output, PathCache, TrieNode } from './utils';
 export interface IRawTSConfig {
   extends?: string;
   compilerOptions?: ITSConfig;
-  'tsc-alias': {
+  'tsc-alias'?: {
     replacers?: ReplacerOptions;
     resolveFullPaths?: boolean;
     verbose?: boolean;
@@ -68,8 +68,6 @@ export interface AliasPath {
   path: string;
   isExtra: boolean;
 }
-
-export type Assertion = (claim: any, message: string) => asserts claim;
 
 export interface AliasReplacerArguments {
   orig: string;
