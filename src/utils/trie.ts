@@ -17,11 +17,11 @@ export class TrieNode<T> {
 
   /**
    * add adds an alias to the prefix tree.
-   * @param name the prefix of the alias.
-   * @param data the alias data.
-   * @returns void.
+   * @param {string} name the prefix of the alias.
+   * @param {T} data the alias data.
+   * @returns {void}.
    */
-  public add(name: string, data: T) {
+  public add(name: string, data: T): void {
     if (name.length <= 0) return;
     const node = this.children.has(name[0])
       ? this.children.get(name[0])
@@ -36,8 +36,8 @@ export class TrieNode<T> {
 
   /**
    * search searches the prefix tree for the most correct alias data for a given prefix.
-   * @param name the prefix to search for.
-   * @returns the alias data or null.
+   * @param {string} name the prefix to search for.
+   * @returns {T | null} the alias data or null.
    */
   public search(name: string): T | null {
     if (name.length <= 0) return null;
@@ -52,9 +52,9 @@ export class TrieNode<T> {
 
   /**
    * buildAliasTrie builds an alias trie
-   * @param config projectConfig is an object with config details
-   * @param paths the paths to put into the trie
-   * @returns a TrieNode with the paths/aliases inside
+   * @param {IProjectConfig} config projectConfig is an object with config details
+   * @param {PathLike} paths optional the paths to put into the trie
+   * @returns {TrieNode<Alias>} a TrieNode with the paths/aliases inside
    */
   static buildAliasTrie(
     config: IProjectConfig,

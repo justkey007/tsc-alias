@@ -1,15 +1,100 @@
 import { Json } from 'mylas';
 import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
-import { dirname, join } from 'path';
-import { IRawTSConfig, ITSConfig } from '../interfaces';
+import * as normalizePath from 'normalize-path';
+import { Output, PathCache, TrieNode } from '../utils';
+import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
+import { importReplacers } from './replacers';
+import {
+  IConfig,
+  IProjectConfig,
+  ReplaceTscAliasPathsOptions,
+  IRawTSConfig,
+  ITSConfig
+} from '../interfaces';
 
-export const loadConfig = (file: string): ITSConfig => {
+/**
+ * prepareConfig prepares a IConfig object for tsc-alias to be used.
+ * @param {ReplaceTscAliasPathsOptions} options options that are used to prepare a config object.
+ * @returns {Promise<IConfig>} a promise of a IConfig object.
+ */
+export async function prepareConfig(
+  options: ReplaceTscAliasPathsOptions
+): Promise<IConfig> {
+  const output = options.output ?? new Output(options.verbose);
+
+  const configFile = !options.configFile
+    ? resolve(process.cwd(), 'tsconfig.json')
+    : !isAbsolute(options.configFile)
+    ? resolve(process.cwd(), options.configFile)
+    : options.configFile;
+
+  output.assert(
+    fs.existsSync(configFile),
+    `Invalid file path => ${configFile}`
+  );
+
+  const {
+    baseUrl = './',
+    outDir,
+    declarationDir,
+    paths,
+    replacers,
+    resolveFullPaths,
+    verbose
+  } = loadConfig(configFile, output);
+
+  output.setVerbose(verbose);
+
+  if (options.resolveFullPaths || resolveFullPaths) {
+    options.resolveFullPaths = true;
+  }
+
+  const _outDir = options.outDir ?? outDir;
+  if (declarationDir && _outDir !== declarationDir) {
+    options.declarationDir ??= declarationDir;
+  }
+
+  output.assert(_outDir, 'compilerOptions.outDir is not set');
+
+  const configDir: string = normalizePath(dirname(configFile));
+
+  // config with project details and paths
+  const projectConfig: IProjectConfig = {
+    configFile: configFile,
+    baseUrl: baseUrl,
+    outDir: _outDir,
+    configDir: configDir,
+    outPath: normalizePath(normalize(configDir + '/' + _outDir)),
+    confDirParentFolderName: basename(configDir),
+    hasExtraModule: false,
+    configDirInOutPath: null,
+    relConfDirPathInOutPath: null,
+    pathCache: new PathCache(!options.watch)
+  };
+
+  const config: IConfig = {
+    ...projectConfig,
+    output: output,
+    aliasTrie:
+      options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
+    replacers: []
+  };
+
+  // Import replacers.
+  await importReplacers(config, replacers, options.replacers);
+  return config;
+}
+
+/**
+ * loadConfig loads a config file from fs.
+ * @param {string} file file path to the config file that will be loaded.
+ * @param {Output} output the output instance to log error to.
+ * @returns {ITSConfig} a ITSConfig object
+ */
+export const loadConfig = (file: string, output: Output): ITSConfig => {
   if (!fs.existsSync(file)) {
-    console.error(
-      //[BgRed] Error: [Reset] [FgRed_]File ${file} not found[Reset]
-      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31mFile ${file} not found\x1b[0m\n`
-    );
+    output.error(`File ${file} not found`);
     process.exit();
   }
   const {
@@ -37,9 +122,10 @@ export const loadConfig = (file: string): ITSConfig => {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`)
+            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
+            output
           )
-        : loadConfig(resolveTsConfigExtendsPath(ext, file))),
+        : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
       ...config
     };
   }
@@ -47,6 +133,12 @@ export const loadConfig = (file: string): ITSConfig => {
   return config;
 };
 
+/**
+ * resolveTsConfigExtendsPath resolves the path to the config file that is being inherited.
+ * @param {string} ext the value of the extends field in the loaded config file.
+ * @param {string} file file path to the config file that was loaded.
+ * @returns {string} a file path to the config file that is being inherited.
+ */
 export function resolveTsConfigExtendsPath(ext: string, file: string): string {
   const tsConfigDir = dirname(file);
   const node_modules: string[] = findNodeModulesPath({ cwd: tsConfigDir }); // Getting all node_modules directories.

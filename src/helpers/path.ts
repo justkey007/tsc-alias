@@ -1,22 +1,15 @@
 import { sync } from 'globby';
 import { normalize, relative } from 'path';
-import {
-  AliasPath,
-  IProjectConfig,
-  PathLike,
-  StringReplacer
-} from '../interfaces';
+import { AliasPath, IProjectConfig } from '../interfaces';
 import * as normalizePath from 'normalize-path';
 
-export const mapPaths = (paths: PathLike, mapper: StringReplacer): PathLike => {
-  const dest = {} as PathLike;
-  Object.keys(paths).forEach((key) => {
-    dest[key] = paths[key].map(mapper);
-  });
-  return dest;
-};
-
-export function getProjectDirPathInOutDir(
+/**
+ * getProjectDirPathInOutDir finds the configDirInOutPath.
+ * @param {string} outDir outDir loaded from tsconfig.
+ * @param {string} projectDir  projectDir loaded from tsconfig.
+ * @returns {string} the configDirInOutPath.
+ */
+function getProjectDirPathInOutDir(
   outDir: string,
   projectDir: string
 ): string | undefined {
@@ -73,8 +66,7 @@ export function relativeOutPathToConfigDir(config: IProjectConfig) {
 /**
  * findBasePathOfAlias finds a basepath for every AliasPath.
  * And checks if isExtra should be true or false.
- * @param aliasPath The alias path.
- * @param config config object with all config values.
+ * @param {IProjectConfig} config config object with all config values.
  */
 export function findBasePathOfAlias(config: IProjectConfig) {
   return (path: string) => {

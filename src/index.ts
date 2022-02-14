@@ -1,6 +1,6 @@
 import { watch } from 'chokidar';
 import { sync } from 'globby';
-import { replaceAlias, replaceAliasString } from './helpers';
+import { replaceAlias, replaceAliasString, prepareConfig } from './helpers';
 import {
   ReplaceTscAliasPathsOptions,
   IConfig,
@@ -8,7 +8,6 @@ import {
   IProjectConfig,
   AliasReplacerArguments
 } from './interfaces';
-import { prepareConfig } from './helpers/config-preparer';
 
 // export interfaces for api use.
 export {
@@ -19,7 +18,7 @@ export {
   IProjectConfig
 };
 
-const DEFAULT_CONFIG = {
+const defaultConfig = {
   watch: false,
   verbose: false,
   declarationDir: undefined,
@@ -27,8 +26,12 @@ const DEFAULT_CONFIG = {
   aliasTrie: undefined
 };
 
+/**
+ * replaceTscAliasPaths replaces the aliases in the project.
+ * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
+ */
 export async function replaceTscAliasPaths(
-  options: ReplaceTscAliasPathsOptions = { ...DEFAULT_CONFIG }
+  options: ReplaceTscAliasPathsOptions = { ...defaultConfig }
 ) {
   const config = await prepareConfig(options);
   const output = config.output;
@@ -85,8 +88,13 @@ export type SingleFileReplacer = (input: {
   filePath: string;
 }) => string;
 
+/**
+ * prepareSingleFileReplaceTscAliasPaths prepares a SingleFileReplacer.
+ * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
+ * @returns {Promise<SingleFileReplacer>} a SingleFileReplacer to use for replacing aliases in a single file.
+ */
 export async function prepareSingleFileReplaceTscAliasPaths(
-  options: ReplaceTscAliasPathsOptions = { ...DEFAULT_CONFIG }
+  options: ReplaceTscAliasPathsOptions = { ...defaultConfig }
 ): Promise<SingleFileReplacer> {
   const config = await prepareConfig(options);
 

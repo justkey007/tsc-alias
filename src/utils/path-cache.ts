@@ -17,7 +17,7 @@ export class PathCache {
   /**
    * exists checks if file exists.
    * @param path the filepath to check.
-   * @returns boolean.
+   * @returns {boolean} result of check.
    */
   private exists(path: string): boolean {
     return (
@@ -34,9 +34,9 @@ export class PathCache {
   }
 
   /**
-   * checks if file exists, uses cache when possible.
-   * @param path the filepath to check.
-   * @returns boolean
+   * existsResolvedAlias checks if file exists, uses cache when possible.
+   * @param {string} path the filepath to check.
+   * @returns {boolean} result of check.
    */
   public existsResolvedAlias(path: string): boolean {
     if (!this.useCache) return this.exists(path);
@@ -50,10 +50,10 @@ export class PathCache {
   }
 
   /**
-   * finds the absolute alias path.
-   * @param basePath the basepath of the alias.
-   * @param aliasPath the aliaspath of the alias.
-   * @returns the absolute alias path.
+   * getAAP finds the absolute alias path.
+   * @param {string} basePath the basepath of the alias.
+   * @param {string} aliasPath the aliaspath of the alias.
+   * @returns {string} the absolute alias path.
    */
   private getAAP({
     basePath,
@@ -84,10 +84,10 @@ export class PathCache {
   }
 
   /**
-   * finds the absolute alias path, uses cache when possible.
-   * @param basePath the basepath of the alias.
-   * @param aliasPath the aliaspath of the alias.
-   * @returns the absolute alias path.
+   * getAbsoluteAliasPath finds the absolute alias path, uses cache when possible.
+   * @param {string} basePath the basepath of the alias.
+   * @param {string} aliasPath the aliaspath of the alias.
+   * @returns {string} the absolute alias path.
    */
   public getAbsoluteAliasPath(basePath: string, aliasPath: string): string {
     const request = { basePath, aliasPath };
