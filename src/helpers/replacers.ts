@@ -1,8 +1,8 @@
 import * as normalizePath from 'normalize-path';
 import * as findNodeModulesPath from 'find-node-modules';
 import { join } from 'path';
-import { IConfig, ReplacerOptions } from '../interfaces';
 import { existsSync, promises as fsp } from 'fs';
+import { IConfig, ReplacerOptions } from '../interfaces';
 import { replaceSourceImportPaths, resolveFullImportPaths } from '../utils';
 
 /**

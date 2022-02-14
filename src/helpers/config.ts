@@ -1,9 +1,9 @@
-import { Json } from 'mylas';
 import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import * as normalizePath from 'normalize-path';
-import { Output, PathCache, TrieNode } from '../utils';
+import { Json } from 'mylas';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
+import { Output, PathCache, TrieNode } from '../utils';
 import { importReplacers } from './replacers';
 import {
   IConfig,

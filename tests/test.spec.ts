@@ -1,13 +1,13 @@
-import { join } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
-import { newImportStatementRegex, newStringRegex } from '../src/utils';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 import { sync } from 'globby';
+import { newImportStatementRegex, newStringRegex } from '../src/utils';
 import {
   ReplaceTscAliasPathsOptions,
   prepareSingleFileReplaceTscAliasPaths
 } from '../src';
-import { readFileSync } from 'fs';
 
 const projectsRoot = join(__dirname, '../projects');
 
@@ -106,7 +106,8 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
 
   const runTask = (task: string) => {
     shell.exec(task, {
-      cwd: projectDir
+      cwd: projectDir,
+      silent: true
     });
   };
 
