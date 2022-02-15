@@ -1,7 +1,6 @@
-import * as findNodeModulesPath from 'find-node-modules';
 import * as fs from 'fs';
 import * as normalizePath from 'normalize-path';
-import { Json } from 'mylas';
+import { Json, Dir } from 'mylas';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
 import { Output, PathCache, TrieNode } from '../utils';
 import { importReplacers } from './replacers';
@@ -141,7 +140,7 @@ export const loadConfig = (file: string, output: Output): ITSConfig => {
  */
 export function resolveTsConfigExtendsPath(ext: string, file: string): string {
   const tsConfigDir = dirname(file);
-  const node_modules: string[] = findNodeModulesPath({ cwd: tsConfigDir }); // Getting all node_modules directories.
+  const node_modules: string[] = Dir.nodeModules({ cwd: tsConfigDir }); // Getting all node_modules directories.
   const targetPaths = node_modules.map((v) => join(tsConfigDir, v, ext)); // Mapping node_modules to target paths.
 
   // Recursively checking ancestor directories for tsconfig.

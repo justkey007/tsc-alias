@@ -38,11 +38,10 @@
   },
   "homepage": "https://github.com/justkey007/tsc-alias.git",
   "dependencies": {
-    "chokidar": "^3.5.2",
-    "commander": "^8.3.0",
-    "find-node-modules": "^2.1.2",
+    "chokidar": "^3.5.3",
+    "commander": "^9.0.0",
     "globby": "^11.0.4",
-    "mylas": "^2.1.6",
+    "mylas": "^2.1.9",
     "normalize-path": "^3.0.0"
   },
   "devDependencies": {
