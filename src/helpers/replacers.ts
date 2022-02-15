@@ -1,5 +1,5 @@
-import * as normalizePath from 'normalize-path';
-import { Dir } from "mylas";
+import normalizePath from 'normalize-path';
+import { Dir } from 'mylas';
 import { join } from 'path';
 import { existsSync, promises as fsp } from 'fs';
 import { IConfig, ReplacerOptions } from '../interfaces';

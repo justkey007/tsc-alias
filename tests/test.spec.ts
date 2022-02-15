@@ -48,7 +48,8 @@ function runTestProject(projectNumber: number) {
   const projectDir = join(projectsRoot, `project${projectNumber}`);
   rimraf.sync(join(projectDir, 'dist'));
   const { code, stderr } = shell.exec('npm start', {
-    cwd: projectDir
+    cwd: projectDir,
+    silent: true
   });
   if (code !== 0) console.error(stderr);
   expect(code).toEqual(0);

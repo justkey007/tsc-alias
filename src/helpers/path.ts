@@ -1,4 +1,4 @@
-import * as normalizePath from 'normalize-path';
+import normalizePath from 'normalize-path';
 import { sync } from 'globby';
 import { normalize, relative } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';

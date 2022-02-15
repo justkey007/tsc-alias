@@ -1,4 +1,4 @@
-import * as normalizePath from 'normalize-path';
+import normalizePath from 'normalize-path';
 import { relative, dirname } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';

@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as normalizePath from 'normalize-path';
+import normalizePath from 'normalize-path';
 import { Json, Dir } from 'mylas';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
 import { Output, PathCache, TrieNode } from '../utils';
