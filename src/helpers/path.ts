@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This file has all helperfunctions related to path resolution.
+ */
+
+/** */
 import { sync } from 'globby';
 import normalizePath from 'normalize-path';
 import { normalize, relative } from 'path';

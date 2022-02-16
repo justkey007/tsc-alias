@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This file has all helperfunctions related to replacing.
+ */
+
+/** */
 import { existsSync, promises as fsp } from 'fs';
 import normalizePath from 'normalize-path';
 import { Dir } from 'mylas';

@@ -1,3 +1,12 @@
+/**
+ * @file
+ *
+ * Keeping formatting consistent in large projects is difficult.
+ * That's why this output class exists, it is used to standardize
+ * logging and assertions.
+ */
+
+/** */
 export class Output {
   constructor(private verbose = false) {}
 

@@ -1,11 +1,21 @@
+/**
+ * @file
+ *
+ * The TrieNode class is a prefix tree.
+ * [Trie](https://en.wikipedia.org/wiki/Trie)
+ *
+ * This is a tree data structure used for locating specific keys
+ * from within a set. The links between nodes defined by individual characters.
+ * A node's position in the trie defines the key with which it is associated.
+ * This distributes the value of each key across the data structure,
+ * and means that not every node necessarily has an associated value.
+ */
+
+/** */
 import { isAbsolute, normalize, relative } from 'path';
 import { findBasePathOfAlias, relativeOutPathToConfigDir } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
 
-/**
- * TrieNode is a prefix tree.
- * [Trie](https://en.wikipedia.org/wiki/Trie)
- */
 export class TrieNode<T> {
   private children: Map<string, TrieNode<T>>;
   public data: T | null;

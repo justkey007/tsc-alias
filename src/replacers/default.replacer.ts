@@ -1,3 +1,11 @@
+/**
+ * @file
+ *
+ * The default replacer replaces the alias in an import statement
+ * with the proper aliased location.
+ */
+
+/** */
 import normalizePath from 'normalize-path';
 import { relative, dirname } from 'path';
 import { AliasReplacerArguments } from '../interfaces';

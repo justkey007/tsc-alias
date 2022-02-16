@@ -1,3 +1,10 @@
+/**
+ * @file
+ *
+ * This file has all helperfunctions related to configuration.
+ */
+
+/** */
 import { lstatSync, existsSync } from 'fs';
 import { Json, Dir } from 'mylas';
 import normalizePath from 'normalize-path';
@@ -25,13 +32,10 @@ export async function prepareConfig(
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')
     : !isAbsolute(options.configFile)
-      ? resolve(process.cwd(), options.configFile)
-      : options.configFile;
+    ? resolve(process.cwd(), options.configFile)
+    : options.configFile;
 
-  output.assert(
-    existsSync(configFile),
-    `Invalid file path => ${configFile}`
-  );
+  output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
   const {
     baseUrl = './',
@@ -121,9 +125,9 @@ export const loadConfig = (file: string, output: Output): ITSConfig => {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-          join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
-          output
-        )
+            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
+            output
+          )
         : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
       ...config
     };
@@ -156,7 +160,7 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
     let isDirectory = false;
     try {
       isDirectory = lstatSync(targetPath).isDirectory();
-    } catch (err) { }
+    } catch (err) {}
     if (isDirectory) {
       return join(targetPath, 'tsconfig.json');
     } else {
