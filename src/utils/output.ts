@@ -7,10 +7,10 @@
  */
 
 /** */
-import { IOutput } from "../interfaces";
+import { IOutput } from '../interfaces';
 
 export class Output implements IOutput {
-  constructor(private verb = false) { }
+  constructor(private verb = false) {}
 
   public set verbose(value: boolean) {
     this.verb = value;

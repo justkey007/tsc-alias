@@ -105,7 +105,7 @@ export interface IOutput {
    */
   clear(): void;
   /**
-   * assert claim an assertion when it fails an error is logged 
+   * assert claim an assertion when it fails an error is logged
    * and the process exited.
    * @param {unknown} claim assertion that is being claimed.
    * @param {string} message message to log when claim fails.
