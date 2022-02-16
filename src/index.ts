@@ -6,7 +6,8 @@ import {
   IConfig,
   AliasReplacer,
   IProjectConfig,
-  AliasReplacerArguments
+  AliasReplacerArguments,
+  IOutput
 } from './interfaces';
 
 // export interfaces for api use.
@@ -15,7 +16,8 @@ export {
   AliasReplacer,
   AliasReplacerArguments,
   IConfig,
-  IProjectConfig
+  IProjectConfig,
+  IOutput
 };
 
 const defaultConfig = {
@@ -57,7 +59,7 @@ export async function replaceTscAliasPaths(
 
   output.info(`${replaceCount} files were affected!`);
   if (options.watch) {
-    output.setVerbose(true);
+    output.verbose = true;
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(config.configFile);

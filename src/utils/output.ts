@@ -7,15 +7,17 @@
  */
 
 /** */
-export class Output {
-  constructor(private verbose = false) {}
+import { IOutput } from "../interfaces";
 
-  setVerbose(value: boolean) {
-    this.verbose = value;
+export class Output implements IOutput {
+  constructor(private verb = false) { }
+
+  public set verbose(value: boolean) {
+    this.verb = value;
   }
 
   info(message: string) {
-    if (!this.verbose) return;
+    if (!this.verb) return;
     console.log(`tsc-alias info: ${message}`);
   }
 
@@ -32,7 +34,7 @@ export class Output {
     console.clear();
   }
 
-  assert(claim: any, message: string) {
+  assert(claim: unknown, message: string) {
     claim || this.error(message, true);
   }
 }

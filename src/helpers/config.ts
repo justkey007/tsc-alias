@@ -14,7 +14,8 @@ import {
   IProjectConfig,
   ReplaceTscAliasPathsOptions,
   IRawTSConfig,
-  ITSConfig
+  ITSConfig,
+  IOutput
 } from '../interfaces';
 import { importReplacers } from './replacers';
 import { Output, PathCache, TrieNode } from '../utils';
@@ -47,7 +48,7 @@ export async function prepareConfig(
     verbose
   } = loadConfig(configFile, output);
 
-  output.setVerbose(verbose);
+  output.verbose = verbose;
 
   if (options.resolveFullPaths || resolveFullPaths) {
     options.resolveFullPaths = true;
@@ -92,13 +93,12 @@ export async function prepareConfig(
 /**
  * loadConfig loads a config file from fs.
  * @param {string} file file path to the config file that will be loaded.
- * @param {Output} output the output instance to log error to.
+ * @param {IOutput} output the output instance to log error to.
  * @returns {ITSConfig} a ITSConfig object
  */
-export const loadConfig = (file: string, output: Output): ITSConfig => {
+export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   if (!existsSync(file)) {
-    output.error(`File ${file} not found`);
-    process.exit();
+    output.error(`File ${file} not found`, true);
   }
   const {
     extends: ext,

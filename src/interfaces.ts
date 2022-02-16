@@ -1,4 +1,4 @@
-import { Output, PathCache, TrieNode } from './utils';
+import { PathCache, TrieNode } from './utils';
 
 export interface IRawTSConfig {
   extends?: string;
@@ -40,7 +40,7 @@ export interface IProjectConfig {
 }
 
 export interface IConfig extends IProjectConfig {
-  output: Output;
+  output: IOutput;
   aliasTrie: TrieNode<Alias>;
   replacers: AliasReplacer[];
 }
@@ -53,7 +53,7 @@ export interface ReplaceTscAliasPathsOptions {
   verbose?: boolean;
   resolveFullPaths?: boolean;
   replacers?: string[];
-  output?: Output;
+  output?: IOutput;
   aliasTrie?: TrieNode<Alias>;
 }
 
@@ -82,4 +82,12 @@ export interface ReplacerOptions {
     enabled: boolean;
     file?: string;
   };
+}
+
+export interface IOutput {
+  set verbose(value: boolean);
+  info(message: string): void;
+  error(message: string, exitProcess?: boolean): void;
+  clear(): void;
+  assert(claim: unknown, message: string): void;
 }
