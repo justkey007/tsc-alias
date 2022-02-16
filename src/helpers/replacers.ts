@@ -1,7 +1,7 @@
+import { existsSync, promises as fsp } from 'fs';
 import normalizePath from 'normalize-path';
 import { Dir } from 'mylas';
 import { join } from 'path';
-import { existsSync, promises as fsp } from 'fs';
 import { IConfig, ReplacerOptions } from '../interfaces';
 import { replaceSourceImportPaths, resolveFullImportPaths } from '../utils';
 

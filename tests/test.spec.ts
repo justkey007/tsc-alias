@@ -1,13 +1,13 @@
-import * as rimraf from 'rimraf';
-import * as shell from 'shelljs';
-import { join } from 'path';
 import { readFileSync } from 'fs';
 import { sync } from 'globby';
-import { newImportStatementRegex, newStringRegex } from '../src/utils';
+import { join } from 'path';
+import rimraf from 'rimraf';
+import shell from 'shelljs';
 import {
   ReplaceTscAliasPathsOptions,
   prepareSingleFileReplaceTscAliasPaths
 } from '../src';
+import { newImportStatementRegex, newStringRegex } from '../src/utils';
 
 const projectsRoot = join(__dirname, '../projects');
 

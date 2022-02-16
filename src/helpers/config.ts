@@ -1,9 +1,7 @@
-import * as fs from 'fs';
-import normalizePath from 'normalize-path';
+import { lstatSync, existsSync } from 'fs';
 import { Json, Dir } from 'mylas';
+import normalizePath from 'normalize-path';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
-import { Output, PathCache, TrieNode } from '../utils';
-import { importReplacers } from './replacers';
 import {
   IConfig,
   IProjectConfig,
@@ -11,6 +9,8 @@ import {
   IRawTSConfig,
   ITSConfig
 } from '../interfaces';
+import { importReplacers } from './replacers';
+import { Output, PathCache, TrieNode } from '../utils';
 
 /**
  * prepareConfig prepares a IConfig object for tsc-alias to be used.
@@ -25,11 +25,11 @@ export async function prepareConfig(
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')
     : !isAbsolute(options.configFile)
-    ? resolve(process.cwd(), options.configFile)
-    : options.configFile;
+      ? resolve(process.cwd(), options.configFile)
+      : options.configFile;
 
   output.assert(
-    fs.existsSync(configFile),
+    existsSync(configFile),
     `Invalid file path => ${configFile}`
   );
 
@@ -92,7 +92,7 @@ export async function prepareConfig(
  * @returns {ITSConfig} a ITSConfig object
  */
 export const loadConfig = (file: string, output: Output): ITSConfig => {
-  if (!fs.existsSync(file)) {
+  if (!existsSync(file)) {
     output.error(`File ${file} not found`);
     process.exit();
   }
@@ -121,9 +121,9 @@ export const loadConfig = (file: string, output: Output): ITSConfig => {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
-            output
-          )
+          join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
+          output
+        )
         : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
       ...config
     };
@@ -147,7 +147,7 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
   for (const targetPath of targetPaths) {
     if (ext.endsWith('.json')) {
       // Check if the file exists.
-      if (fs.existsSync(targetPath)) {
+      if (existsSync(targetPath)) {
         return targetPath;
       } else {
         continue; // Continue checking when ext is a file but not yet found.
@@ -155,13 +155,13 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
     }
     let isDirectory = false;
     try {
-      isDirectory = fs.lstatSync(targetPath).isDirectory();
-    } catch (err) {}
+      isDirectory = lstatSync(targetPath).isDirectory();
+    } catch (err) { }
     if (isDirectory) {
       return join(targetPath, 'tsconfig.json');
     } else {
       // When target is not a file nor directory check with '.json' extension.
-      if (fs.existsSync(`${targetPath}.json`)) {
+      if (existsSync(`${targetPath}.json`)) {
         return `${targetPath}.json`;
       }
     }
