@@ -1,4 +1,12 @@
-import * as normalizePath from 'normalize-path';
+/**
+ * @file
+ *
+ * The baseUrl replacer replaces the import statement
+ * with the baseUrl + import statement location.
+ */
+
+/** */
+import normalizePath from 'normalize-path';
 import { relative, dirname } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';

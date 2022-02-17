@@ -1,3 +1,11 @@
+/**
+ * @file
+ *
+ * The PathCache class is meant to cache path lookups like
+ * exists and getAbsoluteAliasPath.
+ */
+
+/** */
 import { existsSync } from 'fs';
 import { join } from 'path';
 

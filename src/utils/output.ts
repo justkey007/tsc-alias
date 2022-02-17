@@ -1,12 +1,23 @@
-export class Output {
-  constructor(private verbose = false) {}
+/**
+ * @file
+ *
+ * Keeping formatting consistent in large projects is difficult.
+ * That's why this output class exists, it is used to standardize
+ * logging and assertions.
+ */
 
-  setVerbose(value: boolean) {
-    this.verbose = value;
+/** */
+import { IOutput } from '../interfaces';
+
+export class Output implements IOutput {
+  constructor(private verb = false) {}
+
+  public set verbose(value: boolean) {
+    this.verb = value;
   }
 
   info(message: string) {
-    if (!this.verbose) return;
+    if (!this.verb) return;
     console.log(`tsc-alias info: ${message}`);
   }
 
@@ -23,7 +34,7 @@ export class Output {
     console.clear();
   }
 
-  assert(claim: any, message: string) {
+  assert(claim: unknown, message: string) {
     claim || this.error(message, true);
   }
 }

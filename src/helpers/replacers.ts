@@ -1,8 +1,15 @@
-import * as normalizePath from 'normalize-path';
-import * as findNodeModulesPath from 'find-node-modules';
+/**
+ * @file
+ *
+ * This file has all helperfunctions related to replacing.
+ */
+
+/** */
+import { existsSync, promises as fsp } from 'fs';
+import normalizePath from 'normalize-path';
+import { Dir } from 'mylas';
 import { join } from 'path';
 import { IConfig, ReplacerOptions } from '../interfaces';
-import { existsSync, promises as fsp } from 'fs';
 import { replaceSourceImportPaths, resolveFullImportPaths } from '../utils';
 
 /**
@@ -17,7 +24,7 @@ export async function importReplacers(
   cmdReplacers?: string[]
 ) {
   const dir = process.cwd();
-  const node_modules: string[] = findNodeModulesPath({ cwd: dir });
+  const node_modules: string[] = Dir.nodeModules({ cwd: dir });
 
   // List of default replacers.
   const defaultReplacers: ReplacerOptions = {

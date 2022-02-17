@@ -1,17 +1,24 @@
-import { Json } from 'mylas';
-import * as findNodeModulesPath from 'find-node-modules';
-import * as fs from 'fs';
-import * as normalizePath from 'normalize-path';
-import { Output, PathCache, TrieNode } from '../utils';
+/**
+ * @file
+ *
+ * This file has all helperfunctions related to configuration.
+ */
+
+/** */
+import { lstatSync, existsSync } from 'fs';
+import { Json, Dir } from 'mylas';
+import normalizePath from 'normalize-path';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
-import { importReplacers } from './replacers';
 import {
   IConfig,
   IProjectConfig,
   ReplaceTscAliasPathsOptions,
   IRawTSConfig,
-  ITSConfig
+  ITSConfig,
+  IOutput
 } from '../interfaces';
+import { importReplacers } from './replacers';
+import { Output, PathCache, TrieNode } from '../utils';
 
 /**
  * prepareConfig prepares a IConfig object for tsc-alias to be used.
@@ -29,10 +36,7 @@ export async function prepareConfig(
     ? resolve(process.cwd(), options.configFile)
     : options.configFile;
 
-  output.assert(
-    fs.existsSync(configFile),
-    `Invalid file path => ${configFile}`
-  );
+  output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
   const {
     baseUrl = './',
@@ -44,7 +48,7 @@ export async function prepareConfig(
     verbose
   } = loadConfig(configFile, output);
 
-  output.setVerbose(verbose);
+  output.verbose = verbose;
 
   if (options.resolveFullPaths || resolveFullPaths) {
     options.resolveFullPaths = true;
@@ -89,13 +93,12 @@ export async function prepareConfig(
 /**
  * loadConfig loads a config file from fs.
  * @param {string} file file path to the config file that will be loaded.
- * @param {Output} output the output instance to log error to.
+ * @param {IOutput} output the output instance to log error to.
  * @returns {ITSConfig} a ITSConfig object
  */
-export const loadConfig = (file: string, output: Output): ITSConfig => {
-  if (!fs.existsSync(file)) {
-    output.error(`File ${file} not found`);
-    process.exit();
+export const loadConfig = (file: string, output: IOutput): ITSConfig => {
+  if (!existsSync(file)) {
+    output.error(`File ${file} not found`, true);
   }
   const {
     extends: ext,
@@ -141,14 +144,14 @@ export const loadConfig = (file: string, output: Output): ITSConfig => {
  */
 export function resolveTsConfigExtendsPath(ext: string, file: string): string {
   const tsConfigDir = dirname(file);
-  const node_modules: string[] = findNodeModulesPath({ cwd: tsConfigDir }); // Getting all node_modules directories.
+  const node_modules: string[] = Dir.nodeModules({ cwd: tsConfigDir }); // Getting all node_modules directories.
   const targetPaths = node_modules.map((v) => join(tsConfigDir, v, ext)); // Mapping node_modules to target paths.
 
   // Recursively checking ancestor directories for tsconfig.
   for (const targetPath of targetPaths) {
     if (ext.endsWith('.json')) {
       // Check if the file exists.
-      if (fs.existsSync(targetPath)) {
+      if (existsSync(targetPath)) {
         return targetPath;
       } else {
         continue; // Continue checking when ext is a file but not yet found.
@@ -156,13 +159,13 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
     }
     let isDirectory = false;
     try {
-      isDirectory = fs.lstatSync(targetPath).isDirectory();
+      isDirectory = lstatSync(targetPath).isDirectory();
     } catch (err) {}
     if (isDirectory) {
       return join(targetPath, 'tsconfig.json');
     } else {
       // When target is not a file nor directory check with '.json' extension.
-      if (fs.existsSync(`${targetPath}.json`)) {
+      if (existsSync(`${targetPath}.json`)) {
         return `${targetPath}.json`;
       }
     }

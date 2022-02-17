@@ -1,4 +1,4 @@
-import { Output, PathCache, TrieNode } from './utils';
+import { PathCache, TrieNode } from './utils';
 
 export interface IRawTSConfig {
   extends?: string;
@@ -40,7 +40,7 @@ export interface IProjectConfig {
 }
 
 export interface IConfig extends IProjectConfig {
-  output: Output;
+  output: IOutput;
   aliasTrie: TrieNode<Alias>;
   replacers: AliasReplacer[];
 }
@@ -53,7 +53,7 @@ export interface ReplaceTscAliasPathsOptions {
   verbose?: boolean;
   resolveFullPaths?: boolean;
   replacers?: string[];
-  output?: Output;
+  output?: IOutput;
   aliasTrie?: TrieNode<Alias>;
 }
 
@@ -82,4 +82,33 @@ export interface ReplacerOptions {
     enabled: boolean;
     file?: string;
   };
+}
+
+export interface IOutput {
+  /**
+   * verbose setter sets if the output should act verbose.
+   */
+  set verbose(value: boolean);
+  /**
+   * info logs a message on the info level.
+   * @param {string} message message to log.
+   */
+  info(message: string): void;
+  /**
+   * error logs a message on the error level and may exit the process.
+   * @param {string} message message to log.
+   * @param {boolean} exitProcess if process should exit after this error.
+   */
+  error(message: string, exitProcess?: boolean): void;
+  /**
+   * clear clears the displayed logs.
+   */
+  clear(): void;
+  /**
+   * assert claim an assertion when it fails an error is logged
+   * and the process exited.
+   * @param {unknown} claim assertion that is being claimed.
+   * @param {string} message message to log when claim fails.
+   */
+  assert(claim: unknown, message: string): void;
 }

@@ -26,7 +26,7 @@
 
 /** */
 import { existsSync } from 'fs';
-import * as normalizePath from 'normalize-path';
+import normalizePath from 'normalize-path';
 import { resolve, join, dirname } from 'path';
 import { StringReplacer } from '../interfaces';
 
