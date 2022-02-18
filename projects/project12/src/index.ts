@@ -1,5 +1,5 @@
-import { Controller } from '@controllers/index';
-import { Router } from '@router';
+import { Controller } from '$controllers/index';
+import { Router } from '$router';
 
 new Controller();
 

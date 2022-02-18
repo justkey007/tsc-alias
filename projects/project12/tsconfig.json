@@ -3,8 +3,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@*": ["./src/*"],
-      "@router": ["./src/controllers/index.ts"]
+      "$*": ["./src/*"],
+      "$router": ["./src/controllers/index.ts"]
     }
   }
 }
