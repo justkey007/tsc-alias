@@ -86,9 +86,9 @@ export interface ReplacerOptions {
 
 export interface IOutput {
   /**
-   * verbose setter sets if the output should act verbose.
+   * verbose value sets if the output should act verbose.
    */
-  set verbose(value: boolean);
+  verbose: boolean;
   /**
    * info logs a message on the info level.
    * @param {string} message message to log.
