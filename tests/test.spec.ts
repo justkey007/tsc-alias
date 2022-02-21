@@ -1,8 +1,8 @@
+import * as rimraf from 'rimraf';
+import * as shell from 'shelljs';
 import { readFileSync } from 'fs';
 import { sync } from 'globby';
 import { join } from 'path';
-import rimraf from 'rimraf';
-import shell from 'shelljs';
 import {
   ReplaceTscAliasPathsOptions,
   prepareSingleFileReplaceTscAliasPaths
