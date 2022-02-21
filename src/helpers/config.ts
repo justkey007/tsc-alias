@@ -5,9 +5,9 @@
  */
 
 /** */
+import * as normalizePath from 'normalize-path';
 import { lstatSync, existsSync } from 'fs';
 import { Json, Dir } from 'mylas';
-import normalizePath from 'normalize-path';
 import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
 import {
   IConfig,
