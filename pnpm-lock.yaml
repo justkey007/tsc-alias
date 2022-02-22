@@ -3,7 +3,6 @@ lockfileVersion: 5.3
 specifiers:
   '@types/jest': ^27.4.0
   '@types/node': ^17.0.18
-  '@types/normalize-path': ^3.0.0
   '@types/rimraf': ^3.0.2
   '@types/shelljs': ^0.8.11
   chokidar: ^3.5.3
@@ -29,7 +28,6 @@ dependencies:
 devDependencies:
   '@types/jest': 27.4.0
   '@types/node': 17.0.18
-  '@types/normalize-path': 3.0.0
   '@types/rimraf': 3.0.2
   '@types/shelljs': 0.8.11
   husky: 7.0.4
@@ -662,10 +660,6 @@ packages:
 
   /@types/node/17.0.18:
     resolution: {integrity: sha512-eKj4f/BsN/qcculZiRSujogjvp5O/k4lOW5m35NopjZM/QwLOR075a8pJW5hD+Rtdm2DaCVPENS6KtSQnUD6BA==}
-    dev: true
-
-  /@types/normalize-path/3.0.0:
-    resolution: {integrity: sha512-Nd8y/5t/7CRakPYiyPzr/IAfYusy1FkcZYFEAcoMZkwpJv2n4Wm+olW+e7xBdHEXhOnWdG9ddbar0gqZWS4x5Q==}
     dev: true
 
   /@types/prettier/2.1.6:
