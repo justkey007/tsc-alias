@@ -13,7 +13,9 @@ export class Output implements IOutput {
   constructor(private verb = false) {}
 
   public set verbose(value: boolean) {
-    this.verb = value;
+    if (value) {
+      this.verb = value;
+    }
   }
 
   info(message: string) {
