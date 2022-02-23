@@ -5,20 +5,20 @@
  */
 
 /** */
-import * as normalizePath from 'normalize-path';
-import { lstatSync, existsSync } from 'fs';
-import { Json, Dir } from 'mylas';
-import { basename, dirname, join, isAbsolute, normalize, resolve } from 'path';
+import { existsSync, lstatSync } from 'fs';
+import { Dir, Json } from 'mylas';
+import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import {
   IConfig,
+  IOutput,
   IProjectConfig,
-  ReplaceTscAliasPathsOptions,
   IRawTSConfig,
   ITSConfig,
-  IOutput
+  ReplaceTscAliasPathsOptions
 } from '../interfaces';
-import { importReplacers } from './replacers';
 import { Output, PathCache, TrieNode } from '../utils';
+import { importReplacers } from './replacers';
+import normalizePath = require('normalize-path');
 
 /**
  * prepareConfig prepares a IConfig object for tsc-alias to be used.
@@ -69,7 +69,7 @@ export async function prepareConfig(
     baseUrl: baseUrl,
     outDir: _outDir,
     configDir: configDir,
-    outPath: normalizePath(normalize(configDir + '/' + _outDir)),
+    outPath: _outDir,
     confDirParentFolderName: basename(configDir),
     hasExtraModule: false,
     configDirInOutPath: null,
@@ -111,9 +111,14 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
     'tsc-alias': TSCAliasConfig
   } = Json.loadS<IRawTSConfig>(file, true);
 
+  const configDir = dirname(file);
   const config: ITSConfig = {};
+
   if (baseUrl) config.baseUrl = baseUrl;
-  if (outDir) config.outDir = outDir;
+  if (outDir) {
+    const isAbsolutePath = isAbsolute(outDir);
+    config.outDir = isAbsolutePath ? outDir : join(configDir, outDir);
+  }
   if (paths) config.paths = paths;
   if (declarationDir) config.declarationDir = declarationDir;
   if (TSCAliasConfig?.replacers) config.replacers = TSCAliasConfig.replacers;
@@ -121,11 +126,17 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
     config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
   if (TSCAliasConfig?.verbose) config.verbose = TSCAliasConfig.verbose;
 
+  const replacerFile = config.replacers?.pathReplacer?.file;
+
+  if (replacerFile) {
+    config.replacers.pathReplacer.file = join(configDir, replacerFile);
+  }
+
   if (ext) {
     return {
       ...(ext.startsWith('.')
         ? loadConfig(
-            join(dirname(file), ext.endsWith('.json') ? ext : `${ext}.json`),
+            join(configDir, ext.endsWith('.json') ? ext : `${ext}.json`),
             output
           )
         : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),

@@ -1,11 +1,11 @@
-import * as rimraf from 'rimraf';
-import * as shell from 'shelljs';
 import { readFileSync } from 'fs';
 import { sync } from 'globby';
 import { join } from 'path';
+import * as rimraf from 'rimraf';
+import * as shell from 'shelljs';
 import {
-  ReplaceTscAliasPathsOptions,
-  prepareSingleFileReplaceTscAliasPaths
+  prepareSingleFileReplaceTscAliasPaths,
+  ReplaceTscAliasPathsOptions
 } from '../src';
 import { newImportStatementRegex, newStringRegex } from '../src/utils';
 
@@ -89,7 +89,7 @@ it(`Import regex does not match edge cases from keywords in strings`, function (
 });
 
 // Run tests on projects. 9-11 are for testing fullpath file resolution
-[1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].forEach(
+[1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20].forEach(
   (value) => {
     it(`Project ${value} runs after alias resolution`, () => {
       runTestProject(value);

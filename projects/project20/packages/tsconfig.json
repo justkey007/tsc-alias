@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true,
+    "replacers": {
+      "pathReplacer": {
+        "enabled": false,
+        "file": "./path-replacer.js"
+      }
+    }
+  }
+}

@@ -1,13 +1,13 @@
 import { watch } from 'chokidar';
 import { sync } from 'globby';
-import { replaceAlias, replaceAliasString, prepareConfig } from './helpers';
+import { prepareConfig, replaceAlias, replaceAliasString } from './helpers';
 import {
-  ReplaceTscAliasPathsOptions,
-  IConfig,
   AliasReplacer,
-  IProjectConfig,
   AliasReplacerArguments,
-  IOutput
+  IConfig,
+  IOutput,
+  IProjectConfig,
+  ReplaceTscAliasPathsOptions
 } from './interfaces';
 
 // export interfaces for api use.
