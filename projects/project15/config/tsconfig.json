@@ -14,7 +14,6 @@
       "@gggggg": ["./src/gggggg/index.ts"],
       "@hhhhhh": ["./src/hhhhhh/index.ts"]
     }
-  }, "include": [
-    "../**/*"
-  ]
+  },
+  "include": ["../**/*"]
 }

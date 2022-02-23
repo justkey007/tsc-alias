@@ -1,10 +1,10 @@
 {
-    "name": "root-package",
-    "scripts": {
-        "build": "npm run build -ws",
-        "start": "npm install && npm run build && npm run start -ws"
-    },
-    "workspaces": [
-        "./packages/*"
-    ]
+  "name": "root-package",
+  "scripts": {
+    "build": "npm run build -ws",
+    "start": "npm install && npm run build && npm run start -ws"
+  },
+  "workspaces": [
+    "./packages/*"
+  ]
 }

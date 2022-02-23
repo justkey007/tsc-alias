@@ -3,7 +3,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@controllers/*": ["./src/controllers/*"],
+      "@controllers/*": ["./src/controllers/*"]
     }
   }
 }
