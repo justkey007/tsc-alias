@@ -1,4 +1,4 @@
-exports.default = ({orig}) => {
-    console.log(orig);
-    return orig;
-}
+exports.default = ({ orig }) => {
+  console.log(orig);
+  return orig;
+};

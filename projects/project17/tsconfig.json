@@ -1,31 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "es2020",
-        "module": "es2020",
-        "outDir": "./dist",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "paths": {
-            "@container": [
-                "src/container.ts"
-            ],
-            "@interfaces": [
-                "src/interfaces.ts"
-            ],
-            "@main": [
-                "src/main.ts"
-            ],
-            "@util": [
-                "src/utils/index.ts"
-            ]
-        },
-        "moduleResolution": "node"
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@container": ["src/container.ts"],
+      "@interfaces": ["src/interfaces.ts"],
+      "@main": ["src/main.ts"],
+      "@util": ["src/utils/index.ts"]
     },
-    "include": [
-        "src/**/*.ts",
-        "test/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules"]
 }

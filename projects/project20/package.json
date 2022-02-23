@@ -1,0 +1,9 @@
+{
+  "name": "project20",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p packages/tsconfig.json && tsc-alias -p packages/tsconfig.json",
+    "build:tsc-base": "tsc --outDir dist-base",
+    "start": "npm run build && node ./dist/main.js"
+  }
+}

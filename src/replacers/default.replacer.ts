@@ -6,8 +6,8 @@
  */
 
 /** */
-import * as normalizePath from 'normalize-path';
-import { relative, dirname } from 'path';
+import normalizePath = require('normalize-path');
+import { dirname, relative } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
 

@@ -5,7 +5,7 @@
  */
 
 /** */
-import * as normalizePath from 'normalize-path';
+import normalizePath = require('normalize-path');
 import { sync } from 'globby';
 import { normalize, relative } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';
@@ -81,7 +81,7 @@ export function findBasePathOfAlias(config: IProjectConfig) {
     if (normalize(aliasPath.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
-          `${config.configDir}/${config.outDir}/` +
+          `${config.outDir}/` +
             `${
               config.hasExtraModule && config.relConfDirPathInOutPath
                 ? config.relConfDirPathInOutPath
@@ -93,6 +93,7 @@ export function findBasePathOfAlias(config: IProjectConfig) {
       const absoluteBasePath = normalizePath(
         normalize(`${tempBasePath}/${aliasPath.path}`)
       );
+
       if (config.pathCache.existsResolvedAlias(absoluteBasePath)) {
         aliasPath.isExtra = false;
         aliasPath.basePath = tempBasePath;
@@ -104,16 +105,15 @@ export function findBasePathOfAlias(config: IProjectConfig) {
       aliasPath.isExtra = false;
       aliasPath.basePath = normalizePath(
         normalize(
-          `${config.configDir}/${config.outDir}/` +
+          `${config.outDir}/` +
             `${config.relConfDirPathInOutPath}/${config.baseUrl}`
         )
       );
     } else {
-      aliasPath.basePath = normalizePath(
-        normalize(`${config.configDir}/${config.outDir}`)
-      );
+      aliasPath.basePath = config.outDir;
       aliasPath.isExtra = false;
     }
+
     return aliasPath;
   };
 }

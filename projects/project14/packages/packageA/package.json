@@ -1,12 +1,11 @@
 {
-    "name": "packageA",
-    "scripts": {
-       "build": "tsc && tsc-alias",
-       "start": "node ./dist/index.js"
-    },
-   "dependencies": {
-      "@tsconfig/node14": "1.0.0",
-      "@types/node": "16.10.2"
-    }
+  "name": "packageA",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "@tsconfig/node14": "1.0.0",
+    "@types/node": "16.10.2"
   }
-  
+}

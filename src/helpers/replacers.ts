@@ -5,12 +5,12 @@
  */
 
 /** */
-import * as normalizePath from 'normalize-path';
 import { existsSync, promises as fsp } from 'fs';
 import { Dir } from 'mylas';
-import { join } from 'path';
+import { isAbsolute, join } from 'path';
 import { IConfig, ReplacerOptions } from '../interfaces';
 import { replaceSourceImportPaths, resolveFullImportPaths } from '../utils';
+import normalizePath = require('normalize-path');
 
 /**
  * importReplacers imports replacers for tsc-alias to use.
@@ -31,7 +31,7 @@ export async function importReplacers(
     default: {
       enabled: true
     },
-    BaseUrl: {
+    'base-url': {
       enabled: true
     }
   };
@@ -69,16 +69,20 @@ export async function importReplacers(
       const tryImportReplacer = async (targetPath: string) => {
         const replacerModule = await import(targetPath);
         const replacerFunction = replacerModule.default;
-        if (typeof replacerFunction == "function") {
+        if (typeof replacerFunction == 'function') {
           config.replacers.push(replacerFunction);
           config.output.info(`Added replacer "${file}"`);
         } else {
-          config.output.error(`Failed to import replacer "${file}", not in replacer format.`);
+          config.output.error(
+            `Failed to import replacer "${file}", not in replacer format.`
+          );
         }
       };
 
       // Look for replacer in cwd.
-      const path = normalizePath(join(dir, file));
+      const isRelativePath = !isAbsolute(file);
+      const path = isRelativePath ? normalizePath(join(dir, file)) : file;
+
       if (existsSync(path)) {
         try {
           await tryImportReplacer(path);
@@ -87,11 +91,13 @@ export async function importReplacers(
       }
 
       // Look for replacer in node_modules.
-      for (const targetPath of node_modules.map((v) => join(dir, v, file))) {
-        try {
-          await tryImportReplacer(targetPath);
-          continue;
-        } catch {}
+      if (isRelativePath) {
+        for (const targetPath of node_modules.map((v) => join(dir, v, file))) {
+          try {
+            await tryImportReplacer(targetPath);
+            continue;
+          } catch {}
+        }
       }
 
       config.output.error(`Failed to import replacer "${file}"`);
