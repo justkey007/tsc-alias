@@ -23,8 +23,8 @@ export class Output implements IOutput {
 
   error(message: string, exitProcess = false) {
     console.error(
-      //[BgRed]tsc-alias error:[Reset] [FgRed_]${message}[Reset][LF]
-      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m\n`
+      //[BgRed]tsc-alias error:[Reset] [FgRed_]${message}[Reset]
+      `\x1b[41mtsc-alias error:\x1b[0m \x1b[31m${message}\x1b[0m`
     );
 
     if (exitProcess) process.exit(1);

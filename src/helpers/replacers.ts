@@ -5,8 +5,8 @@
  */
 
 /** */
+import * as normalizePath from 'normalize-path';
 import { existsSync, promises as fsp } from 'fs';
-import normalizePath from 'normalize-path';
 import { Dir } from 'mylas';
 import { join } from 'path';
 import { IConfig, ReplacerOptions } from '../interfaces';
@@ -68,12 +68,17 @@ export async function importReplacers(
       // Try to import replacer.
       const tryImportReplacer = async (targetPath: string) => {
         const replacerModule = await import(targetPath);
-        config.replacers.push(replacerModule.default);
-        config.output.info(`Added replacer "${file}"`);
+        const replacerFunction = replacerModule.default;
+        if (typeof replacerFunction == "function") {
+          config.replacers.push(replacerFunction);
+          config.output.info(`Added replacer "${file}"`);
+        } else {
+          config.output.error(`Failed to import replacer "${file}", not in replacer format.`);
+        }
       };
 
       // Look for replacer in cwd.
-      const path = normalizePath(dir + '/' + file);
+      const path = normalizePath(join(dir, file));
       if (existsSync(path)) {
         try {
           await tryImportReplacer(path);
