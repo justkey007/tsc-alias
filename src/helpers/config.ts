@@ -114,9 +114,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   const configDir = dirname(file);
   const config: ITSConfig = {};
 
-  if (baseUrl) {
-    config.baseUrl = isAbsolute(baseUrl) ? baseUrl : join(configDir, baseUrl);
-  }
+  if (baseUrl) config.baseUrl = baseUrl;
   if (outDir) {
     config.outDir = isAbsolute(outDir) ? outDir : join(configDir, outDir);
   }
