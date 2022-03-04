@@ -114,13 +114,18 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   const configDir = dirname(file);
   const config: ITSConfig = {};
 
-  if (baseUrl) config.baseUrl = baseUrl;
+  if (baseUrl) {
+    config.baseUrl = isAbsolute(baseUrl) ? baseUrl : join(configDir, baseUrl);
+  }
   if (outDir) {
-    const isAbsolutePath = isAbsolute(outDir);
-    config.outDir = isAbsolutePath ? outDir : join(configDir, outDir);
+    config.outDir = isAbsolute(outDir) ? outDir : join(configDir, outDir);
   }
   if (paths) config.paths = paths;
-  if (declarationDir) config.declarationDir = declarationDir;
+  if (declarationDir) {
+    config.declarationDir = isAbsolute(declarationDir)
+      ? declarationDir
+      : join(configDir, declarationDir);
+  }
   if (TSCAliasConfig?.replacers) config.replacers = TSCAliasConfig.replacers;
   if (TSCAliasConfig?.resolveFullPaths)
     config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
