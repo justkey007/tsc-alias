@@ -81,7 +81,7 @@ export async function replaceTscAliasPaths(
       outDir: options.declarationDir,
       declarationDir: undefined,
       output: config.output,
-      aliasTrie: config.aliasTrie
+      aliasTrie: undefined
     });
   }
 }
