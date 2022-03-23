@@ -1,8 +1,8 @@
 {
   "name": "project21",
-  "type": "module",
+  "private": true,
   "scripts": {
     "build": "tsc && tsc-alias",
-    "start": "npm run build && node ./dist/src/index.js"
+    "start": "npm run build && node ./dist/index.js"
   }
 }

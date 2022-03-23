@@ -40,14 +40,14 @@ export default function replaceImportStatement({
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
       const absoluteAliasPath = config.resolveFiles
-         ? config.pathCache.getAbsoluteAliasPathOrFile(
-             alias.paths[i].basePath,
-             alias.paths[i].path
-           )
-         : config.pathCache.getAbsoluteAliasPath(
-             alias.paths[i].basePath,
-             alias.paths[i].path
-           );
+      ? config.pathCache.getAbsoluteAliasPathOrFile(
+        alias.paths[i].basePath,
+        alias.paths[i].path
+      )
+      : config.pathCache.getAbsoluteAliasPath(
+        alias.paths[i].basePath,
+        alias.paths[i].path
+      );
 
       // Check if path is valid.
       if (

@@ -87,7 +87,8 @@ export async function prepareConfig(
     output: output,
     aliasTrie:
       options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
-    replacers: []
+    replacers: [],
+    resolveFiles
   };
 
   // Import replacers.
@@ -132,6 +133,8 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   if (TSCAliasConfig?.replacers) config.replacers = TSCAliasConfig.replacers;
   if (TSCAliasConfig?.resolveFullPaths)
     config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
+  if (TSCAliasConfig?.resolveFiles)
+    config.resolveFiles = TSCAliasConfig.resolveFiles;
   if (TSCAliasConfig?.verbose) config.verbose = TSCAliasConfig.verbose;
 
   const replacerFile = config.replacers?.pathReplacer?.file;
