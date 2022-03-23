@@ -108,4 +108,59 @@ export class PathCache {
       return result;
     }
   }
+
+  /**
+   * getAAP finds the absolute alias path or file
+   * @param {string} basePath the basepath of the alias.
+   * @param {string} aliasPath the aliaspath of the alias.
+   * @returns {string} the absolute alias path.
+   */
+  private getAAPF({
+    basePath,
+    aliasPath
+  }: {
+    basePath: string;
+    aliasPath: string;
+  }): string {
+    const aliasPathParts = aliasPath
+      .split('/')
+      .filter((part) => !part.match(/^\.$|^\s*$/));
+
+    let aliasPathPart = aliasPathParts.shift() || '';
+
+    let pathExists: boolean;
+    while (
+      !(pathExists = this.exists(join(basePath, aliasPathPart))) &&
+      aliasPathParts.length
+    ) {
+      aliasPathPart = aliasPathParts.shift();
+    }
+
+    return join(
+      basePath,
+      pathExists ? aliasPathPart : '',
+      aliasPathParts.join('/')
+    );
+  }
+
+  /**
+   * getAbsoluteAliasPath finds the absolute alias path, uses cache when possible.
+   * @param {string} basePath the basepath of the alias.
+   * @param {string} aliasPath the aliaspath of the alias.
+   * @returns {string} the absolute alias path.
+   */
+  public getAbsoluteAliasPathOrFile(
+    basePath: string,
+    aliasPath: string
+  ): string {
+    const request = { basePath, aliasPath };
+    if (!this.useCache) return this.getAAPF(request);
+    if (this.absoluteCache.has(request)) {
+      return this.absoluteCache.get(request);
+    } else {
+      const result = this.getAAPF(request);
+      this.absoluteCache.set(request, result);
+      return result;
+    }
+  }
 }

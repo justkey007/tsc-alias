@@ -6,6 +6,7 @@ export interface IRawTSConfig {
   'tsc-alias'?: {
     replacers?: ReplacerOptions;
     resolveFullPaths?: boolean;
+    resolveFiles?: boolean;
     verbose?: boolean;
   };
 }
@@ -23,6 +24,7 @@ export interface ITSConfig {
   paths?: PathLike;
   replacers?: ReplacerOptions;
   resolveFullPaths?: boolean;
+  resolveFiles?: boolean;
   verbose?: boolean;
 }
 
@@ -37,6 +39,7 @@ export interface IProjectConfig {
   configDirInOutPath: string;
   relConfDirPathInOutPath: string;
   pathCache: PathCache;
+  resolveFiles?: boolean;
 }
 
 export interface IConfig extends IProjectConfig {
@@ -52,6 +55,7 @@ export interface ReplaceTscAliasPathsOptions {
   watch?: boolean;
   verbose?: boolean;
   resolveFullPaths?: boolean;
+  resolveFiles?: boolean;
   replacers?: string[];
   output?: IOutput;
   aliasTrie?: TrieNode<Alias>;

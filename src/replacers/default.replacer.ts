@@ -39,7 +39,11 @@ export default function replaceImportStatement({
 
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
-      const absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(
+      const arg
+      const getAbsoluteAliasPath = config.resolveFiles
+        ? config.pathCache.getAbsoluteAliasPathOrFile
+        : config.pathCache.getAbsoluteAliasPath;
+      const absoluteAliasPath = getAbsoluteAliasPath(
         alias.paths[i].basePath,
         alias.paths[i].path
       );
