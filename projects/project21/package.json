@@ -2,7 +2,7 @@
   "name": "project21",
   "private": true,
   "scripts": {
-    "build": "tsc && tsc-alias --resolve-files",
+    "build": "tsc && tsc-alias",
     "start": "npm run build && node ./dist/index.js"
   }
 }
