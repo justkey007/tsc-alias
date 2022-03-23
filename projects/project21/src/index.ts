@@ -1,2 +1,4 @@
 import constants from '$constants';
-console.log(constants);
+if (!constants) {
+  process.exit(1);
+}
