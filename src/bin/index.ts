@@ -18,6 +18,10 @@ program
     'Attempt to fully resolve import paths if the corresponding .js file can be found'
   )
   .option(
+    '-l, --resolve-files',
+    'Attempt to resolve aliases that point to files'
+  )
+  .option(
     '-s, --silent',
     'Reduced terminal output (default: true) [deprecated]'
   )
@@ -33,5 +37,6 @@ replaceTscAliasPaths({
   outDir: options.directory,
   verbose: !!options.verbose,
   resolveFullPaths: !!options.resolveFullPaths,
+  resolveFiles: !!options.resolveFiles,
   replacers: options.replacer
 });

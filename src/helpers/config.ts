@@ -45,6 +45,7 @@ export async function prepareConfig(
     paths,
     replacers,
     resolveFullPaths,
+    resolveFiles,
     verbose
   } = loadConfig(configFile, output);
 
@@ -52,6 +53,10 @@ export async function prepareConfig(
 
   if (options.resolveFullPaths || resolveFullPaths) {
     options.resolveFullPaths = true;
+  }
+
+  if (options.resolveFiles || resolveFiles) {
+    options.resolveFiles = true;
   }
 
   const _outDir = options.outDir ?? outDir;

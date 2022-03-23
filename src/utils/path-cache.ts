@@ -78,7 +78,7 @@ export class PathCache {
 
     let pathExists: boolean;
     while (
-      !(pathExists = this.exists(join(basePath, aliasPathPart))) &&
+      !(pathExists = existsSync(join(basePath, aliasPathPart))) &&
       aliasPathParts.length
     ) {
       aliasPathPart = aliasPathParts.shift();
@@ -110,7 +110,7 @@ export class PathCache {
   }
 
   /**
-   * getAAP finds the absolute alias path or file
+   * getAAPF finds the absolute alias path or file
    * @param {string} basePath the basepath of the alias.
    * @param {string} aliasPath the aliaspath of the alias.
    * @returns {string} the absolute alias path.
@@ -144,7 +144,7 @@ export class PathCache {
   }
 
   /**
-   * getAbsoluteAliasPath finds the absolute alias path, uses cache when possible.
+   * getAbsoluteAliasPathOrFile finds the absolute alias path or file, uses cache when possible.
    * @param {string} basePath the basepath of the alias.
    * @param {string} aliasPath the aliaspath of the alias.
    * @returns {string} the absolute alias path.
