@@ -16,6 +16,7 @@ export default function replaceImportStatement({
   file,
   config
 }: AliasReplacerArguments) {
+  console.log('config', config);
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
   config.output.assert(
     typeof requiredModule == 'string',
