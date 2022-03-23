@@ -79,7 +79,8 @@ export async function prepareConfig(
     hasExtraModule: false,
     configDirInOutPath: null,
     relConfDirPathInOutPath: null,
-    pathCache: new PathCache(!options.watch)
+    pathCache: new PathCache(!options.watch),
+    resolveFiles: options.resolveFiles
   };
 
   const config: IConfig = {
@@ -87,8 +88,7 @@ export async function prepareConfig(
     output: output,
     aliasTrie:
       options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
-    replacers: [],
-    resolveFiles
+    replacers: []
   };
 
   // Import replacers.
