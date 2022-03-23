@@ -1,2 +1,2 @@
-import * as tests from './utils';
-console.log(tests);
+import constants from '$constants';
+console.log(constants);

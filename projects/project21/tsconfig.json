@@ -1,21 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2020",
-    "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": ".",
+    "outDir": "dist",
+    "target": "es5",
+    "module": "commonjs",
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "baseUrl": "./src",
     "paths": {
-      "@container": ["src/container.ts"],
-      "@interfaces": ["src/interfaces.ts"],
-      "@main": ["src/main.ts"],
-      "@util": ["src/utils/index.ts"]
+      "$constants": ["constants"]
     },
     "moduleResolution": "node"
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"],
   "tsc-alias": {
-    "resolveFullPaths": true
+    "resolveFiles": true
   }
 }
