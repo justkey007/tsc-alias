@@ -78,7 +78,7 @@ export class PathCache {
 
     let pathExists: boolean;
     while (
-      !(pathExists = existsSync(join(basePath, aliasPathPart))) &&
+      !(pathExists = this.exists(join(basePath, aliasPathPart))) &&
       aliasPathParts.length
     ) {
       aliasPathPart = aliasPathParts.shift();
