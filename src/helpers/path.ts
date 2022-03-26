@@ -20,11 +20,12 @@ function getProjectDirPathInOutDir(
   outDir: string,
   projectDir: string
 ): string | undefined {
+  const posixOutput = outDir.replace(/\\/g, '/');
   const dirs = sync(
     [
-      `${outDir}/**/${projectDir}`,
-      `!${outDir}/**/${projectDir}/**/${projectDir}`,
-      `!${outDir}/**/node_modules`
+      `${posixOutput}/**/${projectDir}`,
+      `!${posixOutput}/**/${projectDir}/**/${projectDir}`,
+      `!${posixOutput}/**/node_modules`
     ],
     {
       dot: true,
