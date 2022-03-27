@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { sync } from 'globby';
-import { join } from 'path';
+import { join, normalize } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
 import {
@@ -123,9 +123,10 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
   const runFile = await prepareSingleFileReplaceTscAliasPaths(options);
 
   // Finding files and changing alias paths
+  const posixOutput = basePath.replace(/\\/g, '/');
   const globPattern = [
-    `${basePath}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
-    `!${basePath}/**/node_modules`
+    `${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
+    `!${posixOutput}/**/node_modules`
   ];
   const files = sync(globPattern, {
     dot: true,
@@ -135,7 +136,7 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
   expect(files.length).toBeGreaterThan(0);
 
   files.map((filePath) => {
-    const altFilePath = filePath.replace(basePath, outPath);
+    const altFilePath = normalize(filePath.replace(posixOutput, outPath));
     const fileContents = readFileSync(filePath, 'utf8');
     const expectedContents = readFileSync(altFilePath, 'utf8');
     const newContents = runFile({ fileContents, filePath });
