@@ -6,7 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "dist/server/",
     "declarationDir": "./types",
     "removeComments": true,
     "importHelpers": false,
