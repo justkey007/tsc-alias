@@ -12,6 +12,7 @@ specifiers:
   jest: ^27.5.1
   mylas: ^2.1.9
   normalize-path: ^3.0.0
+  plimit-lit: ^1.2.6
   prettier: ^2.5.1
   rimraf: ^3.0.2
   shelljs: ^0.8.5
@@ -24,6 +25,7 @@ dependencies:
   globby: 11.0.4
   mylas: 2.1.9
   normalize-path: 3.0.0
+  plimit-lit: 1.2.6
 
 devDependencies:
   '@types/jest': 27.4.0
@@ -2355,6 +2357,12 @@ packages:
       find-up: 4.1.0
     dev: true
 
+  /plimit-lit/1.2.6:
+    resolution: {integrity: sha512-EuVnKyDeFgr58aidKf2G7DI41r23bxphlvBKAZ8e8dT9of0Ez2g9w6JbJGUP1YBNC2yG9+ZCCbjLj4yS1P5Gzw==}
+    dependencies:
+      queue-lit: 1.2.7
+    dev: false
+
   /prelude-ls/1.1.2:
     resolution: {integrity: sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=}
     engines: {node: '>= 0.8.0'}
@@ -2401,6 +2409,10 @@ packages:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
     engines: {node: '>=6'}
     dev: true
+
+  /queue-lit/1.2.7:
+    resolution: {integrity: sha512-K/rTdggORRcmf3+c89ijPlgJ/ldGP4oBj6Sm7VcTup4B2clf03Jo8QaXTnMst4EEQwkUbOZFN4frKocq2I85gw==}
+    dev: false
 
   /react-is/17.0.1:
     resolution: {integrity: sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==}

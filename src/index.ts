@@ -1,5 +1,6 @@
 import { watch } from 'chokidar';
 import { sync } from 'globby';
+import { pLimit } from 'plimit-lit';
 import { prepareConfig, replaceAlias, replaceAliasString } from './helpers';
 import {
   AliasReplacer,
@@ -28,6 +29,8 @@ const defaultConfig = {
   aliasTrie: undefined
 };
 
+const OpenFilesLimit = pLimit(500);
+
 /**
  * replaceTscAliasPaths replaces the aliases in the project.
  * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
@@ -52,7 +55,11 @@ export async function replaceTscAliasPaths(
   // Make array with promises for file changes
   // Wait for all promises to resolve
   const replaceList = await Promise.all(
-    files.map((file) => replaceAlias(config, file, options?.resolveFullPaths))
+    files.map((file) =>
+      OpenFilesLimit(() =>
+        replaceAlias(config, file, options?.resolveFullPaths)
+      )
+    )
   );
 
   // Count all changed files
