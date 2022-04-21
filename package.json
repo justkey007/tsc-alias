@@ -42,7 +42,8 @@
     "commander": "^9.0.0",
     "globby": "^11.0.4",
     "mylas": "^2.1.9",
-    "normalize-path": "^3.0.0"
+    "normalize-path": "^3.0.0",
+    "plimit-lit": "^1.2.6"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
