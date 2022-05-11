@@ -13,8 +13,11 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16.x'
-    - name: Install pnpm
-      run: npm i pnpm -g && pnpm setup
+    - uses: pnpm/action-setup@v2.2.1
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 7
     - name: Install npm7
       run: npm i -g npm@7
     - name: Install dependencies
