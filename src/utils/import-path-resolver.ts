@@ -40,8 +40,9 @@ const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*${importString}\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
+const moduleStyle = `(?:\\bmodule\\s+${importString})`;
 
-const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle].join(
+const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle, moduleStyle].join(
   `|`
 )})`;
 

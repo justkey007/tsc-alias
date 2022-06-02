@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "../dist",
     "baseUrl": "../",
+    "declaration": true,
     "paths": {
       "@*": ["./src/*"],
       "@router": ["./src/controllers/index.ts"],
