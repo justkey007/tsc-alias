@@ -42,9 +42,12 @@ const globalStyle = `(?:\\bimport\\s+${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
 const moduleStyle = `(?:\\bmodule\\s+${importString})`;
 
-const importRegexString = `(?:${[funcStyle, globalStyle, fromStyle, moduleStyle].join(
-  `|`
-)})`;
+const importRegexString = `(?:${[
+  funcStyle,
+  globalStyle,
+  fromStyle,
+  moduleStyle
+].join(`|`)})`;
 
 class ImportPathResolver {
   constructor(public source: string, readonly sourcePath: string) {}

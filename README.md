@@ -4,6 +4,7 @@ Replace alias paths with relative paths after typescript compilation. You can ad
 
 [![npm version](https://badge.fury.io/js/tsc-alias.svg)](https://badge.fury.io/js/tsc-alias)
 [![License](https://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=FPRE4VERGHZ3E)
 
 ## Comparison to [tsconfig-paths](https://github.com/dividab/tsconfig-paths)
 
@@ -112,6 +113,7 @@ Here are all the available options:
 </table>
 
 ### Configuration via `tsconfig.json` Example
+
 ```json
 {
   "compilerOptions": {
@@ -134,7 +136,7 @@ Here are all the available options:
 }
 ```
 
-### SingleFileReplacer
+### Single file replacer
 
 We can use tsc-alias in a single file, with a function that returns the modified contents.
 
