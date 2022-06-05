@@ -52,10 +52,10 @@ export default function replaceImportStatement({
             : normalizePath(
                 `${absoluteAliasPath}/${requiredModule.replace(
                   new RegExp(
-                    `^${alias.prefix.replace(
+                    `(?:^${alias.prefix.replace(
                       /[-[\]{}()*+?.,\\^$|#\s]/g,
                       '\\$&'
-                    )}`
+                    )})|(?:\.js$)`, 'g'
                   ),
                   ''
                 )}`
