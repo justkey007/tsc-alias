@@ -55,7 +55,7 @@ export default function replaceImportStatement({
                     `(?:^${alias.prefix.replace(
                       /[-[\]{}()*+?.,\\^$|#\s]/g,
                       '\\$&'
-                    )})|(?:\.js$)`,
+                    )})|(?:\.js|json$)`,
                     'g'
                   ),
                   ''
