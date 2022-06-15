@@ -8,8 +8,23 @@
 /** */
 import normalizePath = require('normalize-path');
 import { dirname, relative } from 'path';
-import { AliasReplacerArguments } from '../interfaces';
+import { Alias, AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
+
+function escapeSpecialChars(str: string) {
+  return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
+function getAliasPrefixRegExp(alias: Alias) {
+  return new RegExp(
+    `(?:^${escapeSpecialChars(alias.prefix)})|(?:\.(js|json)$)`,
+    'g'
+  );
+}
+
+function removeAliasPrefix(requiredModule: string, alias: Alias) {
+  return requiredModule.replace(getAliasPrefixRegExp(alias), '');
+}
 
 export default function replaceImportStatement({
   orig,
@@ -50,15 +65,9 @@ export default function replaceImportStatement({
           alias.prefix.length == requiredModule.length
             ? normalizePath(absoluteAliasPath)
             : normalizePath(
-                `${absoluteAliasPath}/${requiredModule.replace(
-                  new RegExp(
-                    `(?:^${alias.prefix.replace(
-                      /[-[\]{}()*+?.,\\^$|#\s]/g,
-                      '\\$&'
-                    )})|(?:\.js|json$)`,
-                    'g'
-                  ),
-                  ''
+                `${absoluteAliasPath}/${removeAliasPrefix(
+                  requiredModule,
+                  alias
                 )}`
               )
         )

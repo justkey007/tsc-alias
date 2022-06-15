@@ -31,6 +31,7 @@ export class PathCache {
     return (
       existsSync(`${path}`) ||
       existsSync(`${path}.js`) ||
+      existsSync(`${path}.json`) ||
       existsSync(`${path}.jsx`) ||
       existsSync(`${path}.cjs`) ||
       existsSync(`${path}.mjs`) ||

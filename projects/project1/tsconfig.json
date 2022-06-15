@@ -7,6 +7,7 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "baseUrl": "./src",
+    "resolveJsonModule": true,
     "paths": {
       "myproject/*": ["./*"],
       "@commons": ["lib/commons/index.ts"],
