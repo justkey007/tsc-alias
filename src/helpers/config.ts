@@ -173,7 +173,8 @@ export function resolveTsConfigExtendsPath(ext: string, file: string): string {
     }
     let isDirectory = false;
     try {
-      isDirectory = lstatSync(targetPath).isDirectory();
+      const stats = lstatSync(targetPath);
+      isDirectory = stats.isDirectory() || stats.isSymbolicLink();
     } catch (err) {}
     if (isDirectory) {
       return join(targetPath, 'tsconfig.json');
