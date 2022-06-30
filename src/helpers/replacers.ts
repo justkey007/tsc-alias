@@ -23,8 +23,10 @@ export async function importReplacers(
   replacers: ReplacerOptions,
   cmdReplacers?: string[]
 ) {
+  config.output.debug('Started loading replacers');
   const dir = process.cwd();
   const node_modules: string[] = Dir.nodeModules({ cwd: dir });
+  config.output.debug('Found node_modules:', node_modules);
 
   // List of default replacers.
   const defaultReplacers: ReplacerOptions = {
@@ -43,6 +45,10 @@ export async function importReplacers(
   };
 
   // Added replacers to list from command-line filepaths.
+  config.output.debug(
+    'Added replacers to list from command-line filepaths:',
+    cmdReplacers
+  );
   cmdReplacers?.forEach((v) => {
     merged[v] = {
       enabled: true,
@@ -50,11 +56,13 @@ export async function importReplacers(
     };
   });
 
+  config.output.debug('Reading replacers config');
   const entries = Object.entries(merged);
   for await (const replacer of entries) {
     if (replacer[1].enabled) {
       // Importing default replacers.
       if (Object.keys(defaultReplacers).includes(replacer[0])) {
+        config.output.debug('Loading default replacer:', replacer);
         const replacerModule = await import(
           `../replacers/${replacer[0]}.replacer`
         );
@@ -63,11 +71,13 @@ export async function importReplacers(
 
       const file = replacer[1]?.file;
       if (!file) {
+        config.output.debug('Replacer has no file:', replacer);
         continue; // When file is undefined don't try to import.
       }
       // Try to import replacer.
       const tryImportReplacer = async (targetPath: string) => {
         const replacerModule = await import(targetPath);
+        config.output.debug('Imported replacerModule:', replacerModule);
         const replacerFunction = replacerModule.default;
         if (typeof replacerFunction == 'function') {
           config.replacers.push(replacerFunction);
@@ -86,6 +96,7 @@ export async function importReplacers(
       if (existsSync(path)) {
         try {
           await tryImportReplacer(path);
+          config.output.debug('Imported replacer:', path);
           continue;
         } catch {}
       }
@@ -95,6 +106,7 @@ export async function importReplacers(
         for (const targetPath of node_modules.map((v) => join(dir, v, file))) {
           try {
             await tryImportReplacer(targetPath);
+            config.output.debug('Imported replacer:', targetPath);
             continue;
           } catch {}
         }
@@ -103,6 +115,7 @@ export async function importReplacers(
       config.output.error(`Failed to import replacer "${file}"`);
     }
   }
+  config.output.debug('Loaded replacers:', config.replacers);
 }
 
 /**
@@ -117,13 +130,16 @@ export async function replaceAlias(
   file: string,
   resolveFullPath?: boolean
 ): Promise<boolean> {
+  config.output.debug('Starting to replace file:', file);
   const code = await fsp.readFile(file, 'utf8');
   const tempCode = replaceAliasString(config, file, code, resolveFullPath);
 
   if (code !== tempCode) {
+    config.output.debug('replaced file with changes:', file);
     await fsp.writeFile(file, tempCode, 'utf8');
     return true;
   }
+  config.output.debug('replaced file without changes:', file);
   return false;
 }
 

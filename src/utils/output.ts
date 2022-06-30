@@ -8,9 +8,30 @@
 
 /** */
 import { IOutput } from '../interfaces';
+import { inspect } from 'util';
 
 export class Output implements IOutput {
-  constructor(private verb = false) {}
+  // Default empty
+  debug = (message: string, obj?: unknown) => {};
+
+  constructor(private verb = false, debugMode = false) {
+    if (debugMode) {
+      // When in debug mode. Add debug function.
+      this.debug = (message: string, obj?: unknown) => {
+        console.debug(
+          `tsc-alias debug: ${message} ${
+            obj
+              ? inspect(obj, {
+                  showHidden: true,
+                  depth: Infinity,
+                  colors: true
+                })
+              : ''
+          }`
+        );
+      };
+    }
+  }
 
   public set verbose(value: boolean) {
     if (value) {

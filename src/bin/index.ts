@@ -21,7 +21,8 @@ program
     '-s, --silent',
     'Reduced terminal output (default: true) [deprecated]'
   )
-  .option('-v, --verbose', 'Additional information is output to the terminal')
+  .option('-v, --verbose', 'Additional information is send to the terminal')
+  .option('--debug', 'Debug information is send to the terminal')
   .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
   .parseAsync(process.argv);
 
@@ -32,6 +33,7 @@ replaceTscAliasPaths({
   watch: !!options.watch,
   outDir: options.directory,
   verbose: !!options.verbose,
+  debug: !!options.debug,
   resolveFullPaths: !!options.resolveFullPaths,
   replacers: options.replacer
 });
