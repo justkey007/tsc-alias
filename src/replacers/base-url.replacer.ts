@@ -17,6 +17,7 @@ export default function replaceBaseUrlImport({
   config
 }: AliasReplacerArguments): string {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
+  config.output.debug('base-url replacer - requiredModule: ', requiredModule);
   config.output.assert(
     typeof requiredModule == 'string',
     `Unexpected import statement pattern ${orig}`
@@ -24,6 +25,7 @@ export default function replaceBaseUrlImport({
 
   // Check if import is already resolved.
   if (requiredModule.startsWith('.')) {
+    config.output.debug('base-url replacer - already resolved');
     return orig;
   }
 
@@ -40,12 +42,18 @@ export default function replaceBaseUrlImport({
     if (!relativePath.startsWith('.')) {
       relativePath = './' + relativePath;
     }
+    config.output.debug('base-url replacer - relativePath: ', relativePath);
 
     const index = orig.indexOf(requiredModule);
     const newImportScript =
       orig.substring(0, index) + relativePath + '/' + orig.substring(index);
+    config.output.debug(
+      'base-url replacer - newImportScript: ',
+      newImportScript
+    );
 
     const modulePath = newImportScript.match(newStringRegex()).groups.path;
+    config.output.debug('base-url replacer - modulePath: ', modulePath);
     return newImportScript.replace(modulePath, normalizePath(modulePath));
   }
   return orig;

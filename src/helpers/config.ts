@@ -28,7 +28,7 @@ import normalizePath = require('normalize-path');
 export async function prepareConfig(
   options: ReplaceTscAliasPathsOptions
 ): Promise<IConfig> {
-  const output = options.output ?? new Output(options.verbose);
+  const output = options.output ?? new Output(options.verbose, options.debug);
 
   const configFile = !options.configFile
     ? resolve(process.cwd(), 'tsconfig.json')
@@ -51,6 +51,7 @@ export async function prepareConfig(
   output.verbose = verbose;
 
   if (options.resolveFullPaths || resolveFullPaths) {
+    output.debug('resolveFullPaths is active');
     options.resolveFullPaths = true;
   }
 
@@ -76,6 +77,7 @@ export async function prepareConfig(
     relConfDirPathInOutPath: null,
     pathCache: new PathCache(!options.watch)
   };
+  output.debug('loaded project config:', projectConfig);
 
   const config: IConfig = {
     ...projectConfig,
@@ -84,6 +86,7 @@ export async function prepareConfig(
       options.aliasTrie ?? TrieNode.buildAliasTrie(projectConfig, paths),
     replacers: []
   };
+  output.debug('loaded full config:', config);
 
   // Import replacers.
   await importReplacers(config, replacers, options.replacers);
@@ -100,6 +103,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   if (!existsSync(file)) {
     output.error(`File ${file} not found`, true);
   }
+  output.debug('Loading config file:', file);
   const {
     extends: ext,
     compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
@@ -112,6 +116,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   } = Json.loadS<IRawTSConfig>(file, true);
 
   const configDir = dirname(file);
+  output.debug('configDir', configDir);
   const config: ITSConfig = {};
 
   if (baseUrl) config.baseUrl = baseUrl;
@@ -135,6 +140,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
     config.replacers.pathReplacer.file = join(configDir, replacerFile);
   }
 
+  output.debug('loaded config (from file):', config);
   if (ext) {
     return {
       ...(ext.startsWith('.')

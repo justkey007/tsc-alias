@@ -32,12 +32,14 @@ export default function replaceImportStatement({
   config
 }: AliasReplacerArguments) {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
+  config.output.debug('default replacer - requiredModule: ', requiredModule);
   config.output.assert(
     typeof requiredModule == 'string',
     `Unexpected import statement pattern ${orig}`
   );
   // Lookup which alias should be used for this given requiredModule.
   const alias = config.aliasTrie.search(requiredModule);
+  config.output.debug('default replacer - alias: ', alias);
   // If an alias isn't found the original.
   if (!alias) return orig;
 
@@ -58,6 +60,10 @@ export default function replaceImportStatement({
         alias.paths[i].basePath,
         alias.paths[i].path
       );
+      config.output.debug(
+        'default replacer - absoluteAliasPath: ',
+        absoluteAliasPath
+      );
 
       // Check if path is valid.
       if (
@@ -72,6 +78,7 @@ export default function replaceImportStatement({
               )
         )
       ) {
+        config.output.debug('default replacer - Invalid path');
         continue;
       }
 
@@ -82,6 +89,10 @@ export default function replaceImportStatement({
       if (!relativeAliasPath.startsWith('.')) {
         relativeAliasPath = './' + relativeAliasPath;
       }
+      config.output.debug(
+        'default replacer - relativeAliasPath: ',
+        relativeAliasPath
+      );
 
       const index = orig.indexOf(alias.prefix);
       const newImportScript =
@@ -89,8 +100,13 @@ export default function replaceImportStatement({
         relativeAliasPath +
         '/' +
         orig.substring(index + alias.prefix.length);
+      config.output.debug(
+        'default replacer - newImportScript: ',
+        newImportScript
+      );
 
       const modulePath = newImportScript.match(newStringRegex()).groups.path;
+      config.output.debug('default replacer - modulePath: ', modulePath);
 
       return newImportScript.replace(modulePath, normalizePath(modulePath));
     }

@@ -24,6 +24,7 @@ export {
 const defaultConfig = {
   watch: false,
   verbose: false,
+  debug: false,
   declarationDir: undefined,
   output: undefined,
   aliasTrie: undefined
@@ -47,10 +48,12 @@ export async function replaceTscAliasPaths(
     `${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
     `!${posixOutput}/**/node_modules`
   ];
+  output.debug('Search pattern:', globPattern);
   const files = sync(globPattern, {
     dot: true,
     onlyFiles: true
   });
+  output.debug('Found files:', files);
 
   // Make array with promises for file changes
   // Wait for all promises to resolve

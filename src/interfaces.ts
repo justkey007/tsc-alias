@@ -51,6 +51,7 @@ export interface ReplaceTscAliasPathsOptions {
   declarationDir?: string;
   watch?: boolean;
   verbose?: boolean;
+  debug?: boolean;
   resolveFullPaths?: boolean;
   replacers?: string[];
   output?: IOutput;
@@ -89,6 +90,11 @@ export interface IOutput {
    * verbose value sets if the output should act verbose.
    */
   verbose: boolean;
+  /**
+   * debug logs a message on the debug level.
+   * @param {string} message message to log.
+   */
+  debug: (message: string, obj?: unknown) => void;
   /**
    * info logs a message on the info level.
    * @param {string} message message to log.
