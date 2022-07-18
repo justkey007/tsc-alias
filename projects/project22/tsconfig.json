@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es5",
+    "module": "commonjs",
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "baseUrl": "./src",
+    "resolveJsonModule": true,
+    "paths": {
+      "myproject/*": ["./*"],
+      "custom/*": ["custom_modules/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

@@ -17,7 +17,7 @@ function escapeSpecialChars(str: string) {
 
 function getAliasPrefixRegExp(alias: Alias) {
   return new RegExp(
-    `(?:^${escapeSpecialChars(alias.prefix)})|(?:\.(js|json)$)`,
+    `(?:^${escapeSpecialChars(alias.prefix)})|(?:\\.(js|json)$)`,
     'g'
   );
 }
