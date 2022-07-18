@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@hashmap": ["node_modules/@esfx/collections-hashmap/dist/index"],
+      "@hashmap2": ["./node_modules/@esfx/collections-hashmap/dist/index"]
     }
   }
 }

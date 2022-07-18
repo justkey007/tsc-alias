@@ -7,7 +7,7 @@
 /** */
 import normalizePath = require('normalize-path');
 import { sync } from 'globby';
-import { normalize, relative } from 'path';
+import { normalize, relative, resolve } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';
 
 /**
@@ -79,6 +79,8 @@ export function relativeOutPathToConfigDir(config: IProjectConfig) {
 export function findBasePathOfAlias(config: IProjectConfig) {
   return (path: string) => {
     const aliasPath = { path } as AliasPath;
+
+    // If it's an alias that references a file outside the baseUrl
     if (normalize(aliasPath.path).includes('..')) {
       const tempBasePath = normalizePath(
         normalize(
@@ -102,7 +104,24 @@ export function findBasePathOfAlias(config: IProjectConfig) {
         aliasPath.isExtra = true;
         aliasPath.basePath = absoluteBasePath;
       }
-    } else if (config.hasExtraModule) {
+
+      return aliasPath;
+    }
+
+    /**
+     * If the alias refers to a file in the node_modules folder
+     * located at the same level of baseUrl.
+     * Because typescript will not include the node_modules
+     * folder in the output folder (outDir).
+     */
+    if (aliasPath.path.match(/^(\.\/|)node_modules/g)) {
+      aliasPath.basePath = resolve(config.baseUrl, aliasPath.path);
+      aliasPath.isExtra = false;
+      return aliasPath;
+    }
+
+    // If the project references another external project
+    if (config.hasExtraModule) {
       aliasPath.isExtra = false;
       aliasPath.basePath = normalizePath(
         normalize(
@@ -110,11 +129,11 @@ export function findBasePathOfAlias(config: IProjectConfig) {
             `${config.relConfDirPathInOutPath}/${config.baseUrl}`
         )
       );
-    } else {
-      aliasPath.basePath = config.outDir;
-      aliasPath.isExtra = false;
+      return aliasPath;
     }
 
+    aliasPath.basePath = config.outDir;
+    aliasPath.isExtra = false;
     return aliasPath;
   };
 }

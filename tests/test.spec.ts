@@ -62,15 +62,17 @@ it(`Import regex matches import statements`, () => {
 
   const importStatementMatches = sampleImportStatements.match(
     newImportStatementRegex('g')
-  );
+  ) as RegExpMatchArray;
   expect(importStatementMatches).toHaveLength(expectedImportPaths.length);
 
   const foundImportPaths: string[] = [];
   for (const importStatement of importStatementMatches) {
     // Global match is a string, not a match group, so re-match without the global flag.
-    const pathMatch = importStatement.match(newStringRegex());
+    const pathMatch = importStatement.match(
+      newStringRegex()
+    ) as RegExpMatchArray;
     expect(pathMatch).toBeTruthy();
-    foundImportPaths.push(pathMatch.groups.path);
+    if (pathMatch.groups) foundImportPaths.push(pathMatch.groups.path);
   }
   expectedImportPaths.forEach((expectedPath, i) => {
     expect(expectedPath).toEqual(foundImportPaths[i]);
