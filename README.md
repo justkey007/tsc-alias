@@ -33,7 +33,7 @@ npm install --save-dev tsc-alias
 
 "scripts": {
   "build": "tsc && tsc-alias",
-  "build:watch": "concurrently \"tsc -w\" \"tsc-alias -w\""
+  "build:watch": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\")"
 }
 ```
 
