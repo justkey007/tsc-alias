@@ -107,6 +107,11 @@ Here are all the available options:
       <td><code>false</code></td>
     </tr>
     <tr>
+      <td>debug</td>
+      <td>Debug information is send to the terminal</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
       <td>replacers</td>
       <td>Files to import as extra replacers <a href="https://github.com/justkey007/tsc-alias/discussions/73">More info</a></td>
       <td><code>[]</code></td>
