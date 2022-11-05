@@ -107,7 +107,7 @@ class ImportPathResolver {
     }
     // Assume the path is a folder; try adding index.js
     let asFilePath = join(importPath, 'index.js');
-    if (importPath.startsWith('./') && !asFilePath.startsWith('./')) {
+    if ((importPath.startsWith('./') || importPath === '.') && !asFilePath.startsWith('./')) {
       asFilePath = './' + asFilePath;
     }
     return existsSync(resolve(this.sourceDir, asFilePath))
