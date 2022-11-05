@@ -1,7 +1,7 @@
-import { HashMap } from '@esfx/collections-hashmap';
-import { HashMap as HashMap1 } from '@hashmap';
-import { HashMap as HashMap2 } from '@hashmap2';
+import { BufferCursor } from 'buffercursor.ts';
+import { BufferCursor as BufferCursor1 } from '@cursor';
+import { BufferCursor as BufferCursor2 } from '@cursor2';
 
-const map = new HashMap();
-const map1 = new HashMap1();
-const map2 = new HashMap2();
+const map = new BufferCursor(Buffer.alloc(0));
+const map1 = new BufferCursor1(Buffer.alloc(0));
+const map2 = new BufferCursor2(Buffer.alloc(0));

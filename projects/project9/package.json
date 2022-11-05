@@ -5,6 +5,6 @@
     "start": "npm run build && node ./dist/index.js"
   },
   "dependencies": {
-    "@esfx/collections-hashmap": "^1.0.0-pre.17"
+    "buffercursor.ts": "1.0.3"
   }
 }
