@@ -4,8 +4,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["./*"],
-      "@hashmap": ["node_modules/@esfx/collections-hashmap/dist/index"],
-      "@hashmap2": ["./node_modules/@esfx/collections-hashmap/dist/index"]
+      "@cursor": ["node_modules/buffercursor.ts/dist/index"],
+      "@cursor2": ["./node_modules/buffercursor.ts/dist/index"]
     }
   }
 }
