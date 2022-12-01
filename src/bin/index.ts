@@ -24,6 +24,11 @@ program
   .option('-v, --verbose', 'Additional information is send to the terminal')
   .option('--debug', 'Debug information is send to the terminal')
   .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
+  .option('--inputglob <glob>', 'Overwrite glob used for file scanning')
+  .option(
+    '--outputcheck <extensions...>',
+    'Overwrite file extensions used for path resolution'
+  )
   .parseAsync(process.argv);
 
 const options = program.opts();
@@ -35,5 +40,9 @@ replaceTscAliasPaths({
   verbose: !!options.verbose,
   debug: !!options.debug,
   resolveFullPaths: !!options.resolveFullPaths,
-  replacers: options.replacer
+  replacers: options.replacer,
+  fileExtensions: {
+    inputGlob: options.inputglob,
+    outputCheck: options.outputcheck
+  }
 });

@@ -121,6 +121,11 @@ Here are all the available options:
       <td>The output object tsc-alias will send logs to.</td>
       <td><code>new Output(options.verbose)</code></td>
     </tr>
+    <tr>
+      <td>fileExtensions</td>
+      <td>Overwrite file extensions tsc-alias will use to scan and resolve files.</td>
+      <td><code>undefined</code></td>
+    </tr>
   </tbody>
 </table>
 
@@ -143,6 +148,10 @@ Here are all the available options:
         "enabled": true,
         "file": "./otherReplacer.js"
       }
+    },
+    "fileExtensions": {
+      "inputGlob": "js,jsx,mjs",
+      "outputCheck": ["js", "json", "jsx", "mjs"]
     }
   }
 }
