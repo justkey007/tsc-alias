@@ -7,6 +7,7 @@ export interface IRawTSConfig {
     replacers?: ReplacerOptions;
     resolveFullPaths?: boolean;
     verbose?: boolean;
+    fileExtensions?: Partial<FileExtensions>;
   };
 }
 
@@ -16,6 +17,11 @@ export type PathLike = {
 
 export type StringReplacer = (importStatement: string) => string;
 
+export interface FileExtensions {
+  inputGlob: string;
+  outputCheck: string[];
+}
+
 export interface ITSConfig {
   baseUrl?: string;
   outDir?: string;
@@ -24,6 +30,7 @@ export interface ITSConfig {
   replacers?: ReplacerOptions;
   resolveFullPaths?: boolean;
   verbose?: boolean;
+  fileExtensions?: Partial<FileExtensions>;
 }
 
 export interface IProjectConfig {
@@ -37,6 +44,7 @@ export interface IProjectConfig {
   configDirInOutPath: string;
   relConfDirPathInOutPath: string;
   pathCache: PathCache;
+  inputGlob: string;
 }
 
 export interface IConfig extends IProjectConfig {
@@ -56,6 +64,7 @@ export interface ReplaceTscAliasPathsOptions {
   replacers?: string[];
   output?: IOutput;
   aliasTrie?: TrieNode<Alias>;
+  fileExtensions?: Partial<FileExtensions>;
 }
 
 export interface Alias {

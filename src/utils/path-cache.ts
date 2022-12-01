@@ -13,8 +13,20 @@ export class PathCache {
   useCache: boolean;
   existsCache: Map<string, boolean>;
   absoluteCache: Map<{ basePath: string; aliasPath: string }, string>;
+  fileExtensions: string[];
 
-  constructor(useCache: boolean) {
+  constructor(useCache: boolean, fileExtensions?: string[]) {
+    this.fileExtensions = fileExtensions || [
+      'js',
+      'json',
+      'jsx',
+      'cjs',
+      'mjs',
+      'd.ts',
+      'd.tsx',
+      'd.cts',
+      'd.mts'
+    ];
     this.useCache = useCache;
     if (useCache) {
       this.existsCache = new Map();
@@ -29,16 +41,10 @@ export class PathCache {
    */
   private exists(path: string): boolean {
     return (
-      existsSync(`${path}`) ||
-      existsSync(`${path}.js`) ||
-      existsSync(`${path}.json`) ||
-      existsSync(`${path}.jsx`) ||
-      existsSync(`${path}.cjs`) ||
-      existsSync(`${path}.mjs`) ||
-      existsSync(`${path}.d.ts`) ||
-      existsSync(`${path}.d.tsx`) ||
-      existsSync(`${path}.d.cts`) ||
-      existsSync(`${path}.d.mts`)
+      existsSync(path) ||
+      this.fileExtensions.some((extension) =>
+        existsSync(`${path}.${extension}`)
+      )
     );
   }
 
