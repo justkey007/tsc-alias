@@ -45,7 +45,7 @@ export async function replaceTscAliasPaths(
   // Finding files and changing alias paths
   const posixOutput = config.outPath.replace(/\\/g, '/').replace(/\/+$/g, '');
   const globPattern = [
-    `${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
+    `${posixOutput}/**/*.${config.inputGlob}`,
     `!${posixOutput}/**/node_modules`
   ];
   output.debug('Search pattern:', globPattern);

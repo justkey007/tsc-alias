@@ -45,8 +45,11 @@ export async function prepareConfig(
     paths,
     replacers,
     resolveFullPaths,
-    verbose
+    verbose,
+    fileExtensions: fileExtensionsConfig
   } = loadConfig(configFile, output);
+
+  const fileExtensions = { ...fileExtensionsConfig, ...options.fileExtensions };
 
   output.verbose = verbose;
 
@@ -75,7 +78,9 @@ export async function prepareConfig(
     hasExtraModule: false,
     configDirInOutPath: null,
     relConfDirPathInOutPath: null,
-    pathCache: new PathCache(!options.watch)
+    pathCache: new PathCache(!options.watch, fileExtensions?.outputCheck),
+    inputGlob:
+      fileExtensions?.inputGlob || '{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}'
   };
   output.debug('loaded project config:', projectConfig);
 
@@ -133,6 +138,8 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   if (TSCAliasConfig?.resolveFullPaths)
     config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
   if (TSCAliasConfig?.verbose) config.verbose = TSCAliasConfig.verbose;
+  if (TSCAliasConfig?.fileExtensions)
+    config.fileExtensions = TSCAliasConfig.fileExtensions;
 
   const replacerFile = config.replacers?.pathReplacer?.file;
 
