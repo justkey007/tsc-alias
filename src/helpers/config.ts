@@ -46,10 +46,13 @@ export async function prepareConfig(
     replacers,
     resolveFullPaths,
     verbose,
-    fileExtensions: fileExtensionsConfig
+    fileExtensions
   } = loadConfig(configFile, output);
 
-  const fileExtensions = { ...fileExtensionsConfig, ...options.fileExtensions };
+  if (options?.fileExtensions?.inputGlob)
+    fileExtensions.inputGlob = options.fileExtensions.inputGlob;
+  if (options?.fileExtensions?.outputCheck)
+    fileExtensions.outputCheck = options.fileExtensions.outputCheck;
 
   output.verbose = verbose;
 
