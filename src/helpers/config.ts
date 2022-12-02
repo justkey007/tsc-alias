@@ -46,13 +46,10 @@ export async function prepareConfig(
     replacers,
     resolveFullPaths,
     verbose,
-    fileExtensions
+    fileExtensions: fileExtensionsConfig
   } = loadConfig(configFile, output);
 
-  if (options?.fileExtensions?.inputGlob)
-    fileExtensions.inputGlob = options.fileExtensions.inputGlob;
-  if (options?.fileExtensions?.outputCheck)
-    fileExtensions.outputCheck = options.fileExtensions.outputCheck;
+  const fileExtensions = { ...fileExtensionsConfig, ...options.fileExtensions };
 
   output.verbose = verbose;
 
@@ -137,12 +134,18 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
       ? declarationDir
       : join(configDir, declarationDir);
   }
-  if (TSCAliasConfig?.replacers) config.replacers = TSCAliasConfig.replacers;
-  if (TSCAliasConfig?.resolveFullPaths)
+  if (TSCAliasConfig?.replacers) {
+    config.replacers = TSCAliasConfig.replacers;
+  }
+  if (TSCAliasConfig?.resolveFullPaths) {
     config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
-  if (TSCAliasConfig?.verbose) config.verbose = TSCAliasConfig.verbose;
-  if (TSCAliasConfig?.fileExtensions)
+  }
+  if (TSCAliasConfig?.verbose) {
+    config.verbose = TSCAliasConfig.verbose;
+  }
+  if (TSCAliasConfig?.fileExtensions) {
     config.fileExtensions = TSCAliasConfig.fileExtensions;
+  }
 
   const replacerFile = config.replacers?.pathReplacer?.file;
 
