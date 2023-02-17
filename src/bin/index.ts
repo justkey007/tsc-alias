@@ -10,7 +10,7 @@ program
   .option('-p, --project <file>', 'path to tsconfig.json')
   .option('-w, --watch', 'Observe file changes')
   .option(
-    '--dir, --directory <dir>',
+    '--outDir, --dir, --directory <dir>',
     'Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)'
   )
   .option(
