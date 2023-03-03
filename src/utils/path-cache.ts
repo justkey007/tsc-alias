@@ -12,7 +12,7 @@ import { join } from 'path';
 export class PathCache {
   useCache: boolean;
   existsCache: Map<string, boolean>;
-  absoluteCache: Map<{ basePath: string; aliasPath: string }, string>;
+  absoluteCache: Map<string, string>;
   fileExtensions: string[];
 
   constructor(useCache: boolean, fileExtensions?: string[]) {
@@ -35,20 +35,6 @@ export class PathCache {
   }
 
   /**
-   * exists checks if file exists.
-   * @param path the filepath to check.
-   * @returns {boolean} result of check.
-   */
-  private exists(path: string): boolean {
-    return (
-      existsSync(path) ||
-      this.fileExtensions.some((extension) =>
-        existsSync(`${path}.${extension}`)
-      )
-    );
-  }
-
-  /**
    * existsResolvedAlias checks if file exists, uses cache when possible.
    * @param {string} path the filepath to check.
    * @returns {boolean} result of check.
@@ -62,6 +48,34 @@ export class PathCache {
       this.existsCache.set(path, result);
       return result;
     }
+  }
+
+  /**
+   * getAbsoluteAliasPath finds the absolute alias path, uses cache when possible.
+   * @param {string} basePath the basepath of the alias.
+   * @param {string} aliasPath the aliaspath of the alias.
+   * @returns {string} the absolute alias path.
+   */
+  public getAbsoluteAliasPath(basePath: string, aliasPath: string): string {
+    const request = { basePath, aliasPath };
+    if (!this.useCache) return this.getAAP(request);
+    if (this.absoluteCache.has(this.getCacheKey(request))) {
+      return this.absoluteCache.get(this.getCacheKey(request));
+    } else {
+      const result = this.getAAP(request);
+      this.absoluteCache.set(this.getCacheKey(request), result);
+      return result;
+    }
+  }
+
+  private getCacheKey({
+    basePath,
+    aliasPath
+  }: {
+    basePath: string;
+    aliasPath: string;
+  }): string {
+    return `${basePath}___${aliasPath}`;
   }
 
   /**
@@ -99,20 +113,16 @@ export class PathCache {
   }
 
   /**
-   * getAbsoluteAliasPath finds the absolute alias path, uses cache when possible.
-   * @param {string} basePath the basepath of the alias.
-   * @param {string} aliasPath the aliaspath of the alias.
-   * @returns {string} the absolute alias path.
+   * exists checks if file exists.
+   * @param path the filepath to check.
+   * @returns {boolean} result of check.
    */
-  public getAbsoluteAliasPath(basePath: string, aliasPath: string): string {
-    const request = { basePath, aliasPath };
-    if (!this.useCache) return this.getAAP(request);
-    if (this.absoluteCache.has(request)) {
-      return this.absoluteCache.get(request);
-    } else {
-      const result = this.getAAP(request);
-      this.absoluteCache.set(request, result);
-      return result;
-    }
+  private exists(path: string): boolean {
+    return (
+      existsSync(path) ||
+      this.fileExtensions.some((extension) =>
+        existsSync(`${path}.${extension}`)
+      )
+    );
   }
 }
