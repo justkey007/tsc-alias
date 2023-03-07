@@ -115,7 +115,7 @@ export function findBasePathOfAlias(config: IProjectConfig) {
      * folder in the output folder (outDir).
      */
     if (aliasPath.path.match(/^(\.\/|)node_modules/g)) {
-      aliasPath.basePath = resolve(config.baseUrl, aliasPath.path);
+      aliasPath.basePath = resolve(config.baseUrl, 'node_modules');
       aliasPath.isExtra = false;
       return aliasPath;
     }

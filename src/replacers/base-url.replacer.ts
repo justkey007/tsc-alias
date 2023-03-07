@@ -36,7 +36,9 @@ export default function replaceBaseUrlImport({
     let relativePath: string = normalizePath(
       relative(
         dirname(file),
-        config.pathCache.getAbsoluteAliasPath(config.outPath, '')
+        config.pathCache
+          .getAbsoluteAliasPath(config.outPath, '')
+          .replace('---', '')
       )
     );
     if (!relativePath.startsWith('.')) {
