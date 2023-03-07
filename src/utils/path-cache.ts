@@ -97,7 +97,8 @@ export class PathCache {
 
     let aliasPathPart = aliasPathParts.shift() || '';
 
-    let pathExists: boolean;
+    let pathExists = false;
+
     while (
       !(pathExists = this.exists(join(basePath, aliasPathPart))) &&
       aliasPathParts.length
@@ -105,11 +106,11 @@ export class PathCache {
       aliasPathPart = aliasPathParts.shift();
     }
 
-    return join(
-      basePath,
-      pathExists ? aliasPathPart : '',
-      aliasPathParts.join('/')
-    );
+    if (pathExists) {
+      return join(basePath, aliasPathPart, aliasPathParts.join('/'));
+    }
+
+    return '---' + join(basePath, aliasPathParts.join('/'));
   }
 
   /**

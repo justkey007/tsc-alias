@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "paths": {
       "myproject/*": ["./*"],
-      "@commons": ["lib/commons/index.ts"],
+      "@commons": ["libo/commo/index-1.ts", "lib/commons/index.ts"],
       "custom/*": ["custom_modules/*", "custom_modules/modules/*"],
       "extra": ["../../project2/index"]
     }

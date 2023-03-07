@@ -56,7 +56,7 @@ export default function replaceImportStatement({
 
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
-      const absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(
+      let absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(
         alias.paths[i].basePath,
         alias.paths[i].path
       );
@@ -64,6 +64,14 @@ export default function replaceImportStatement({
         'default replacer - absoluteAliasPath: ',
         absoluteAliasPath
       );
+
+      if (absoluteAliasPath.startsWith('---')) {
+        if (i === alias.paths.length - 1) {
+          absoluteAliasPath = absoluteAliasPath.replace('---', '');
+        } else {
+          continue;
+        }
+      }
 
       // Check if path is valid.
       if (
