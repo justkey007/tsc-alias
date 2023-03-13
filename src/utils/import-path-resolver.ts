@@ -37,7 +37,7 @@ const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 // Separate patterns for each style of import statement,
 // wrapped in non-capturing groups,
 // so that they can be strung together in one big pattern.
-const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*${importString}\\s*\\))`;
+const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*(\\/\\*.*\\*\\/\\s*)?${importString}\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
 const moduleStyle = `(?:\\bmodule\\s+${importString})`;
