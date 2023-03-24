@@ -1,0 +1,14 @@
+{
+  "name": "project23",
+  "private": true,
+  "scripts": {
+    "build": "npm install && tsc && tsc-alias",
+    "start": "npm run build && node ./dist/index.js"
+  },
+  "dependencies": {
+    "i18n": "0.15.1"
+  },
+  "devDependencies": {
+    "@types/i18n": "0.13.6"
+  }
+}

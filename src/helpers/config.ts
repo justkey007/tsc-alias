@@ -39,7 +39,7 @@ export async function prepareConfig(
   output.assert(existsSync(configFile), `Invalid file path => ${configFile}`);
 
   const {
-    baseUrl = './',
+    baseUrl = '',
     outDir,
     declarationDir,
     paths,

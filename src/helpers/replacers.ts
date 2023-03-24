@@ -34,7 +34,7 @@ export async function importReplacers(
       enabled: true
     },
     'base-url': {
-      enabled: true
+      enabled: !!config.baseUrl
     }
   };
 
