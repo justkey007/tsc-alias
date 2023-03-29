@@ -10,7 +10,7 @@ program
   .option('-p, --project <file>', 'path to tsconfig.json')
   .option('-w, --watch', 'Observe file changes')
   .option(
-    '--outDir, --dir, --directory <dir>',
+    '--outDir, --dir <dir>',
     'Run in a folder leaving the "outDir" of the tsconfig.json (relative path to tsconfig)'
   )
   .option(
@@ -36,7 +36,7 @@ const options = program.opts();
 replaceTscAliasPaths({
   configFile: options.project,
   watch: !!options.watch,
-  outDir: options.directory,
+  outDir: options.dir,
   verbose: !!options.verbose,
   debug: !!options.debug,
   resolveFullPaths: !!options.resolveFullPaths,
