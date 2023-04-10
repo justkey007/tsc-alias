@@ -161,18 +161,39 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   output.debug('loaded config (from file):', config);
   if (ext) {
     return {
-      ...(ext.startsWith('.')
-        ? loadConfig(
-            join(configDir, ext.endsWith('.json') ? ext : `${ext}.json`),
-            output
-          )
-        : loadConfig(resolveTsConfigExtendsPath(ext, file), output)),
+      ...normalizeTsConfigExtendsOption(ext, file).reduce<ITSConfig>(
+        (pre, ext) => ({
+          ...pre,
+          ...loadConfig(ext, output)
+        }),
+        {}
+      ),
       ...config
     };
   }
 
   return config;
 };
+
+/**
+ * normalizeTsConfigExtendsOption normalizes tsconfig extends option to a directly loadable path array
+ * @param { string|string[] } ext
+ * @param { string } file
+ * @returns {string[]}
+ */
+export function normalizeTsConfigExtendsOption(
+  ext: string | string[],
+  file: string
+): string[] {
+  if (!ext) return [];
+  const configDir = dirname(file);
+  const normExts = (Array.isArray(ext) ? ext : [ext]).map((e) =>
+    e.startsWith('.')
+      ? join(configDir, e.endsWith('.json') ? e : `${e}.json`)
+      : resolveTsConfigExtendsPath(e, file)
+  );
+  return normExts;
+}
 
 /**
  * resolveTsConfigExtendsPath resolves the path to the config file that is being inherited.
