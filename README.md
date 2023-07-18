@@ -150,7 +150,7 @@ Here are all the available options:
       }
     },
     "fileExtensions": {
-      "inputGlob": "js,jsx,mjs",
+      "inputGlob": "{js,jsx,mjs}",
       "outputCheck": ["js", "json", "jsx", "mjs"]
     }
   }
