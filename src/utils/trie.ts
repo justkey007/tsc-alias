@@ -12,7 +12,7 @@
  */
 
 /** */
-import { isAbsolute, normalize, relative } from 'path';
+import { isAbsolute, normalize, relative, resolve } from 'path';
 import { findBasePathOfAlias, relativeOutPathToConfigDir } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
 
@@ -83,7 +83,10 @@ export class TrieNode<T> {
                 .replace(/\*$/, '')
                 .replace(/\.([mc])?ts(x)?$/, '.$1js$2');
               if (isAbsolute(path)) {
-                path = relative(config.configDir, path);
+                path = relative(
+                  resolve(config.configDir, config.baseUrl),
+                  path
+                );
               }
 
               if (
