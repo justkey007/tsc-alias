@@ -61,6 +61,7 @@ export interface ReplaceTscAliasPathsOptions {
   verbose?: boolean;
   debug?: boolean;
   resolveFullPaths?: boolean;
+  resolveFullExtension?: '.js' | '.mjs' | '.cjs';
   replacers?: string[];
   output?: IOutput;
   aliasTrie?: TrieNode<Alias>;
