@@ -128,11 +128,18 @@ export async function importReplacers(
 export async function replaceAlias(
   config: IConfig,
   file: string,
-  resolveFullPath?: boolean
+  resolveFullPath?: boolean,
+  resolveFullExtension?: string
 ): Promise<boolean> {
   config.output.debug('Starting to replace file:', file);
   const code = await fsp.readFile(file, 'utf8');
-  const tempCode = replaceAliasString(config, file, code, resolveFullPath);
+  const tempCode = replaceAliasString(
+    config,
+    file,
+    code,
+    resolveFullPath,
+    resolveFullExtension
+  );
 
   if (code !== tempCode) {
     config.output.debug('replaced file with changes:', file);
@@ -155,7 +162,8 @@ export function replaceAliasString(
   config: IConfig,
   file: string,
   code: string,
-  resolveFullPath?: boolean
+  resolveFullPath?: boolean,
+  resolveFullExtension?: string
 ): string {
   config.replacers.forEach((replacer) => {
     code = replaceSourceImportPaths(code, file, (orig) =>
@@ -170,7 +178,7 @@ export function replaceAliasString(
   // Fully resolve all import paths (not just aliased ones)
   // *after* the aliases are resolved
   if (resolveFullPath) {
-    code = resolveFullImportPaths(code, file);
+    code = resolveFullImportPaths(code, file, resolveFullExtension);
   }
 
   return code;

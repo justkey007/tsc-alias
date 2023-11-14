@@ -60,7 +60,12 @@ export async function replaceTscAliasPaths(
   const replaceList = await Promise.all(
     files.map((file) =>
       OpenFilesLimit(() =>
-        replaceAlias(config, file, options?.resolveFullPaths)
+        replaceAlias(
+          config,
+          file,
+          options?.resolveFullPaths,
+          options?.resolveFullExtension
+        )
       )
     )
   );
@@ -116,7 +121,8 @@ export async function prepareSingleFileReplaceTscAliasPaths(
       config,
       filePath,
       fileContents,
-      options?.resolveFullPaths
+      options?.resolveFullPaths,
+      options?.resolveFullExtension
     );
   };
 }

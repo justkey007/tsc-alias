@@ -39,13 +39,17 @@ const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 // so that they can be strung together in one big pattern.
 const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*(\\/\\*.*\\*\\/\\s*)?${importString}\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
+const globalMinimizedStyle = `(?:\\bimport${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
+const fromMinimizedStyle = `(?:\\bfrom${importString})`;
 const moduleStyle = `(?:\\bmodule\\s+${importString})`;
 
 const importRegexString = `(?:${[
   funcStyle,
   globalStyle,
+  globalMinimizedStyle,
   fromStyle,
+  fromMinimizedStyle,
   moduleStyle
 ].join(`|`)})`;
 
@@ -73,7 +77,7 @@ class ImportPathResolver {
    * and resolve them to full filenames (including the .js extension).
    * If no matching file is found for a path, leave it alone.
    */
-  resolveFullImportPaths() {
+  resolveFullImportPaths(ext = '.js') {
     this.replaceSourceImportPaths((importStatement) => {
       // Find substring that is just quotes
       const importPathMatch = importStatement.match(newStringRegex());
@@ -81,7 +85,7 @@ class ImportPathResolver {
         return importStatement;
       }
       const { path, pathWithQuotes } = importPathMatch.groups;
-      const fullPath = normalizePath(this.resolveFullPath(path));
+      const fullPath = normalizePath(this.resolveFullPath(path, ext));
       return importStatement.replace(
         pathWithQuotes,
         pathWithQuotes.replace(path, fullPath)
@@ -94,19 +98,19 @@ class ImportPathResolver {
    * Given an import path, resolve the full path (including extension).
    * If no corresponding file can be found, return the original path.
    */
-  private resolveFullPath(importPath: string) {
-    if (importPath.match(/\.js$/)) {
+  private resolveFullPath(importPath: string, ext = '.js') {
+    if (importPath.match(new RegExp(`\${ext}$`))) {
       return importPath;
     }
     // Try adding the extension (if not obviously a directory)
     if (!importPath.match(/[/\\]$/)) {
-      const asFilePath = `${importPath}.js`;
+      const asFilePath = `${importPath}${ext}`;
       if (existsSync(resolve(this.sourceDir, asFilePath))) {
         return asFilePath;
       }
     }
     // Assume the path is a folder; try adding index.js
-    let asFilePath = join(importPath, 'index.js');
+    let asFilePath = join(importPath, 'index' + ext);
     if (
       (importPath.startsWith('./') || importPath === '.') &&
       !asFilePath.startsWith('./')
@@ -128,8 +132,9 @@ class ImportPathResolver {
     return new RegExp(importRegexString, flags);
   }
 
-  static resolveFullImportPaths(code: string, path: string) {
-    return new ImportPathResolver(code, path).resolveFullImportPaths().source;
+  static resolveFullImportPaths(code: string, path: string, ext = '.js') {
+    return new ImportPathResolver(code, path).resolveFullImportPaths(ext)
+      .source;
   }
 
   static replaceSourceImportPaths(
