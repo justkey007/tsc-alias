@@ -92,13 +92,13 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.declarationDir</code></td>
     </tr>
     <tr>
-      <td>resolveFullPath</td>
+      <td>resolveFullPaths</td>
       <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
       <td><code>false</code></td>
     </tr>
     <tr>
       <td>resolveFullExtension</td>
-      <td>Allows you to specify the extension of incomplete import paths, works with <code>resolveFullPath</code></td>
+      <td>Allows you to specify the extension of incomplete import paths, works with <code>resolveFullPaths</code></td>
       <td><code>'.js' | '.mjs' | '.cjs'</code></td>
     </tr>
     <tr>
