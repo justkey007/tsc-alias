@@ -72,7 +72,7 @@ Here are all the available options:
   </thead>
   <tbody>
     <tr>
-      <td>configFile</td>
+      <td>project, p</td>
       <td>path to tsconfig.json</td>
       <td><code>'tsconfig.json'</code></td>
     </tr>
