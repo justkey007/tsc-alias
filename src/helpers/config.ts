@@ -148,9 +148,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   if (TSCAliasConfig?.verbose) {
     config.verbose = TSCAliasConfig.verbose;
   }
-  if (TSCAliasConfig?.fileExtensions) {
-    config.fileExtensions = TSCAliasConfig.fileExtensions;
-  }
+  config.fileExtensions = TSCAliasConfig?.fileExtensions ?? {};
 
   const replacerFile = config.replacers?.pathReplacer?.file;
 
