@@ -19,7 +19,7 @@ program
   )
   .addOption(
     new Option(
-      '-fe, --resolveFullExtension [ext]',
+      '-fe, --resolve-full-extension [ext]',
       'Specify the extension of incomplete import paths, works with resolveFullPaths'
     )
       .choices(['.js', '.mjs', '.cjs'])
@@ -42,7 +42,7 @@ program
 const options = program.opts();
 
 replaceTscAliasPaths({
-  resolveFullExtension: options.resolveFullPaths,
+  resolveFullExtension: options.resolveFullExtension,
   configFile: options.project,
   watch: !!options.watch,
   outDir: options.dir,
