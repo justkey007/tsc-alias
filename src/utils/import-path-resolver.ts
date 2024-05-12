@@ -99,7 +99,11 @@ class ImportPathResolver {
    * If no corresponding file can be found, return the original path.
    */
   private resolveFullPath(importPath: string, ext = '.js') {
-    if (importPath.match(new RegExp(`\${ext}$`))) {
+    // If bare import or already a full path import
+    if (
+      !importPath.startsWith('.') ||
+      importPath.match(new RegExp(`\${ext}$`))
+    ) {
       return importPath;
     }
     // Try adding the extension (if not obviously a directory)
