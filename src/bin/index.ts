@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-import { program } from 'commander';
+import { Option, program } from 'commander';
 import { replaceTscAliasPaths } from '..';
 
 const { version } = require('../../package.json');
@@ -16,6 +16,14 @@ program
   .option(
     '-f, --resolve-full-paths',
     'Attempt to fully resolve import paths if the corresponding .js file can be found'
+  )
+  .addOption(
+    new Option(
+      '-fe, --resolve-full-extension [ext]',
+      'Specify the extension of incomplete import paths, works with resolveFullPaths'
+    )
+      .choices(['.js', '.mjs', '.cjs'])
+      .default('.js')
   )
   .option(
     '-s, --silent',
@@ -34,6 +42,7 @@ program
 const options = program.opts();
 
 replaceTscAliasPaths({
+  resolveFullExtension: options.resolveFullExtension,
   configFile: options.project,
   watch: !!options.watch,
   outDir: options.dir,
