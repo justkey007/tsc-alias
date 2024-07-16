@@ -103,13 +103,21 @@ export async function prepareConfig(
   return config;
 }
 
+function replaceConfigDirPlaceholder(path: string, configDir: string) {
+  return path.replace(/\$\{configDir\}/g, configDir);
+}
+
 /**
  * loadConfig loads a config file from fs.
  * @param {string} file file path to the config file that will be loaded.
  * @param {IOutput} output the output instance to log error to.
  * @returns {ITSConfig} a ITSConfig object
  */
-export const loadConfig = (file: string, output: IOutput): ITSConfig => {
+export const loadConfig = (
+  file: string,
+  output: IOutput,
+  baseConfigDir: string | null = null
+): ITSConfig => {
   if (!existsSync(file)) {
     output.error(`File ${file} not found`, true);
   }
@@ -129,15 +137,43 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
   output.debug('configDir', configDir);
   const config: ITSConfig = {};
 
-  if (baseUrl) config.baseUrl = baseUrl;
-  if (outDir) {
-    config.outDir = isAbsolute(outDir) ? outDir : join(configDir, outDir);
+  if (baseUrl) {
+    if (baseConfigDir !== null) {
+      config.baseUrl = replaceConfigDirPlaceholder(baseUrl, baseConfigDir);
+    } else {
+      config.baseUrl = baseUrl;
+    }
   }
-  if (paths) config.paths = paths;
+  if (outDir) {
+    let replacedOutDir = outDir;
+    if (baseConfigDir !== null) {
+      replacedOutDir = replaceConfigDirPlaceholder(outDir, baseConfigDir);
+    }
+    config.outDir = isAbsolute(replacedOutDir)
+      ? replacedOutDir
+      : join(configDir, replacedOutDir);
+  }
+  if (paths) {
+    if (baseConfigDir !== null) {
+      for (const key in paths) {
+        paths[key] = paths[key].map((path) =>
+          replaceConfigDirPlaceholder(path, baseConfigDir)
+        );
+      }
+    }
+    config.paths = paths;
+  }
   if (declarationDir) {
-    config.declarationDir = isAbsolute(declarationDir)
-      ? declarationDir
-      : join(configDir, declarationDir);
+    let replacedDeclarationDir = declarationDir;
+    if (baseConfigDir !== null) {
+      replacedDeclarationDir = replaceConfigDirPlaceholder(
+        declarationDir,
+        baseConfigDir
+      );
+    }
+    config.declarationDir = isAbsolute(replacedDeclarationDir)
+      ? replacedDeclarationDir
+      : join(configDir, replacedDeclarationDir);
   }
   if (TSCAliasConfig?.replacers) {
     config.replacers = TSCAliasConfig.replacers;
@@ -162,7 +198,7 @@ export const loadConfig = (file: string, output: IOutput): ITSConfig => {
       ...normalizeTsConfigExtendsOption(ext, file).reduce<ITSConfig>(
         (pre, ext) => ({
           ...pre,
-          ...loadConfig(ext, output)
+          ...loadConfig(ext, output, baseConfigDir ?? configDir)
         }),
         {}
       ),
