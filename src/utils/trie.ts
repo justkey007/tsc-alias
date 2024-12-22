@@ -12,7 +12,7 @@
  */
 
 /** */
-import { isAbsolute, normalize, relative, resolve } from 'path';
+import { isAbsolute, normalize, relative, resolve, parse, sep } from 'path';
 import { findBasePathOfAlias, relativeOutPathToConfigDir } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
 
@@ -79,9 +79,21 @@ export class TrieNode<T> {
             prefix: alias.replace(/\*$/, ''),
             // Normalize paths.
             paths: paths[alias].map((path) => {
-              path = path
-                .replace(/\*$/, '')
-                .replace(/\.([mc])?ts(x)?$/, '.$1js$2');
+              path = path.replace(/\*$/, '');
+
+              const { dir, base } = parse(path);
+
+              const dotIndex = base.indexOf('.');
+              const name = base.slice(0, dotIndex);
+              const extension = base.slice(dotIndex);
+
+              const normalizedExtension = extension.replace(
+                /^\.([mc])?ts(x)?$/,
+                '.$1js$2'
+              );
+
+              path = dir + sep + name + normalizedExtension;
+
               if (isAbsolute(path)) {
                 path = relative(
                   resolve(config.configDir, config.baseUrl),
