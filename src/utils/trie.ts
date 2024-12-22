@@ -87,10 +87,14 @@ export class TrieNode<T> {
               const name = base.slice(0, dotIndex);
               const extension = base.slice(dotIndex);
 
-              const normalizedExtension = extension.replace(
-                /^\.([mc])?ts(x)?$/,
-                '.$1js$2'
-              );
+              let normalizedExtension = extension;
+
+              if (!isDTS(extension)) {
+                normalizedExtension = extension.replace(
+                  /\.([mc])?ts(x)?$/,
+                  '.$1js$2'
+                );
+              }
 
               path = dir + sep + name + normalizedExtension;
 
@@ -125,4 +129,8 @@ export class TrieNode<T> {
     }
     return aliasTrie;
   }
+}
+
+function isDTS(extension: string): boolean {
+  return /\.d(\..*)?\.[mc]?ts(x)?$/.test(extension);
 }
