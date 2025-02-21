@@ -34,11 +34,35 @@ function getProjectDirPathInOutDir(
   );
 
   // Find the longest path
-  return dirs.reduce(
-    (prev, curr) =>
-      prev.split('/').length > curr.split('/').length ? prev : curr,
-    dirs[0]
-  );
+  return getLongestProjectPath(outDir, projectDir, dirs);
+}
+
+/**
+ * Returns the `dir` that has the longest match with `posixOutput`.
+ *
+ * @example
+ * getLongestProjectPath(
+ *     '/project/path/lib',
+ *     'path',
+ *     ['/project/path/lib/project/path', '/project/path/lib/other/path'])
+ * // Returns '/project/path/lib/project/path' because 'project/path' matches more than 'other/path'
+ */
+function getLongestProjectPath(outDir, projectDir, dirs) {
+  const posixOutParts = outDir.replace(/\\/g, '/').split('/');
+  const lastIndex = posixOutParts.lastIndexOf(projectDir);
+  const result = dirs.reduce((longest, dir) => {
+    const parts = dir.split('/');
+    let length = 0;
+    for (let i = parts.length - 1; i >= 0; --i) {
+      if (parts[i] === posixOutParts[lastIndex - length]) {
+        ++length;
+      } else {
+        break;
+      }
+    }
+    return longest.matchLength > length ? longest : {matchLength: length, dir};
+  }, {matchLength: 0, dir: ''});
+  return result.dir;
 }
 
 /**
