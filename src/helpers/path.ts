@@ -47,7 +47,7 @@ function getProjectDirPathInOutDir(
  *     ['/project/path/lib/project/path', '/project/path/lib/other/path'])
  * // Returns '/project/path/lib/project/path' because 'project/path' matches more than 'other/path'
  */
-function getLongestProjectPath(outDir, projectDir, dirs) {
+function getLongestProjectPath(outDir: string, projectDir: string, dirs: string[]) {
   const posixOutParts = outDir.replace(/\\/g, '/').split('/');
   const lastIndex = posixOutParts.lastIndexOf(projectDir);
   const result = dirs.reduce((longest, dir) => {
