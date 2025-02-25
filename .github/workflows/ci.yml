@@ -4,23 +4,22 @@ on: [push, pull_request]
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-    - uses: pnpm/action-setup@v2.2.1
-      name: Install pnpm
-      id: pnpm-install
-      with:
-        version: 7
-    - name: Install npm7
-      run: npm i -g npm@7
-    - name: Install dependencies
-      run: pnpm install
-    - name: Test
-      run: pnpm test
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+      - name: Install npm7
+        run: npm i -g npm@7
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test
+        run: pnpm test
