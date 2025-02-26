@@ -92,3 +92,5 @@ types
 # Editor
 .idea
 .history
+
+.npmrc
