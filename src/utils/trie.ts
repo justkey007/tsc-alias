@@ -79,9 +79,27 @@ export class TrieNode<T> {
             prefix: alias.replace(/\*$/, ''),
             // Normalize paths.
             paths: paths[alias].map((path) => {
-              path = path
-                .replace(/\*$/, '')
-                .replace(/\.([mc])?ts(x)?$/, '.$1js$2');
+              path = path.replace(/\*$/, '');
+
+              const dotIndex = path.lastIndexOf('.');
+              const beforeDot = path.slice(0, dotIndex);
+              const afterDot = path.slice(dotIndex);
+
+              // Refuse to normalize extensions for paths that look like "a.b/c" or "a.b\c".
+              // Even if the current system is Linux the original author could've written a Windows path.
+              if (!afterDot.includes('/') && !afterDot.includes('\\')) {
+                const extension = afterDot;
+                let normalizedExtension = afterDot;
+                if (!isDTS(extension)) {
+                  normalizedExtension = extension.replace(
+                    /\.([mc])?ts(x)?$/,
+                    '.$1js$2'
+                  );
+                }
+
+                path = beforeDot + normalizedExtension;
+              }
+
               if (isAbsolute(path)) {
                 path = relative(
                   resolve(config.configDir, config.baseUrl),
@@ -113,4 +131,8 @@ export class TrieNode<T> {
     }
     return aliasTrie;
   }
+}
+
+function isDTS(extension: string): boolean {
+  return /\.d(\..*)?\.[mc]?ts(x)?$/.test(extension);
 }
