@@ -12,7 +12,7 @@
  */
 
 /** */
-import { isAbsolute, normalize, relative, resolve, parse, sep } from 'path';
+import { isAbsolute, normalize, relative, resolve } from 'path';
 import { findBasePathOfAlias, relativeOutPathToConfigDir } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
 
@@ -81,22 +81,24 @@ export class TrieNode<T> {
             paths: paths[alias].map((path) => {
               path = path.replace(/\*$/, '');
 
-              const { dir, base } = parse(path);
+              const dotIndex = path.lastIndexOf('.');
+              const beforeDot = path.slice(0, dotIndex);
+              const afterDot = path.slice(dotIndex);
 
-              const dotIndex = base.indexOf('.');
-              const name = base.slice(0, dotIndex);
-              const extension = base.slice(dotIndex);
+              // Refuse to normalize extensions for paths that look like "a.b/c" or "a.b\c".
+              // Even if the current system is Linux the original author could've written a Windows path.
+              if (!afterDot.includes('/') && !afterDot.includes('\\')) {
+                const extension = afterDot;
+                let normalizedExtension = afterDot;
+                if (!isDTS(extension)) {
+                  normalizedExtension = extension.replace(
+                    /\.([mc])?ts(x)?$/,
+                    '.$1js$2'
+                  );
+                }
 
-              let normalizedExtension = extension;
-
-              if (!isDTS(extension)) {
-                normalizedExtension = extension.replace(
-                  /\.([mc])?ts(x)?$/,
-                  '.$1js$2'
-                );
+                path = beforeDot + normalizedExtension;
               }
-
-              path = dir + sep + name + normalizedExtension;
 
               if (isAbsolute(path)) {
                 path = relative(
