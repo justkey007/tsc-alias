@@ -9,9 +9,8 @@
   "bin": {
     "tsc-alias": "dist/bin/index.js"
   },
-  "packageManager": "pnpm@7.33.7",
   "engines": {
-    "node": "16.20.2"
+    "node": ">=16.20.2"
   },
   "scripts": {
     "prepare": "husky install",
