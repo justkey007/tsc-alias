@@ -13,8 +13,6 @@ jobs:
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         id: pnpm-install
-      - name: Install npm7
-        run: npm i -g npm@7
       - name: Install dependencies
         run: pnpm install
       - name: Test
