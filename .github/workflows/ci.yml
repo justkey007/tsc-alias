@@ -17,6 +17,8 @@ jobs:
 
         name: Install pnpm
         id: pnpm-install
+        with:
+          version: 7
       - name: Install dependencies
         run: pnpm install
       - name: Test
