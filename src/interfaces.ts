@@ -1,14 +1,10 @@
 import { PathCache, TrieNode } from './utils';
 
-export interface IRawTSConfig {
-  extends?: string;
-  compilerOptions?: ITSConfig;
-  'tsc-alias'?: {
-    replacers?: ReplacerOptions;
-    resolveFullPaths?: boolean;
-    verbose?: boolean;
-    fileExtensions?: Partial<FileExtensions>;
-  };
+export interface ITSCAliasConfig {
+  replacers?: ReplacerOptions;
+  resolveFullPaths?: boolean;
+  verbose?: boolean;
+  fileExtensions?: Partial<FileExtensions>;
 }
 
 export type PathLike = {

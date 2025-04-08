@@ -43,6 +43,7 @@
   "dependencies": {
     "chokidar": "^3.5.3",
     "commander": "^9.0.0",
+    "get-tsconfig": "^4.10.0",
     "globby": "^11.0.4",
     "mylas": "^2.1.9",
     "normalize-path": "^3.0.0",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/node": "^16.18.126",
+    "@types/normalize-path": "^3.0.2",
     "@types/rimraf": "^3.0.2",
     "@types/shelljs": "^0.8.11",
     "husky": "^7.0.4",
