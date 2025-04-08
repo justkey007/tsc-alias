@@ -6,13 +6,14 @@
 
 /** */
 import { existsSync, lstatSync } from 'fs';
-import { Dir, Json } from 'mylas';
+import { getTsconfig, TsConfigJsonResolved } from 'get-tsconfig';
+import { Dir } from 'mylas';
 import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import {
   IConfig,
   IOutput,
   IProjectConfig,
-  IRawTSConfig,
+  ITSCAliasConfig,
   ITSConfig,
   ReplaceTscAliasPathsOptions
 } from '../interfaces';
@@ -122,16 +123,17 @@ export const loadConfig = (
     output.error(`File ${file} not found`, true);
   }
   output.debug('Loading config file:', file);
+
+  const { config: tsConfig } = getTsconfig(file);
   const {
-    extends: ext,
     compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
       baseUrl: undefined,
       outDir: undefined,
       declarationDir: undefined,
       paths: undefined
     },
-    'tsc-alias': TSCAliasConfig
-  } = Json.loadS<IRawTSConfig>(file, true);
+    'tsc-alias': tscAliasConfig
+  } = tsConfig as TsConfigJsonResolved & { 'tsc-alias': ITSCAliasConfig };
 
   const configDir = dirname(file);
   output.debug('configDir', configDir);
@@ -175,16 +177,16 @@ export const loadConfig = (
       ? replacedDeclarationDir
       : join(configDir, replacedDeclarationDir);
   }
-  if (TSCAliasConfig?.replacers) {
-    config.replacers = TSCAliasConfig.replacers;
+  if (tscAliasConfig?.replacers) {
+    config.replacers = tscAliasConfig.replacers;
   }
-  if (TSCAliasConfig?.resolveFullPaths) {
-    config.resolveFullPaths = TSCAliasConfig.resolveFullPaths;
+  if (tscAliasConfig?.resolveFullPaths) {
+    config.resolveFullPaths = tscAliasConfig.resolveFullPaths;
   }
-  if (TSCAliasConfig?.verbose) {
-    config.verbose = TSCAliasConfig.verbose;
+  if (tscAliasConfig?.verbose) {
+    config.verbose = tscAliasConfig.verbose;
   }
-  config.fileExtensions = TSCAliasConfig?.fileExtensions ?? {};
+  config.fileExtensions = tscAliasConfig?.fileExtensions ?? {};
 
   const replacerFile = config.replacers?.pathReplacer?.file;
 
@@ -193,18 +195,6 @@ export const loadConfig = (
   }
 
   output.debug('loaded config (from file):', config);
-  if (ext) {
-    return {
-      ...normalizeTsConfigExtendsOption(ext, file).reduce<ITSConfig>(
-        (pre, ext) => ({
-          ...pre,
-          ...loadConfig(ext, output, baseConfigDir ?? configDir)
-        }),
-        {}
-      ),
-      ...config
-    };
-  }
 
   return config;
 };
