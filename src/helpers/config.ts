@@ -7,7 +7,7 @@
 /** */
 import { existsSync, lstatSync } from 'fs';
 import { getTsconfig, TsConfigJsonResolved } from 'get-tsconfig';
-import { Dir } from 'mylas';
+import { Dir, Json } from 'mylas';
 import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import {
   IConfig,
@@ -125,6 +125,7 @@ export const loadConfig = (
   output.debug('Loading config file:', file);
 
   const { config: tsConfig } = getTsconfig(file);
+  const baseTsConfig = Json.loadS<TsConfigJsonResolved>(file, true);
   const {
     compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
       baseUrl: undefined,
@@ -146,8 +147,8 @@ export const loadConfig = (
       config.baseUrl = baseUrl;
     }
   }
-  if (outDir) {
-    let replacedOutDir = outDir;
+  if (outDir || baseTsConfig?.compilerOptions?.outDir) {
+    let replacedOutDir = outDir || baseTsConfig?.compilerOptions?.outDir;
     if (baseConfigDir !== null) {
       replacedOutDir = replaceConfigDirPlaceholder(outDir, baseConfigDir);
     }
