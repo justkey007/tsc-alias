@@ -6,7 +6,7 @@
 
 /** */
 import { existsSync, lstatSync } from 'fs';
-import { getTsconfig, TsConfigJsonResolved } from 'get-tsconfig';
+import { parseTsconfig, TsConfigJsonResolved } from 'get-tsconfig';
 import { Dir, Json } from 'mylas';
 import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import {
@@ -124,7 +124,7 @@ export const loadConfig = (
   }
   output.debug('Loading config file:', file);
 
-  const { config: tsConfig } = getTsconfig(file);
+  const tsConfig = parseTsconfig(file);
   const baseTsConfig = Json.loadS<TsConfigJsonResolved>(file, true);
   const {
     compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
