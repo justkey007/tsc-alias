@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { sync } from 'globby';
+import { globSync } from 'tinyglobby';
 import { join, normalize } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
@@ -130,7 +130,7 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
     `${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
     `!${posixOutput}/**/node_modules`
   ];
-  const files = sync(globPattern, {
+  const files = globSync(globPattern, {
     dot: true,
     onlyFiles: true
   });

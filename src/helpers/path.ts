@@ -6,7 +6,7 @@
 
 /** */
 import normalizePath = require('normalize-path');
-import { sync } from 'globby';
+import { globSync } from 'tinyglobby';
 import { normalize, relative, resolve } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';
 
@@ -21,7 +21,7 @@ function getProjectDirPathInOutDir(
   projectDir: string
 ): string | undefined {
   const posixOutput = outDir.replace(/\\/g, '/');
-  const dirs = sync(
+  const dirs = globSync(
     [
       `${posixOutput}/**/${projectDir}`,
       `!${posixOutput}/**/${projectDir}/**/${projectDir}`,

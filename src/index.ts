@@ -1,5 +1,5 @@
 import { watch } from 'chokidar';
-import { sync } from 'globby';
+import { globSync } from 'tinyglobby';
 import { pLimit } from 'plimit-lit';
 import { prepareConfig, replaceAlias, replaceAliasString } from './helpers';
 import {
@@ -49,7 +49,7 @@ export async function replaceTscAliasPaths(
     `!${posixOutput}/**/node_modules`
   ];
   output.debug('Search pattern:', globPattern);
-  const files = sync(globPattern, {
+  const files = globSync(globPattern, {
     dot: true,
     onlyFiles: true
   });
