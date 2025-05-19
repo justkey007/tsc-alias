@@ -18,7 +18,7 @@ First, install tsc-alias as devDependency using npm.
 npm install -g tsc-alias
 ```
 
-```
+```sh
 npm install --save-dev tsc-alias
 ```
 
@@ -44,7 +44,7 @@ or
 If you have an issue, please create one. But, before:
 
 - try to check the [FAQ.](https://github.com/justkey007/tsc-alias/discussions/110)
-- try to check if there exits alike issues.
+- try to check if there exist alike issues.
 - try to run with `--debug` and check if config is correctly loaded and all sourcefiles are found.
 
 ## API
