@@ -1,7 +1,8 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
-  "include": ["index.ts"],
   "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "lib": ["es2020"],
     "outDir": "./dist",
     "baseUrl": "./src",
     "skipLibCheck": true,
@@ -11,5 +12,6 @@
       "custom/*": ["custom_modules/*"],
       "extra": ["../../project2/index"]
     }
-  }
+  },
+  "include": ["index.ts"]
 }
