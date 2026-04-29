@@ -4,6 +4,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./src",
+    "skipLibCheck": true,
     "paths": {
       "myproject/*": ["./*"],
       "@commons": ["lib/commons/index.ts"],
