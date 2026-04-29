@@ -5,6 +5,7 @@
     "outDir": "./dist",
     "rootDir": ".",
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@core": ["packages/core/index.ts"]
     },

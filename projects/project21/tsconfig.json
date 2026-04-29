@@ -9,7 +9,8 @@
     "paths": {
       "$constants": ["constants"]
     },
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"],

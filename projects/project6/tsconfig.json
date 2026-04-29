@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": "./src",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
     }

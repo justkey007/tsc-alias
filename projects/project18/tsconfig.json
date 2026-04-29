@@ -5,6 +5,7 @@
     "outDir": "./dist",
     "rootDir": ".",
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@container": ["src/container.ts"],
       "@interfaces": ["src/interfaces.ts"],

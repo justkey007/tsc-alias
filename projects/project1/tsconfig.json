@@ -5,6 +5,7 @@
     "module": "commonjs",
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "skipLibCheck": true,
     "baseUrl": "./src",
     "resolveJsonModule": true,
     "paths": {
