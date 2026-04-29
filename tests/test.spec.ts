@@ -47,11 +47,17 @@ const notAnImport = unimport('something');
 function runTestProject(projectNumber: number) {
   const projectDir = join(projectsRoot, `project${projectNumber}`);
   rimraf.sync(join(projectDir, 'dist'));
-  const { code, stderr } = shell.exec('npm start', {
+  const { code, stdout, stderr } = shell.exec('npm start', {
     cwd: projectDir,
     silent: true
   });
-  if (code !== 0) console.error(stderr);
+
+  if (code !== 0) {
+    console.error(`Project ${projectNumber} failed`);
+    console.error('stdout:\n', stdout);
+    console.error('stderr:\n', stderr);
+  }
+
   expect(code).toEqual(0);
 }
 
