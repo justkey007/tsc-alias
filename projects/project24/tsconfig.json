@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": [],
     "module": "commonjs",
     "esModuleInterop": true,
     "moduleResolution": "node",
