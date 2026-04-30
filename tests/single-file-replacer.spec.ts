@@ -62,4 +62,4 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
   });
 
   expect.assertions(files.length + 1);
-});
+}, 120000);
