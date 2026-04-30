@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
+    "skipLibCheck": true,
     "paths": {
       "@controllers/*": ["./src/controllers/*"]
     }

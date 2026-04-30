@@ -5,6 +5,7 @@
     "module": "commonjs",
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
       "myproject/*": ["src/*"],

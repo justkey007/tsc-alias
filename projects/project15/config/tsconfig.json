@@ -3,6 +3,7 @@
     "outDir": "../dist",
     "baseUrl": "../",
     "declaration": true,
+    "skipLibCheck": true,
     "paths": {
       "@*": ["./src/*"],
       "@router": ["./src/controllers/index.ts"],

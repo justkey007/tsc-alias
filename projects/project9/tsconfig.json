@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "baseUrl": "./",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"],
       "@cursor": ["node_modules/buffercursor.ts/dist/index"],

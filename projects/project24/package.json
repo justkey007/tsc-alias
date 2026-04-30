@@ -5,7 +5,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm install && tsc && tsc-alias",
+    "build": "pnpm install && tsc && tsc-alias",
     "start": "npm run build && node dist/index.js"
   },
   "repository": {
