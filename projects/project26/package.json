@@ -1,5 +1,5 @@
 {
-  "name": "project22",
+  "name": "project26",
   "private": true,
   "scripts": {
     "build": "tsc --project tsconfig/tsconfig.json && tsc-alias --project tsconfig/tsconfig.json",
