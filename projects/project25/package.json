@@ -1,5 +1,5 @@
 {
-  "name": "project22",
+  "name": "project25",
   "private": true,
   "scripts": {
     "build": "tsc && tsc-alias",
