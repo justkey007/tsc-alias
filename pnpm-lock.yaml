@@ -146,6 +146,10 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
+  projects/project25: {}
+
+  projects/project26: {}
+
   projects/project3: {}
 
   projects/project4: {}

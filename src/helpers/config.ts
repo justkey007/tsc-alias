@@ -8,7 +8,7 @@
 import { existsSync, lstatSync } from 'fs';
 import { parseTsconfig, TsConfigJsonResolved } from 'get-tsconfig';
 import { Dir, Json } from 'mylas';
-import { basename, dirname, isAbsolute, join, resolve } from 'path';
+import { basename, dirname, isAbsolute, join, relative, resolve } from 'path';
 import {
   IConfig,
   IOutput,
@@ -127,7 +127,7 @@ export const loadConfig = (
   const tsConfig = parseTsconfig(file);
   const baseTsConfig = Json.loadS<TsConfigJsonResolved>(file, true);
   const {
-    compilerOptions: { baseUrl, outDir, declarationDir, paths } = {
+    compilerOptions: { baseUrl, outDir, declarationDir, paths, rootDir } = {
       baseUrl: undefined,
       outDir: undefined,
       declarationDir: undefined,
@@ -140,13 +140,6 @@ export const loadConfig = (
   output.debug('configDir', configDir);
   const config: ITSConfig = {};
 
-  if (baseUrl) {
-    if (baseConfigDir !== null) {
-      config.baseUrl = replaceConfigDirPlaceholder(baseUrl, baseConfigDir);
-    } else {
-      config.baseUrl = baseUrl;
-    }
-  }
   if (outDir || baseTsConfig?.compilerOptions?.outDir) {
     let replacedOutDir = outDir || baseTsConfig?.compilerOptions?.outDir;
     if (baseConfigDir !== null) {
@@ -165,6 +158,22 @@ export const loadConfig = (
       }
     }
     config.paths = paths;
+  }
+  if (baseUrl) {
+    if (baseConfigDir !== null) {
+      config.baseUrl = replaceConfigDirPlaceholder(baseUrl, baseConfigDir);
+    } else {
+      config.baseUrl = baseUrl;
+    }
+  } else if(config.paths !== undefined && Object.keys(config.paths).length !== 0){
+    output.assert(rootDir, 'compilerOptions.rootDir is required with implicit baseUrl');
+    config.baseUrl = rootDir
+    const resolvedRootDir = resolve(configDir, rootDir)
+    for (const key in config.paths) {
+      config.paths[key] = config.paths[key].map((path) =>
+        relative(resolvedRootDir, resolve(configDir, path))
+      );
+    }
   }
   if (declarationDir) {
     let replacedDeclarationDir = declarationDir;
