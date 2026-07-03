@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "../dist",
+    "rootDir": "../src",
+    "target": "es5",
+    "module": "commonjs",
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "paths": {
+      "myproject/*": ["../src/*"],
+      "custom/*": ["../src/custom_modules/*"]
+    }
+  },
+  "include": ["../src"],
+  "exclude": ["node_modules"]
+}
