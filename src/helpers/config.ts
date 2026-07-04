@@ -165,10 +165,16 @@ export const loadConfig = (
     } else {
       config.baseUrl = baseUrl;
     }
-  } else if(config.paths !== undefined && Object.keys(config.paths).length !== 0){
-    output.assert(rootDir, 'compilerOptions.rootDir is required with implicit baseUrl');
-    config.baseUrl = rootDir
-    const resolvedRootDir = resolve(configDir, rootDir)
+  } else if (
+    config.paths !== undefined &&
+    Object.keys(config.paths).length !== 0
+  ) {
+    output.assert(
+      rootDir,
+      'compilerOptions.rootDir is required with implicit baseUrl'
+    );
+    config.baseUrl = rootDir;
+    const resolvedRootDir = resolve(configDir, rootDir);
     for (const key in config.paths) {
       config.paths[key] = config.paths[key].map((path) =>
         relative(resolvedRootDir, resolve(configDir, path))
