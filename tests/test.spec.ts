@@ -38,8 +38,8 @@ import
 const notAnImport = unimport('something');
 `;
 
-function runTestProject(projectNumber: number) {
-  const projectDir = join(projectsRoot, `project${projectNumber}`);
+function runTestProject(projectName: string) {
+  const projectDir = join(projectsRoot, projectName);
   rimraf.sync(join(projectDir, 'dist'));
   const { code, stdout, stderr } = shell.exec('npm start', {
     cwd: projectDir,
@@ -47,7 +47,7 @@ function runTestProject(projectNumber: number) {
   });
 
   if (code !== 0) {
-    console.error(`Project ${projectNumber} failed`);
+    console.error(`Project ${projectName} failed`);
     console.error('stdout:\n', stdout);
     console.error('stderr:\n', stderr);
   }
@@ -91,11 +91,13 @@ it(`Import regex does not match edge cases from keywords in strings`, function (
 });
 
 // Run tests on projects. 9-11 are for testing fullpath file resolution
-[
+it.each([
   1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23,
   24, 25, 26
-].forEach((value) => {
-  it(`Project ${value} runs after alias resolution`, () => {
-    runTestProject(value);
-  });
+])('Project %d runs after alias resolution', (value) => {
+  runTestProject(`project${value}`);
+});
+
+it.each([261])('issue %d should work correctly', (value) => {
+  runTestProject(`issue${value}`);
 });
