@@ -173,7 +173,6 @@ export const loadConfig = (
       rootDir,
       'compilerOptions.rootDir is required with implicit baseUrl'
     );
-    config.baseUrl = rootDir;
     const resolvedRootDir = resolve(configDir, rootDir);
     for (const key in config.paths) {
       config.paths[key] = config.paths[key].map((path) =>
