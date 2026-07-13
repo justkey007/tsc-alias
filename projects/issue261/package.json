@@ -1,0 +1,14 @@
+{
+  "name": "tsc-alias-issue-261-repro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal reproduction for tsc-alias issue #261 (bare npm import rewritten to relative path when a local file shares the module name)",
+  "scripts": {
+    "build": "pnpm install && tsc && tsc-alias",
+    "start": "npm run build && node ./dist/redis.js",
+    "repro": "./repro.sh"
+  },
+  "dependencies": {
+    "redis": "^4.7.0"
+  }
+}
