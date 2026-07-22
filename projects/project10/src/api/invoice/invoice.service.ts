@@ -1,5 +1,5 @@
-import { getdateString } from '@/utils';
+import { getDateString } from '@/utils';
 
 export function generateInvoice() {
-  getdateString(new Date());
+  getDateString(new Date());
 }
