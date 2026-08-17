@@ -32,13 +32,13 @@ export interface ITSConfig {
 export interface IProjectConfig {
   configFile: string;
   baseUrl: string;
-  outDir: string;
-  configDir: string;
+  outDir: string | null;
+  configDir: string | null;
   outPath: string;
   confDirParentFolderName: string;
   hasExtraModule: boolean;
-  configDirInOutPath: string;
-  relConfDirPathInOutPath: string;
+  configDirInOutPath?: string | null;
+  relConfDirPathInOutPath: string | null;
   pathCache: PathCache;
   inputGlob: string;
 }

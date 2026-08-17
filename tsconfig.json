@@ -13,6 +13,7 @@
     "inlineSources": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "pretty": true,
     "newLine": "lf"

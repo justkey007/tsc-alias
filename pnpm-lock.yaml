@@ -91,6 +91,12 @@ importers:
         specifier: ^4.7.0
         version: 4.7.1
 
+  projects/issue263:
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
   projects/project1: {}
 
   projects/project10: {}
@@ -1873,6 +1879,11 @@ packages:
   typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
+    hasBin: true
+
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   universalify@0.2.0:
@@ -3990,6 +4001,8 @@ snapshots:
       is-typedarray: 1.0.0
 
   typescript@4.9.5: {}
+
+  typescript@6.0.3: {}
 
   universalify@0.2.0: {}
 

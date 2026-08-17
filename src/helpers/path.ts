@@ -132,7 +132,7 @@ export function findBasePathOfAlias(config: IProjectConfig) {
       return aliasPath;
     }
 
-    aliasPath.basePath = config.outDir;
+    aliasPath.basePath = config.outDir!;
     aliasPath.isExtra = false;
     return aliasPath;
   };

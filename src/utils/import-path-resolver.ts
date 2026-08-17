@@ -84,7 +84,10 @@ class ImportPathResolver {
       if (!importPathMatch) {
         return importStatement;
       }
-      const { path, pathWithQuotes } = importPathMatch.groups;
+      const { path, pathWithQuotes } = importPathMatch.groups as {
+        path: string;
+        pathWithQuotes: string;
+      };
       const fullPath = normalizePath(this.resolveFullPath(path, ext));
       return importStatement.replace(
         pathWithQuotes,

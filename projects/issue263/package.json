@@ -1,0 +1,17 @@
+{
+  "name": "tsc-alias-problem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm install && pnpm tsc && tsc-alias",
+    "start": "npm run build && node ./dist/types/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

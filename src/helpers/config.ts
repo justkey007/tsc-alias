@@ -51,13 +51,13 @@ export async function prepareConfig(
   } = loadConfig(configFile, output);
 
   if (options?.fileExtensions?.inputGlob) {
-    fileExtensions.inputGlob = options.fileExtensions.inputGlob;
+    fileExtensions!.inputGlob = options.fileExtensions.inputGlob;
   }
   if (options?.fileExtensions?.outputCheck) {
-    fileExtensions.outputCheck = options.fileExtensions.outputCheck;
+    fileExtensions!.outputCheck = options.fileExtensions.outputCheck;
   }
 
-  output.verbose = verbose;
+  output.verbose = verbose!;
 
   if (options.resolveFullPaths || resolveFullPaths) {
     output.debug('resolveFullPaths is active');
@@ -77,9 +77,9 @@ export async function prepareConfig(
   const projectConfig: IProjectConfig = {
     configFile: configFile,
     baseUrl: baseUrl,
-    outDir: _outDir,
+    outDir: _outDir!,
     configDir: configDir,
-    outPath: _outDir,
+    outPath: _outDir!,
     confDirParentFolderName: basename(configDir),
     hasExtraModule: false,
     configDirInOutPath: null,
@@ -100,7 +100,7 @@ export async function prepareConfig(
   output.debug('loaded full config:', config);
 
   // Import replacers.
-  await importReplacers(config, replacers, options.replacers);
+  await importReplacers(config, replacers!, options.replacers);
   return config;
 }
 
@@ -125,6 +125,12 @@ export const loadConfig = (
   output.debug('Loading config file:', file);
 
   const tsConfig = parseTsconfig(file);
+  if (!tsConfig.compilerOptions?.rootDir) {
+    tsConfig.compilerOptions = {
+      ...(tsConfig.compilerOptions ?? {}),
+      rootDir: '.'
+    };
+  }
   const baseTsConfig = Json.loadS<TsConfigJsonResolved>(file, true);
   const {
     compilerOptions: { baseUrl, outDir, declarationDir, paths, rootDir } = {
@@ -143,11 +149,11 @@ export const loadConfig = (
   if (outDir || baseTsConfig?.compilerOptions?.outDir) {
     let replacedOutDir = outDir || baseTsConfig?.compilerOptions?.outDir;
     if (baseConfigDir !== null) {
-      replacedOutDir = replaceConfigDirPlaceholder(outDir, baseConfigDir);
+      replacedOutDir = replaceConfigDirPlaceholder(outDir!, baseConfigDir);
     }
-    config.outDir = isAbsolute(replacedOutDir)
+    config.outDir = isAbsolute(replacedOutDir!)
       ? replacedOutDir
-      : join(configDir, replacedOutDir);
+      : join(configDir, replacedOutDir!);
   }
   if (paths) {
     if (baseConfigDir !== null) {
@@ -169,11 +175,7 @@ export const loadConfig = (
     config.paths !== undefined &&
     Object.keys(config.paths).length !== 0
   ) {
-    output.assert(
-      rootDir,
-      'compilerOptions.rootDir is required with implicit baseUrl'
-    );
-    const resolvedRootDir = resolve(configDir, rootDir);
+    const resolvedRootDir = resolve(configDir, rootDir!);
     for (const key in config.paths) {
       config.paths[key] = config.paths[key].map((path) =>
         relative(resolvedRootDir, resolve(configDir, path))
@@ -206,7 +208,7 @@ export const loadConfig = (
   const replacerFile = config.replacers?.pathReplacer?.file;
 
   if (replacerFile) {
-    config.replacers.pathReplacer.file = join(configDir, replacerFile);
+    config.replacers!.pathReplacer.file = join(configDir, replacerFile);
   }
 
   output.debug('loaded config (from file):', config);
@@ -223,7 +225,7 @@ export const loadConfig = (
 export function normalizeTsConfigExtendsOption(
   ext: string | string[],
   file: string
-): string[] {
+): (string | undefined)[] {
   if (!ext) return [];
   const configDir = dirname(file);
   const normExts = (Array.isArray(ext) ? ext : [ext]).map((e) =>
@@ -240,7 +242,10 @@ export function normalizeTsConfigExtendsOption(
  * @param {string} file file path to the config file that was loaded.
  * @returns {string} a file path to the config file that is being inherited.
  */
-export function resolveTsConfigExtendsPath(ext: string, file: string): string {
+export function resolveTsConfigExtendsPath(
+  ext: string,
+  file: string
+): string | undefined {
   const tsConfigDir = dirname(file);
   const node_modules: string[] = Dir.nodeModules({ cwd: tsConfigDir }); // Getting all node_modules directories.
   const targetPaths = node_modules.map((v) => join(tsConfigDir, v, ext)); // Mapping node_modules to target paths.
