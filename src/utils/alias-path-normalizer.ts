@@ -32,10 +32,11 @@ export function normalizePathExtension(path: string): string {
     return path;
   }
 
-  const normalizedExt = isDTS(afterDot)
-    ? afterDot
-    : afterDot.replace(/\.([mc])?ts(x)?$/, '.$1js$2');
+  if (isDTS(afterDot)) {
+    return `${beforeDot}${afterDot}`;
+  }
 
+  const normalizedExt = afterDot.replace(/\.([mc])?ts(x)?$/, '.$1js$2');
   return `${beforeDot}${normalizedExt}`;
 }
 
