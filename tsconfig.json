@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "es2015",
+    "target": "es2018",
     "module": "commonjs",
     "baseUrl": ".",
     "moduleResolution": "node",
@@ -26,5 +26,5 @@
     "**/projects",
     "node_modules"
   ],
-  "include": ["**/*.ts", "**/package.json"]
+  "include": ["**/*.ts", "**/package.json", "projects/issue265/replacer.cjs"]
 }
