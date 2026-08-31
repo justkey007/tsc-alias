@@ -25,18 +25,12 @@ program
       .choices(['.js', '.mjs', '.cjs'])
       .default('.js')
   )
-  .option(
-    '-s, --silent',
-    'Reduced terminal output (default: true) [deprecated]'
-  )
+  .option('-s, --silent', 'Reduced terminal output (default: true) [deprecated]')
   .option('-v, --verbose', 'Additional information is send to the terminal')
   .option('--debug', 'Debug information is send to the terminal')
   .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
   .option('--inputglob <glob>', 'Overwrite glob used for file scanning')
-  .option(
-    '--outputcheck <extensions...>',
-    'Overwrite file extensions used for path resolution'
-  )
+  .option('--outputcheck <extensions...>', 'Overwrite file extensions used for path resolution')
   .parseAsync(process.argv);
 
 const options = program.opts();

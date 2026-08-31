@@ -3,11 +3,7 @@ import { sync } from 'globby';
 import { join, normalize } from 'path';
 import * as rimraf from 'rimraf';
 import * as shell from 'shelljs';
-import {
-  ReplaceTscAliasPathsOptions,
-  prepareSingleFileReplaceTscAliasPaths,
-  replaceTscAliasPaths
-} from '../src';
+import { ReplaceTscAliasPathsOptions, prepareSingleFileReplaceTscAliasPaths, replaceTscAliasPaths } from '../src';
 
 const projectsRoot = join(__dirname, '../projects');
 
@@ -42,10 +38,7 @@ it('prepareSingleFileReplaceTscAliasPaths() works', async () => {
 
   // Finding files and changing alias paths
   const posixOutput = basePath.replace(/\\/g, '/');
-  const globPattern = [
-    `${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`,
-    `!${posixOutput}/**/node_modules`
-  ];
+  const globPattern = [`${posixOutput}/**/*.{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}`, `!${posixOutput}/**/node_modules`];
   const files = sync(globPattern, {
     dot: true,
     onlyFiles: true

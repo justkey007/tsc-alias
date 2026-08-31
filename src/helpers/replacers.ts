@@ -18,11 +18,7 @@ import normalizePath = require('normalize-path');
  * @param {ReplacerOptions} replacers the tsc-alias replacer options.
  * @param {string[]} cmdReplacers array of filepaths to replacers from command-line.
  */
-export async function importReplacers(
-  config: IConfig,
-  replacers: ReplacerOptions,
-  cmdReplacers?: string[]
-) {
+export async function importReplacers(config: IConfig, replacers: ReplacerOptions, cmdReplacers?: string[]) {
   config.output.debug('Started loading replacers');
   const dir = process.cwd();
   const node_modules: string[] = Dir.nodeModules({ cwd: dir });
@@ -45,10 +41,7 @@ export async function importReplacers(
   };
 
   // Added replacers to list from command-line filepaths.
-  config.output.debug(
-    'Added replacers to list from command-line filepaths:',
-    cmdReplacers
-  );
+  config.output.debug('Added replacers to list from command-line filepaths:', cmdReplacers);
   cmdReplacers?.forEach((v) => {
     merged[v] = {
       enabled: true,
@@ -63,9 +56,7 @@ export async function importReplacers(
       // Importing default replacers.
       if (Object.keys(defaultReplacers).includes(replacer[0])) {
         config.output.debug('Loading default replacer:', replacer);
-        const replacerModule = await import(
-          `../replacers/${replacer[0]}.replacer`
-        );
+        const replacerModule = await import(`../replacers/${replacer[0]}.replacer`);
         config.replacers.push(replacerModule.default);
       }
 
@@ -83,9 +74,7 @@ export async function importReplacers(
           config.replacers.push(replacerFunction);
           config.output.info(`Added replacer "${file}"`);
         } else {
-          config.output.error(
-            `Failed to import replacer "${file}", not in replacer format.`
-          );
+          config.output.error(`Failed to import replacer "${file}", not in replacer format.`);
         }
       };
 
@@ -133,13 +122,7 @@ export async function replaceAlias(
 ): Promise<boolean> {
   config.output.debug('Starting to replace file:', file);
   const code = await fsp.readFile(file, 'utf8');
-  const tempCode = replaceAliasString(
-    config,
-    file,
-    code,
-    resolveFullPath,
-    resolveFullExtension
-  );
+  const tempCode = replaceAliasString(config, file, code, resolveFullPath, resolveFullExtension);
 
   if (code !== tempCode) {
     config.output.debug('replaced file with changes:', file);

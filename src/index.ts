@@ -12,14 +12,7 @@ import {
 } from './interfaces';
 
 // export interfaces for api use.
-export {
-  ReplaceTscAliasPathsOptions,
-  AliasReplacer,
-  AliasReplacerArguments,
-  IConfig,
-  IProjectConfig,
-  IOutput
-};
+export { ReplaceTscAliasPathsOptions, AliasReplacer, AliasReplacerArguments, IConfig, IProjectConfig, IOutput };
 
 const defaultConfig = {
   watch: false,
@@ -36,18 +29,13 @@ const OpenFilesLimit = pLimit(500);
  * replaceTscAliasPaths replaces the aliases in the project.
  * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
  */
-export async function replaceTscAliasPaths(
-  options: ReplaceTscAliasPathsOptions = { ...defaultConfig }
-) {
+export async function replaceTscAliasPaths(options: ReplaceTscAliasPathsOptions = { ...defaultConfig }) {
   const config = await prepareConfig(options);
   const output = config.output;
 
   // Finding files and changing alias paths
   const posixOutput = config.outPath.replace(/\\/g, '/').replace(/\/+$/g, '');
-  const globPattern = [
-    `${posixOutput}/**/*.${config.inputGlob}`,
-    `!${posixOutput}/**/node_modules`
-  ];
+  const globPattern = [`${posixOutput}/**/*.${config.inputGlob}`, `!${posixOutput}/**/node_modules`];
   output.debug('Search pattern:', globPattern);
   const files = sync(globPattern, {
     dot: true,
@@ -59,14 +47,7 @@ export async function replaceTscAliasPaths(
   // Wait for all promises to resolve
   const replaceList = await Promise.all(
     files.map((file) =>
-      OpenFilesLimit(() =>
-        replaceAlias(
-          config,
-          file,
-          options?.resolveFullPaths,
-          options?.resolveFullExtension
-        )
-      )
+      OpenFilesLimit(() => replaceAlias(config, file, options?.resolveFullPaths, options?.resolveFullExtension))
     )
   );
 
@@ -79,8 +60,7 @@ export async function replaceTscAliasPaths(
     output.info('[Watching for file changes...]');
     const filesWatcher = watch(globPattern);
     const tsconfigWatcher = watch(config.configFile);
-    const onFileChange = async (file: string) =>
-      await replaceAlias(config, file, options?.resolveFullPaths);
+    const onFileChange = async (file: string) => await replaceAlias(config, file, options?.resolveFullPaths);
     filesWatcher.on('add', onFileChange);
     filesWatcher.on('change', onFileChange);
     tsconfigWatcher.on('change', () => {
@@ -101,10 +81,7 @@ export async function replaceTscAliasPaths(
   }
 }
 
-export type SingleFileReplacer = (input: {
-  fileContents: string;
-  filePath: string;
-}) => string;
+export type SingleFileReplacer = (input: { fileContents: string; filePath: string }) => string;
 
 /**
  * prepareSingleFileReplaceTscAliasPaths prepares a SingleFileReplacer.
@@ -117,12 +94,6 @@ export async function prepareSingleFileReplaceTscAliasPaths(
   const config = await prepareConfig(options);
 
   return ({ fileContents, filePath }) => {
-    return replaceAliasString(
-      config,
-      filePath,
-      fileContents,
-      options?.resolveFullPaths,
-      options?.resolveFullExtension
-    );
+    return replaceAliasString(config, filePath, fileContents, options?.resolveFullPaths, options?.resolveFullExtension);
   };
 }

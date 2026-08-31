@@ -65,10 +65,7 @@ class ImportPathResolver {
    * function (a la `String.prototype.replace(globalRegex,replacer)`)
    */
   replaceSourceImportPaths(replacer: StringReplacer) {
-    this.source = this.source.replace(
-      ImportPathResolver.newImportStatementRegex('g'),
-      replacer
-    );
+    this.source = this.source.replace(ImportPathResolver.newImportStatementRegex('g'), replacer);
     return this;
   }
 
@@ -89,10 +86,7 @@ class ImportPathResolver {
         pathWithQuotes: string;
       };
       const fullPath = normalizePath(this.resolveFullPath(path, ext));
-      return importStatement.replace(
-        pathWithQuotes,
-        pathWithQuotes.replace(path, fullPath)
-      );
+      return importStatement.replace(pathWithQuotes, pathWithQuotes.replace(path, fullPath));
     });
     return this;
   }
@@ -103,10 +97,7 @@ class ImportPathResolver {
    */
   private resolveFullPath(importPath: string, ext = '.js') {
     // If bare import or already a full path import
-    if (
-      !importPath.startsWith('.') ||
-      importPath.match(new RegExp(`\${ext}$`))
-    ) {
+    if (!importPath.startsWith('.') || importPath.match(new RegExp(`\${ext}$`))) {
       return importPath;
     }
     // Try adding the extension (if not obviously a directory)
@@ -118,21 +109,14 @@ class ImportPathResolver {
     }
     // Assume the path is a folder; try adding index.js
     let asFilePath = join(importPath, 'index' + ext);
-    if (
-      (importPath.startsWith('./') || importPath === '.') &&
-      !asFilePath.startsWith('./')
-    ) {
+    if ((importPath.startsWith('./') || importPath === '.') && !asFilePath.startsWith('./')) {
       asFilePath = './' + asFilePath;
     }
-    return existsSync(resolve(this.sourceDir, asFilePath))
-      ? asFilePath
-      : importPath;
+    return existsSync(resolve(this.sourceDir, asFilePath)) ? asFilePath : importPath;
   }
 
   static newStringRegex() {
-    return new RegExp(
-      `(?<pathWithQuotes>${anyQuote}(?<path>${pathStringContent})${anyQuote})`
-    );
+    return new RegExp(`(?<pathWithQuotes>${anyQuote}(?<path>${pathStringContent})${anyQuote})`);
   }
 
   static newImportStatementRegex(flags = '') {
@@ -140,25 +124,17 @@ class ImportPathResolver {
   }
 
   static resolveFullImportPaths(code: string, path: string, ext = '.js') {
-    return new ImportPathResolver(code, path).resolveFullImportPaths(ext)
-      .source;
+    return new ImportPathResolver(code, path).resolveFullImportPaths(ext).source;
   }
 
-  static replaceSourceImportPaths(
-    code: string,
-    path: string,
-    replacer: StringReplacer
-  ) {
-    return new ImportPathResolver(code, path).replaceSourceImportPaths(replacer)
-      .source;
+  static replaceSourceImportPaths(code: string, path: string, replacer: StringReplacer) {
+    return new ImportPathResolver(code, path).replaceSourceImportPaths(replacer).source;
   }
 }
 
 // Export aliases for the static functions
 // to make usage more friendly.
 export const resolveFullImportPaths = ImportPathResolver.resolveFullImportPaths;
-export const newImportStatementRegex =
-  ImportPathResolver.newImportStatementRegex;
-export const replaceSourceImportPaths =
-  ImportPathResolver.replaceSourceImportPaths;
+export const newImportStatementRegex = ImportPathResolver.newImportStatementRegex;
+export const replaceSourceImportPaths = ImportPathResolver.replaceSourceImportPaths;
 export const newStringRegex = ImportPathResolver.newStringRegex;
