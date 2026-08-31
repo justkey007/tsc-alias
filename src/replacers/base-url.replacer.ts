@@ -5,16 +5,21 @@
  * with the baseUrl + import statement location.
  */
 
-/** */
-import normalizePath = require('normalize-path');
 import { dirname, relative } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
+import normalizePath = require('normalize-path');
 
-export default function replaceBaseUrlImport({ orig, file, config }: AliasReplacerArguments): string {
+/**
+ * replaceBaseUrlImport replaces baseUrl-relative imports with relative file paths.
+ * @param {AliasReplacerArguments} args replacer argument object.
+ * @returns {string} modified import statement or original string.
+ */
+export default function replaceBaseUrlImport(args: AliasReplacerArguments): string {
+  const { orig, file, config } = args;
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
   config.output.debug('base-url replacer - requiredModule: ', requiredModule);
-  config.output.assert(typeof requiredModule == 'string', `Unexpected import statement pattern ${orig}`);
+  config.output.assert(typeof requiredModule === 'string', `Unexpected import statement pattern ${orig}`);
 
   // Check if import is already resolved.
   if (requiredModule!.startsWith('.')) {
@@ -22,23 +27,26 @@ export default function replaceBaseUrlImport({ orig, file, config }: AliasReplac
     return orig;
   }
 
-  // If there are files matching the target, resolve the path.
-  if (config.pathCache.existsResolvedAlias(`${config.outPath}/${requiredModule}`)) {
-    let relativePath: string = normalizePath(
-      relative(dirname(file), config.pathCache.getAbsoluteAliasPath(config.outPath, '').replace('---', ''))
-    );
-    if (!relativePath.startsWith('.')) {
-      relativePath = './' + relativePath;
-    }
-    config.output.debug('base-url replacer - relativePath: ', relativePath);
-
-    const index = orig.indexOf(requiredModule!);
-    const newImportScript = orig.substring(0, index) + relativePath + '/' + orig.substring(index);
-    config.output.debug('base-url replacer - newImportScript: ', newImportScript);
-
-    const modulePath = newImportScript.match(newStringRegex())!.groups!.path;
-    config.output.debug('base-url replacer - modulePath: ', modulePath);
-    return newImportScript.replace(modulePath, normalizePath(modulePath));
+  const targetPath = `${config.outPath}/${requiredModule}`;
+  if (!config.pathCache.existsResolvedAlias(targetPath)) {
+    return orig;
   }
-  return orig;
+
+  const rawAbsolute = config.pathCache.getAbsoluteAliasPath(config.outPath, '').replace('---', '');
+  let relativePath = normalizePath(relative(dirname(file), rawAbsolute));
+  if (!relativePath.startsWith('.')) {
+    relativePath = `./${relativePath}`;
+  }
+  config.output.debug('base-url replacer - relativePath: ', relativePath);
+
+  const index = orig.indexOf(requiredModule!);
+  const newImportScript = `${orig.substring(0, index)}${relativePath}/${orig.substring(index)}`;
+  config.output.debug('base-url replacer - newImportScript: ', newImportScript);
+
+  const moduleMatch = newImportScript.match(newStringRegex());
+  const modulePath = moduleMatch?.groups?.path;
+  if (!modulePath) return newImportScript;
+
+  config.output.debug('base-url replacer - modulePath: ', modulePath);
+  return newImportScript.replace(modulePath, normalizePath(modulePath));
 }
