@@ -21,6 +21,7 @@ export interface FileExtensions {
 export interface ITSConfig {
   baseUrl?: string;
   outDir?: string;
+  rootDir?: string;
   declarationDir?: string;
   paths?: PathLike;
   replacers?: ReplacerOptions;
@@ -33,6 +34,7 @@ export interface IProjectConfig {
   configFile: string;
   baseUrl: string;
   outDir: string | null;
+  rootDir?: string;
   configDir: string | null;
   outPath: string;
   confDirParentFolderName: string;

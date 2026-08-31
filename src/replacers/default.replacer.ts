@@ -38,7 +38,7 @@ export default function replaceImportStatement({
     `Unexpected import statement pattern ${orig}`
   );
   // Lookup which alias should be used for this given requiredModule.
-  const alias = config.aliasTrie.search(requiredModule);
+  const alias = config.aliasTrie.search(requiredModule!);
   config.output.debug('default replacer - alias: ', alias);
   // If an alias isn't found the original.
   if (!alias) return orig;
@@ -46,13 +46,14 @@ export default function replaceImportStatement({
   const isAlias = alias.shouldPrefixMatchWildly
     ? // if the alias is like alias*
       // beware that typescript expects requiredModule be more than just alias
-      requiredModule.startsWith(alias.prefix) && requiredModule !== alias.prefix
+      requiredModule!.startsWith(alias.prefix) &&
+      requiredModule !== alias.prefix
     : // need to be a bit more careful if the alias doesn't ended with a *
       // in this case the statement must be like either
       // require('alias') or require('alias/path');
       // but not require('aliaspath');
       requiredModule === alias.prefix ||
-      requiredModule.startsWith(alias.prefix + '/');
+      requiredModule!.startsWith(alias.prefix + '/');
 
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
@@ -76,11 +77,11 @@ export default function replaceImportStatement({
       // Check if path is valid.
       if (
         !config.pathCache.existsResolvedAlias(
-          alias.prefix.length == requiredModule.length
+          alias.prefix.length == requiredModule!.length
             ? normalizePath(absoluteAliasPath)
             : normalizePath(
                 `${absoluteAliasPath}/${removeAliasPrefix(
-                  requiredModule,
+                  requiredModule!,
                   alias
                 )}`
               )
@@ -102,7 +103,13 @@ export default function replaceImportStatement({
         relativeAliasPath
       );
 
-      const index = orig.indexOf(alias.prefix);
+      let index = orig.indexOf(alias.prefix);
+      if (!alias.prefix) {
+        const specifierRegex = /(?<quoted>["'](?<path>[^"'\r\n]+)["'])/;
+        const match = orig.match(specifierRegex);
+        const specifier = match && match.groups!.path;
+        index = orig.indexOf(specifier!);
+      }
       const newImportScript =
         orig.substring(0, index) +
         relativeAliasPath +
@@ -113,7 +120,7 @@ export default function replaceImportStatement({
         newImportScript
       );
 
-      const modulePath = newImportScript.match(newStringRegex()).groups.path;
+      const modulePath = newImportScript.match(newStringRegex())!.groups!.path;
       config.output.debug('default replacer - modulePath: ', modulePath);
 
       return newImportScript.replace(modulePath, normalizePath(modulePath));

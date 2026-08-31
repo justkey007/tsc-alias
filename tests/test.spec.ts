@@ -98,6 +98,6 @@ it.each([
   runTestProject(`project${value}`);
 });
 
-it.each([261, 263])('issue %d should work correctly', (value) => {
+it.each([261, 263, 265])('issue %d should work correctly', (value) => {
   runTestProject(`issue${value}`);
 });
