@@ -5,10 +5,7 @@
 
 import { IConfig, IOutput, ReplaceTscAliasPathsOptions } from '../interfaces';
 import { loadConfig } from './config-loader';
-import {
-  applyConfigOverrides,
-  resolveEffectiveOutDir
-} from './config-overrides';
+import { applyConfigOverrides, resolveEffectiveOutDir } from './config-overrides';
 import { createFinalConfig, createProjectConfig } from './project-config';
 
 export interface IBuildProjectConfigParams {
@@ -23,16 +20,7 @@ export function buildProjectConfig(params: IBuildProjectConfigParams): {
 } {
   const { configFile, output, options } = params;
   const loaded = loadConfig({ file: configFile, output });
-  const {
-    baseUrl = '',
-    outDir,
-    declarationDir,
-    paths,
-    replacers,
-    resolveFullPaths,
-    verbose,
-    fileExtensions
-  } = loaded;
+  const { baseUrl = '', outDir, declarationDir, paths, replacers, resolveFullPaths, verbose, fileExtensions } = loaded;
 
   applyConfigOverrides({
     options,

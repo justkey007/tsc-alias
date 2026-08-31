@@ -11,22 +11,12 @@ import { join } from 'path';
 
 export class PathCache {
   useCache: boolean;
-  existsCache: Map<string, boolean>;
-  absoluteCache: Map<string, string>;
+  existsCache?: Map<string, boolean>;
+  absoluteCache?: Map<string, string>;
   fileExtensions: string[];
 
   constructor(useCache: boolean, fileExtensions?: string[]) {
-    this.fileExtensions = fileExtensions || [
-      'js',
-      'json',
-      'jsx',
-      'cjs',
-      'mjs',
-      'd.ts',
-      'd.tsx',
-      'd.cts',
-      'd.mts'
-    ];
+    this.fileExtensions = fileExtensions || ['js', 'json', 'jsx', 'cjs', 'mjs', 'd.ts', 'd.tsx', 'd.cts', 'd.mts'];
     this.useCache = useCache;
     if (useCache) {
       this.existsCache = new Map();
@@ -41,11 +31,11 @@ export class PathCache {
    */
   public existsResolvedAlias(path: string): boolean {
     if (!this.useCache) return this.exists(path);
-    if (this.existsCache.has(path)) {
-      return this.existsCache.get(path);
+    if (this.existsCache!.has(path)) {
+      return this.existsCache!.get(path)!;
     } else {
       const result = this.exists(path);
-      this.existsCache.set(path, result);
+      this.existsCache!.set(path, result);
       return result;
     }
   }
@@ -59,22 +49,16 @@ export class PathCache {
   public getAbsoluteAliasPath(basePath: string, aliasPath: string): string {
     const request = { basePath, aliasPath };
     if (!this.useCache) return this.getAAP(request);
-    if (this.absoluteCache.has(this.getCacheKey(request))) {
-      return this.absoluteCache.get(this.getCacheKey(request));
+    if (this.absoluteCache!.has(this.getCacheKey(request))) {
+      return this.absoluteCache!.get(this.getCacheKey(request))!;
     } else {
       const result = this.getAAP(request);
-      this.absoluteCache.set(this.getCacheKey(request), result);
+      this.absoluteCache!.set(this.getCacheKey(request), result);
       return result;
     }
   }
 
-  private getCacheKey({
-    basePath,
-    aliasPath
-  }: {
-    basePath: string;
-    aliasPath: string;
-  }): string {
+  private getCacheKey({ basePath, aliasPath }: { basePath: string; aliasPath: string }): string {
     return `${basePath}___${aliasPath}`;
   }
 
@@ -84,26 +68,15 @@ export class PathCache {
    * @param {string} aliasPath the aliaspath of the alias.
    * @returns {string} the absolute alias path.
    */
-  private getAAP({
-    basePath,
-    aliasPath
-  }: {
-    basePath: string;
-    aliasPath: string;
-  }): string {
-    const aliasPathParts = aliasPath
-      .split('/')
-      .filter((part) => !part.match(/^\.$|^\s*$/));
+  private getAAP({ basePath, aliasPath }: { basePath: string; aliasPath: string }): string {
+    const aliasPathParts = aliasPath.split('/').filter((part) => !part.match(/^\.$|^\s*$/));
 
     let aliasPathPart = aliasPathParts.shift() || '';
 
     let pathExists = false;
 
-    while (
-      !(pathExists = this.exists(join(basePath, aliasPathPart))) &&
-      aliasPathParts.length
-    ) {
-      aliasPathPart = aliasPathParts.shift();
+    while (!(pathExists = this.exists(join(basePath, aliasPathPart))) && aliasPathParts.length) {
+      aliasPathPart = aliasPathParts.shift()!;
     }
 
     if (pathExists) {
@@ -119,11 +92,6 @@ export class PathCache {
    * @returns {boolean} result of check.
    */
   private exists(path: string): boolean {
-    return (
-      existsSync(path) ||
-      this.fileExtensions.some((extension) =>
-        existsSync(`${path}.${extension}`)
-      )
-    );
+    return existsSync(path) || this.fileExtensions.some((extension) => existsSync(`${path}.${extension}`));
   }
 }

@@ -18,13 +18,6 @@
     "pretty": true,
     "newLine": "lf"
   },
-  "exclude": [
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "**/tests",
-    "**/dist",
-    "**/projects",
-    "node_modules"
-  ],
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests", "**/dist", "**/projects", "node_modules"],
   "include": ["**/*.ts", "**/package.json", "projects/issue265/replacer.cjs"]
 }

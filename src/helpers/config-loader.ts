@@ -34,8 +34,9 @@ export function loadConfig(params: ILoadConfigParams): ITSConfig {
     ...(tsConfig.compilerOptions ?? {})
   };
   const baseTsConfig = Json.loadS<TsConfigJsonResolved>(file, true);
-  const { compilerOptions = {}, 'tsc-alias': tscAliasConfig } =
-    tsConfig as TsConfigJsonResolved & { 'tsc-alias': ITSCAliasConfig };
+  const { compilerOptions = {}, 'tsc-alias': tscAliasConfig } = tsConfig as TsConfigJsonResolved & {
+    'tsc-alias': ITSCAliasConfig;
+  };
 
   const configDir = dirname(file);
   output.debug('configDir', configDir);

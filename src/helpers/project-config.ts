@@ -37,9 +37,7 @@ export function resolveConfigFilePath(configFile?: string): string {
   return configFile;
 }
 
-export function createProjectConfig(
-  params: ICreateProjectConfigParams
-): IProjectConfig {
+export function createProjectConfig(params: ICreateProjectConfigParams): IProjectConfig {
   const { configFile, baseUrl, outDir, options, fileExtensions } = params;
   const configDir: string = normalizePath(dirname(configFile));
 
@@ -54,8 +52,7 @@ export function createProjectConfig(
     configDirInOutPath: null,
     relConfDirPathInOutPath: null,
     pathCache: new PathCache(!options.watch, fileExtensions?.outputCheck),
-    inputGlob:
-      fileExtensions?.inputGlob || '{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}'
+    inputGlob: fileExtensions?.inputGlob || '{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}'
   };
 }
 

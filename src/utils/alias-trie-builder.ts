@@ -32,9 +32,7 @@ interface IRawAliasData {
 /**
  * Normalizes alias keys and paths.
  */
-export function normalizeAliasEntry(
-  params: INormalizeAliasEntryParams
-): IRawAliasData {
+export function normalizeAliasEntry(params: INormalizeAliasEntryParams): IRawAliasData {
   const { aliasKey, targetPaths, config } = params;
   const prefix = aliasKey.replace(/\*$/, '');
   const shouldPrefixMatchWildly = aliasKey.endsWith('*');
@@ -46,9 +44,7 @@ export function normalizeAliasEntry(
 /**
  * Builds and populates an alias trie in two phases.
  */
-export function buildAliasTrie<T extends ITrieContainer<Alias>>(
-  params: IBuildAliasTrieParams<T>
-): T {
+export function buildAliasTrie<T extends ITrieContainer<Alias>>(params: IBuildAliasTrieParams<T>): T {
   const { config, paths, trie } = params;
   if (!paths) return trie;
 

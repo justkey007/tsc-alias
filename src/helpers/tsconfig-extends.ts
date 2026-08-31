@@ -28,10 +28,7 @@ function checkExtendsDirectory(targetPath: string): string | undefined {
  * @param {string} file file path to the config file that was loaded.
  * @returns {string} a file path to the config file that is being inherited.
  */
-export function resolveTsConfigExtendsPath(
-  ext: string,
-  file: string
-): string | undefined {
+export function resolveTsConfigExtendsPath(ext: string, file: string): string | undefined {
   const tsConfigDir = dirname(file);
   const node_modules: string[] = Dir.nodeModules({ cwd: tsConfigDir });
   const targetPaths = node_modules.map((v) => join(tsConfigDir, v, ext));
@@ -52,10 +49,7 @@ export function resolveTsConfigExtendsPath(
  * @param { string } file
  * @returns {string[]}
  */
-export function normalizeTsConfigExtendsOption(
-  ext: string | string[],
-  file: string
-): (string | undefined)[] {
+export function normalizeTsConfigExtendsOption(ext: string | string[], file: string): (string | undefined)[] {
   if (!ext) return [];
   const configDir = dirname(file);
   const exts = Array.isArray(ext) ? ext : [ext];

@@ -3,11 +3,7 @@
  * Helper functions for applying runtime options overrides to loaded configuration.
  */
 
-import {
-  FileExtensions,
-  IOutput,
-  ReplaceTscAliasPathsOptions
-} from '../interfaces';
+import { FileExtensions, IOutput, ReplaceTscAliasPathsOptions } from '../interfaces';
 
 export interface IApplyConfigOverridesParams {
   options: ReplaceTscAliasPathsOptions;
@@ -24,9 +20,7 @@ export interface IResolveEffectiveOutDirParams {
   output: IOutput;
 }
 
-export function applyConfigOverrides(
-  params: IApplyConfigOverridesParams
-): void {
+export function applyConfigOverrides(params: IApplyConfigOverridesParams): void {
   const { options, output, fileExtensions, resolveFullPaths, verbose } = params;
 
   if (options?.fileExtensions?.inputGlob && fileExtensions) {
@@ -43,9 +37,7 @@ export function applyConfigOverrides(
   }
 }
 
-export function resolveEffectiveOutDir(
-  params: IResolveEffectiveOutDirParams
-): string {
+export function resolveEffectiveOutDir(params: IResolveEffectiveOutDirParams): string {
   const { options, outDir, declarationDir, output } = params;
   const effectiveOutDir = options.outDir ?? outDir;
   if (declarationDir && effectiveOutDir !== declarationDir) {

@@ -16,27 +16,17 @@ function escapeSpecialChars(str: string) {
 }
 
 function getAliasPrefixRegExp(alias: Alias) {
-  return new RegExp(
-    `(?:^${escapeSpecialChars(alias.prefix)})|(?:\\.(js|ts|json)$)`,
-    'g'
-  );
+  return new RegExp(`(?:^${escapeSpecialChars(alias.prefix)})|(?:\\.(js|ts|json)$)`, 'g');
 }
 
 function removeAliasPrefix(requiredModule: string, alias: Alias) {
   return requiredModule.replace(getAliasPrefixRegExp(alias), '');
 }
 
-export default function replaceImportStatement({
-  orig,
-  file,
-  config
-}: AliasReplacerArguments) {
+export default function replaceImportStatement({ orig, file, config }: AliasReplacerArguments) {
   const requiredModule = orig.match(newStringRegex())?.groups?.path;
   config.output.debug('default replacer - requiredModule: ', requiredModule);
-  config.output.assert(
-    typeof requiredModule == 'string',
-    `Unexpected import statement pattern ${orig}`
-  );
+  config.output.assert(typeof requiredModule == 'string', `Unexpected import statement pattern ${orig}`);
   // Lookup which alias should be used for this given requiredModule.
   const alias = config.aliasTrie.search(requiredModule!);
   config.output.debug('default replacer - alias: ', alias);
@@ -46,25 +36,17 @@ export default function replaceImportStatement({
   const isAlias = alias.shouldPrefixMatchWildly
     ? // if the alias is like alias*
       // beware that typescript expects requiredModule be more than just alias
-      requiredModule!.startsWith(alias.prefix) &&
-      requiredModule !== alias.prefix
+      requiredModule!.startsWith(alias.prefix) && requiredModule !== alias.prefix
     : // need to be a bit more careful if the alias doesn't ended with a *
       // in this case the statement must be like either
       // require('alias') or require('alias/path');
       // but not require('aliaspath');
-      requiredModule === alias.prefix ||
-      requiredModule!.startsWith(alias.prefix + '/');
+      requiredModule === alias.prefix || requiredModule!.startsWith(alias.prefix + '/');
 
   if (isAlias) {
     for (let i = 0; i < alias.paths.length; i++) {
-      let absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(
-        alias.paths[i].basePath,
-        alias.paths[i].path
-      );
-      config.output.debug(
-        'default replacer - absoluteAliasPath: ',
-        absoluteAliasPath
-      );
+      let absoluteAliasPath = config.pathCache.getAbsoluteAliasPath(alias.paths[i].basePath, alias.paths[i].path);
+      config.output.debug('default replacer - absoluteAliasPath: ', absoluteAliasPath);
 
       if (absoluteAliasPath.startsWith('---')) {
         if (i === alias.paths.length - 1) {
@@ -79,29 +61,19 @@ export default function replaceImportStatement({
         !config.pathCache.existsResolvedAlias(
           alias.prefix.length == requiredModule!.length
             ? normalizePath(absoluteAliasPath)
-            : normalizePath(
-                `${absoluteAliasPath}/${removeAliasPrefix(
-                  requiredModule!,
-                  alias
-                )}`
-              )
+            : normalizePath(`${absoluteAliasPath}/${removeAliasPrefix(requiredModule!, alias)}`)
         )
       ) {
         config.output.debug('default replacer - Invalid path');
         continue;
       }
 
-      let relativeAliasPath: string = normalizePath(
-        relative(dirname(file), absoluteAliasPath)
-      );
+      let relativeAliasPath: string = normalizePath(relative(dirname(file), absoluteAliasPath));
 
       if (!relativeAliasPath.startsWith('.')) {
         relativeAliasPath = './' + relativeAliasPath;
       }
-      config.output.debug(
-        'default replacer - relativeAliasPath: ',
-        relativeAliasPath
-      );
+      config.output.debug('default replacer - relativeAliasPath: ', relativeAliasPath);
 
       let index = orig.indexOf(alias.prefix);
       if (!alias.prefix) {
@@ -111,14 +83,8 @@ export default function replaceImportStatement({
         index = orig.indexOf(specifier!);
       }
       const newImportScript =
-        orig.substring(0, index) +
-        relativeAliasPath +
-        '/' +
-        orig.substring(index + alias.prefix.length);
-      config.output.debug(
-        'default replacer - newImportScript: ',
-        newImportScript
-      );
+        orig.substring(0, index) + relativeAliasPath + '/' + orig.substring(index + alias.prefix.length);
+      config.output.debug('default replacer - newImportScript: ', newImportScript);
 
       const modulePath = newImportScript.match(newStringRegex())!.groups!.path;
       config.output.debug('default replacer - modulePath: ', modulePath);

@@ -12,9 +12,7 @@ export interface IApplyTscAliasOptionsParams {
   configDir: string;
 }
 
-export function applyTscAliasOptions(
-  params: IApplyTscAliasOptionsParams
-): void {
+export function applyTscAliasOptions(params: IApplyTscAliasOptionsParams): void {
   const { config, tscAliasConfig, configDir } = params;
   if (tscAliasConfig?.replacers) config.replacers = tscAliasConfig.replacers;
   if (tscAliasConfig?.resolveFullPaths) {

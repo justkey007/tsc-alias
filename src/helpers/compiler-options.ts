@@ -19,11 +19,8 @@ export interface IApplyCompilerOptionsParams {
   baseConfigDir: string | null;
 }
 
-export function applyCompilerOptions(
-  params: IApplyCompilerOptionsParams
-): void {
-  const { config, compilerOptions, baseTsConfig, configDir, baseConfigDir } =
-    params;
+export function applyCompilerOptions(params: IApplyCompilerOptionsParams): void {
+  const { config, compilerOptions, baseTsConfig, configDir, baseConfigDir } = params;
   const { baseUrl, outDir, declarationDir, paths, rootDir } = compilerOptions;
 
   const effectiveOutDir = outDir || baseTsConfig?.compilerOptions?.outDir;
@@ -58,10 +55,6 @@ export function applyCompilerOptions(
   }
 
   if (declarationDir) {
-    config.declarationDir = resolveDirectoryPath(
-      declarationDir,
-      configDir,
-      baseConfigDir
-    );
+    config.declarationDir = resolveDirectoryPath(declarationDir, configDir, baseConfigDir);
   }
 }

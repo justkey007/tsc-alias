@@ -16,10 +16,7 @@ import { AliasPath, IProjectConfig } from '../interfaces';
  * @param {string} projectDir  projectDir loaded from tsconfig.
  * @returns {string} the configDirInOutPath.
  */
-function getProjectDirPathInOutDir(
-  outDir: string,
-  projectDir: string
-): string | undefined {
+function getProjectDirPathInOutDir(outDir: string, projectDir: string): string | undefined {
   const posixOutput = outDir.replace(/\\/g, '/');
   const dirs = sync(
     [
@@ -34,11 +31,7 @@ function getProjectDirPathInOutDir(
   );
 
   // Find the longest path
-  return dirs.reduce(
-    (prev, curr) =>
-      prev.split('/').length > curr.split('/').length ? prev : curr,
-    dirs[0]
-  );
+  return dirs.reduce((prev, curr) => (prev.split('/').length > curr.split('/').length ? prev : curr), dirs[0]);
 }
 
 /**
@@ -46,10 +39,7 @@ function getProjectDirPathInOutDir(
  * Finds relative path access of configDir in outPath
  */
 export function relativeOutPathToConfigDir(config: IProjectConfig) {
-  config.configDirInOutPath = getProjectDirPathInOutDir(
-    config.outPath,
-    config.confDirParentFolderName
-  );
+  config.configDirInOutPath = getProjectDirPathInOutDir(config.outPath, config.confDirParentFolderName);
 
   // Find relative path access of configDir in outPath
   if (config.configDirInOutPath) {
@@ -62,9 +52,7 @@ export function relativeOutPathToConfigDir(config: IProjectConfig) {
     let i = 1;
     const splitRelPath: string[] = [];
     while (i <= nbOfStepBack) {
-      splitRelPath.unshift(
-        splitConfDirInOutPath[splitConfDirInOutPath.length - i]
-      );
+      splitRelPath.unshift(splitConfDirInOutPath[splitConfDirInOutPath.length - i]);
       i++;
     }
     config.relConfDirPathInOutPath = splitRelPath.join('/');
@@ -85,17 +73,13 @@ export function findBasePathOfAlias(config: IProjectConfig) {
       const tempBasePath = normalizePath(
         normalize(
           `${config.outDir}/` +
-            `${
-              config.hasExtraModule && config.relConfDirPathInOutPath
-                ? config.relConfDirPathInOutPath
-                : ''
-            }/${config.baseUrl}`
+            `${config.hasExtraModule && config.relConfDirPathInOutPath ? config.relConfDirPathInOutPath : ''}/${
+              config.baseUrl
+            }`
         )
       );
 
-      const absoluteBasePath = normalizePath(
-        normalize(`${tempBasePath}/${aliasPath.path}`)
-      );
+      const absoluteBasePath = normalizePath(normalize(`${tempBasePath}/${aliasPath.path}`));
 
       if (config.pathCache.existsResolvedAlias(absoluteBasePath)) {
         aliasPath.isExtra = false;
@@ -124,10 +108,7 @@ export function findBasePathOfAlias(config: IProjectConfig) {
     if (config.hasExtraModule) {
       aliasPath.isExtra = false;
       aliasPath.basePath = normalizePath(
-        normalize(
-          `${config.outDir}/` +
-            `${config.relConfDirPathInOutPath}/${config.baseUrl}`
-        )
+        normalize(`${config.outDir}/` + `${config.relConfDirPathInOutPath}/${config.baseUrl}`)
       );
       return aliasPath;
     }

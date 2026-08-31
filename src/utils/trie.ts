@@ -61,10 +61,7 @@ export class TrieNode<T> implements ITrieContainer<T> {
    * @param {PathLike} paths optional the paths to put into the trie
    * @returns {TrieNode<Alias>} a TrieNode with the paths/aliases inside
    */
-  public static buildAliasTrie(
-    config: IProjectConfig,
-    paths?: PathLike
-  ): TrieNode<Alias> {
+  public static buildAliasTrie(config: IProjectConfig, paths?: PathLike): TrieNode<Alias> {
     const trie = new TrieNode<Alias>();
     return buildAliasTrie({ config, paths, trie });
   }

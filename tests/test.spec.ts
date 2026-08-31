@@ -56,21 +56,15 @@ function runTestProject(projectName: string) {
 }
 
 it(`Import regex matches import statements`, () => {
-  const expectedImportPaths = sampleImportStatements.match(
-    /(\d+)/g
-  ) as string[];
+  const expectedImportPaths = sampleImportStatements.match(/(\d+)/g) as string[];
 
-  const importStatementMatches = sampleImportStatements.match(
-    newImportStatementRegex('g')
-  ) as RegExpMatchArray;
+  const importStatementMatches = sampleImportStatements.match(newImportStatementRegex('g')) as RegExpMatchArray;
   expect(importStatementMatches).toHaveLength(expectedImportPaths.length);
 
   const foundImportPaths: string[] = [];
   for (const importStatement of importStatementMatches) {
     // Global match is a string, not a match group, so re-match without the global flag.
-    const pathMatch = importStatement.match(
-      newStringRegex()
-    ) as RegExpMatchArray;
+    const pathMatch = importStatement.match(newStringRegex()) as RegExpMatchArray;
     expect(pathMatch).toBeTruthy();
     if (pathMatch.groups) foundImportPaths.push(pathMatch.groups.path);
   }
@@ -91,12 +85,12 @@ it(`Import regex does not match edge cases from keywords in strings`, function (
 });
 
 // Run tests on projects. 9-11 are for testing fullpath file resolution
-it.each([
-  1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23,
-  24, 25, 26
-])('Project %d runs after alias resolution', (value) => {
-  runTestProject(`project${value}`);
-});
+it.each([1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 25, 26])(
+  'Project %d runs after alias resolution',
+  (value) => {
+    runTestProject(`project${value}`);
+  }
+);
 
 it.each([261, 263, 265])('issue %d should work correctly', (value) => {
   runTestProject(`issue${value}`);
