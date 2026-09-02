@@ -20,6 +20,7 @@ export function resolveNestedBaseUrlPath(path: string, config: IProjectConfig): 
   const normalizedBase = normalize(config.baseUrl);
   if (isRootOrParentBaseUrl(normalizedBase)) return undefined;
 
+  const cleanPath = path.replace(/\*.*$/, '');
   const cleanBase = config.baseUrl.replace(/^(\.\/|\/)/, '');
   const strippedBase = cleanBase.replace(/^src\//, '');
   const candidates = [
@@ -29,7 +30,7 @@ export function resolveNestedBaseUrlPath(path: string, config: IProjectConfig): 
   ];
 
   for (const candidate of candidates) {
-    const fullCandidate = normalizePath(normalize(`${candidate}/${path}`));
+    const fullCandidate = normalizePath(normalize(`${candidate}/${cleanPath}`));
     if (config.pathCache.existsResolvedAlias(fullCandidate)) {
       return candidate;
     }

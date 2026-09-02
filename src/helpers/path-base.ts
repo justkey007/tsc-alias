@@ -5,6 +5,7 @@
 
 import { normalize, resolve } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';
+import { parseWildcardPattern } from '../utils/pattern-matcher';
 import { resolveNestedBaseUrlPath } from './path-base-nested';
 import normalizePath = require('normalize-path');
 
@@ -37,6 +38,10 @@ function resolveParentDirAliasPath(path: string, config: IProjectConfig): AliasP
 export function findBasePathOfAlias(config: IProjectConfig): (path: string) => AliasPath {
   return (path: string): AliasPath => {
     const aliasPath = { path } as AliasPath;
+    const pattern = parseWildcardPattern(path);
+    aliasPath.prefix = pattern.prefix;
+    aliasPath.suffix = pattern.suffix;
+    aliasPath.hasWildcard = pattern.hasWildcard;
 
     // If it's an alias that references a file outside the baseUrl
     if (normalize(aliasPath.path).includes('..')) {

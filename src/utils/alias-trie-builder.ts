@@ -6,6 +6,7 @@
 import { findBasePathOfAlias } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
 import { normalizeAliasPath } from './alias-path-normalizer';
+import { parseWildcardPattern } from './pattern-matcher';
 
 export interface ITrieContainer<T> {
   add(name: string, data: T): void;
@@ -25,6 +26,8 @@ export interface IBuildAliasTrieParams<T extends ITrieContainer<Alias>> {
 
 interface IRawAliasData {
   prefix: string;
+  suffix: string;
+  hasWildcard: boolean;
   shouldPrefixMatchWildly: boolean;
   paths: string[];
 }
@@ -34,11 +37,14 @@ interface IRawAliasData {
  */
 export function normalizeAliasEntry(params: INormalizeAliasEntryParams): IRawAliasData {
   const { aliasKey, targetPaths, config } = params;
-  const prefix = aliasKey.replace(/\*$/, '');
-  const shouldPrefixMatchWildly = aliasKey.endsWith('*');
+  const keyPattern = parseWildcardPattern(aliasKey);
+  const prefix = keyPattern.prefix;
+  const suffix = keyPattern.suffix;
+  const hasWildcard = keyPattern.hasWildcard;
+  const shouldPrefixMatchWildly = hasWildcard && suffix === '';
   const paths = targetPaths.map((path) => normalizeAliasPath({ path, config }));
 
-  return { prefix, shouldPrefixMatchWildly, paths };
+  return { prefix, suffix, hasWildcard, shouldPrefixMatchWildly, paths };
 }
 
 /**

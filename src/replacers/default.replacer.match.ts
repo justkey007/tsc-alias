@@ -1,9 +1,10 @@
 /**
  * @file
- * Helper functions for matching alias prefixes and stripping prefixes.
+ * Helper functions for matching alias prefixes and extracting wildcards.
  */
 
 import { Alias } from '../interfaces';
+import { matchWildcard } from '../utils';
 
 export interface IIsMatchingAliasParams {
   requiredModule: string;
@@ -19,24 +20,42 @@ function escapeSpecialChars(str: string): string {
  */
 export function isMatchingAlias(params: IIsMatchingAliasParams): boolean {
   const { requiredModule, alias } = params;
+  const hasWildcard = alias.hasWildcard ?? alias.shouldPrefixMatchWildly;
+  const suffix = alias.suffix ?? '';
 
-  if (alias.shouldPrefixMatchWildly) {
-    // If the alias is like alias*, requiredModule must be more than just alias
-    return requiredModule.startsWith(alias.prefix) && requiredModule !== alias.prefix;
-  }
+  const { matched } = matchWildcard({
+    pattern: {
+      prefix: alias.prefix,
+      suffix,
+      hasWildcard
+    },
+    text: requiredModule
+  });
 
-  // Exact match e.g. require('alias') or subpath e.g. require('alias/path')
-  if (requiredModule === alias.prefix) {
-    return true;
-  }
-  return requiredModule.startsWith(`${alias.prefix}/`);
+  return matched;
 }
 
-/**
- * Removes the alias prefix and any trailing file extensions from module path.
- */
+export function extractWildcardValue(requiredModule: string, alias: Alias): string {
+  const hasWildcard = alias.hasWildcard ?? alias.shouldPrefixMatchWildly;
+  const suffix = alias.suffix ?? '';
+
+  const { starValue } = matchWildcard({
+    pattern: {
+      prefix: alias.prefix,
+      suffix,
+      hasWildcard
+    },
+    text: requiredModule
+  });
+
+  return starValue;
+}
+
 export function removeAliasPrefix(requiredModule: string, alias: Alias): string {
+  const starVal = extractWildcardValue(requiredModule, alias);
+  if (starVal) return starVal;
+
   const escapedPrefix = escapeSpecialChars(alias.prefix);
-  const regex = new RegExp(`(?:^${escapedPrefix})|(?:\\.(js|ts|json)$)`, 'g');
+  const regex = new RegExp(`(?:^${escapedPrefix})|(?:\\.(?:[cm]?[jt]sx?|json)$)`, 'g');
   return requiredModule.replace(regex, '');
 }

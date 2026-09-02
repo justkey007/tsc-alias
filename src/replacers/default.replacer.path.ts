@@ -4,12 +4,12 @@
  */
 
 import { Alias, AliasPath, IConfig } from '../interfaces';
-import { removeAliasPrefix } from './default.replacer.match';
+import { parseWildcardPattern, substituteWildcard } from '../utils';
+import { extractWildcardValue } from './default.replacer.match';
 import normalizePath = require('normalize-path');
 
 export interface ICheckAliasPathParams {
   aliasPath: AliasPath;
-  isLastPath: boolean;
   requiredModule: string;
   alias: Alias;
   config: IConfig;
@@ -21,27 +21,37 @@ export interface IFindResolvedAliasPathParams {
   config: IConfig;
 }
 
+function resolveConcreteTarget(aliasPath: AliasPath, starValue: string): string {
+  const targetPattern = parseWildcardPattern(aliasPath.path);
+  if (targetPattern.hasWildcard) {
+    return substituteWildcard({ pattern: targetPattern, starValue });
+  }
+  if (starValue) {
+    const sep = aliasPath.path ? '/' : '';
+    return `${aliasPath.path}${sep}${starValue}`;
+  }
+  return aliasPath.path;
+}
+
 function checkSingleAliasPath(params: ICheckAliasPathParams): string | null {
-  const { aliasPath, isLastPath, requiredModule, alias, config } = params;
-  let absolutePath = config.pathCache.getAbsoluteAliasPath(aliasPath.basePath, aliasPath.path);
+  const { aliasPath, requiredModule, alias, config } = params;
+  const starValue = extractWildcardValue(requiredModule, alias);
+  const concretePath = resolveConcreteTarget(aliasPath, starValue);
+
+  const absolutePath = config.pathCache.getAbsoluteAliasPath(aliasPath.basePath, concretePath);
   config.output.debug('default replacer - absoluteAliasPath: ', absolutePath);
 
   if (absolutePath.startsWith('---')) {
-    if (!isLastPath) return null;
-    absolutePath = absolutePath.replace('---', '');
+    config.output.debug('default replacer - Invalid path');
+    return null;
   }
 
-  let resolvedPath = normalizePath(absolutePath);
-  if (alias.prefix.length !== requiredModule.length) {
-    const subPath = removeAliasPrefix(requiredModule, alias);
-    resolvedPath = normalizePath(`${absolutePath}/${subPath}`);
-  }
-
+  const resolvedPath = normalizePath(absolutePath);
   if (!config.pathCache.existsResolvedAlias(resolvedPath)) {
     config.output.debug('default replacer - Invalid path');
     return null;
   }
-  return absolutePath;
+  return resolvedPath;
 }
 
 /**
@@ -49,11 +59,9 @@ function checkSingleAliasPath(params: ICheckAliasPathParams): string | null {
  */
 export function findResolvedAliasPath(params: IFindResolvedAliasPathParams): string | null {
   const { alias, requiredModule, config } = params;
-  for (let i = 0; i < alias.paths.length; i++) {
-    const isLastPath = i === alias.paths.length - 1;
+  for (const aliasPath of alias.paths) {
     const resolved = checkSingleAliasPath({
-      aliasPath: alias.paths[i],
-      isLastPath,
+      aliasPath,
       requiredModule,
       alias,
       config

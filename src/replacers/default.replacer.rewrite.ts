@@ -12,6 +12,7 @@ export interface IRewriteImportStatementParams {
   orig: string;
   alias: Alias;
   relativeAliasPath: string;
+  requiredModule?: string;
 }
 
 /**
@@ -29,7 +30,19 @@ export function formatRelativeAliasPath(file: string, absoluteAliasPath: string)
  * Rewrites the original import statement string with the new relative path.
  */
 export function rewriteImportStatement(params: IRewriteImportStatementParams): string {
-  const { orig, alias, relativeAliasPath } = params;
+  const { orig, alias, relativeAliasPath, requiredModule } = params;
+
+  if (requiredModule) {
+    const specifierRegex = /(["'])(?<path>[^"'\r\n]+)\1/;
+    const match = orig.match(specifierRegex);
+    if (match && match.groups?.path === requiredModule) {
+      const quote = match[1];
+      const quotedOld = `${quote}${requiredModule}${quote}`;
+      const quotedNew = `${quote}${normalizePath(relativeAliasPath)}${quote}`;
+      return orig.replace(quotedOld, quotedNew);
+    }
+  }
+
   let index = orig.indexOf(alias.prefix);
 
   if (!alias.prefix) {
