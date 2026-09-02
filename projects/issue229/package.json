@@ -1,0 +1,20 @@
+{
+  "name": "issue229",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc && tsc-alias -p tsconfig.json",
+    "start": "pnpm build && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^22.1.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "mqtt": "^5.9.1"
+  }
+}
