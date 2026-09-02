@@ -98,6 +98,12 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  projects/issue251:
+    devDependencies:
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   projects/issue261:
     dependencies:
       redis:
