@@ -7,6 +7,8 @@ const projectsRoot = join(__dirname, '../projects');
 function runTestProject(projectName: string) {
   const projectDir = join(projectsRoot, projectName);
   rimraf.sync(join(projectDir, 'dist'));
+  rimraf.sync(join(projectDir, 'app/dist'));
+  rimraf.sync(join(projectDir, 'core/dist'));
   const { code, stdout, stderr } = shell.exec('npm start', {
     cwd: projectDir,
     silent: true
