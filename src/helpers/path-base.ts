@@ -5,6 +5,7 @@
 
 import { normalize, resolve } from 'path';
 import { AliasPath, IProjectConfig } from '../interfaces';
+import { resolveNestedBaseUrlPath } from './path-base-nested';
 import normalizePath = require('normalize-path');
 
 function resolveParentDirAliasPath(path: string, config: IProjectConfig): AliasPath {
@@ -57,7 +58,8 @@ export function findBasePathOfAlias(config: IProjectConfig): (path: string) => A
       return aliasPath;
     }
 
-    aliasPath.basePath = config.outDir!;
+    const nestedBase = resolveNestedBaseUrlPath(aliasPath.path, config);
+    aliasPath.basePath = nestedBase ?? config.outDir!;
     aliasPath.isExtra = false;
     return aliasPath;
   };
