@@ -6,14 +6,8 @@
 import { sync } from 'globby';
 import { relative } from 'path';
 import { IProjectConfig } from '../interfaces';
+import { selectBestProjectPath } from './path-matcher';
 import normalizePath = require('normalize-path');
-
-function selectLongestPath(prev: string, curr: string): string {
-  if (prev.split('/').length > curr.split('/').length) {
-    return prev;
-  }
-  return curr;
-}
 
 /**
  * getProjectDirPathInOutDir finds the configDirInOutPath.
@@ -35,7 +29,7 @@ export function getProjectDirPathInOutDir(outDir: string, projectDir: string): s
     }
   );
 
-  return dirs.reduce(selectLongestPath, dirs[0]);
+  return selectBestProjectPath(outDir, projectDir, dirs);
 }
 
 /**
