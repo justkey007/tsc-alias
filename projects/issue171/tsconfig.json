@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "references": [{ "path": "./core" }, { "path": "./app" }]
+}

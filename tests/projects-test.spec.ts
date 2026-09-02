@@ -7,6 +7,8 @@ const projectsRoot = join(__dirname, '../projects');
 function runTestProject(projectName: string) {
   const projectDir = join(projectsRoot, projectName);
   rimraf.sync(join(projectDir, 'dist'));
+  rimraf.sync(join(projectDir, 'app/dist'));
+  rimraf.sync(join(projectDir, 'core/dist'));
   const { code, stdout, stderr } = shell.exec('npm start', {
     cwd: projectDir,
     silent: true
@@ -29,6 +31,6 @@ it.each([1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22,
   }
 );
 
-it.each([251, 261, 263, 265])('issue %d should work correctly', (value) => {
+it.each([171, 251, 261, 263, 265])('issue %d should work correctly', (value) => {
   runTestProject(`issue${value}`);
 });

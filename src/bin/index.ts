@@ -31,6 +31,10 @@ program
   .option('-r, --replacer <replacers...>', 'path to optional extra replacer')
   .option('--inputglob <glob>', 'Overwrite glob used for file scanning')
   .option('--outputcheck <extensions...>', 'Overwrite file extensions used for path resolution')
+  .option(
+    '--follow-references',
+    'Follow TypeScript project references and resolve alias paths in all referenced projects'
+  )
   .parseAsync(process.argv);
 
 const options = program.opts();
@@ -47,5 +51,6 @@ replaceTscAliasPaths({
   fileExtensions: {
     inputGlob: options.inputglob,
     outputCheck: options.outputcheck
-  }
+  },
+  followReferences: !!options.followReferences
 });

@@ -4,17 +4,13 @@
  */
 
 import { pLimit } from 'plimit-lit';
-import { buildScanPattern, scanProjectFiles } from './alias-scanner';
 import { prepareConfig, replaceAlias } from './helpers';
+import { buildScanPattern, scanProjectFiles } from './helpers/alias-scanner';
 import { ReplaceTscAliasPathsOptions } from './interfaces';
 import { setupFileWatcher } from './watcher';
 
 const OpenFilesLimit = pLimit(500);
 
-/**
- * replaceTscAliasPaths replaces the aliases in the project.
- * @param {ReplaceTscAliasPathsOptions} options tsc-alias options.
- */
 export async function replaceTscAliasPaths(options: ReplaceTscAliasPathsOptions = {}): Promise<void> {
   const config = await prepareConfig(options);
   const output = config.output;
@@ -35,12 +31,7 @@ export async function replaceTscAliasPaths(options: ReplaceTscAliasPathsOptions 
   output.info(`${replaceList.filter(Boolean).length} files were affected!`);
 
   if (options.watch) {
-    setupFileWatcher({
-      config,
-      options,
-      globPattern,
-      onRestart: replaceTscAliasPaths
-    });
+    setupFileWatcher({ config, options, globPattern, onRestart: replaceTscAliasPaths });
   }
 
   if (options.declarationDir && options.declarationDir !== config.outPath) {
@@ -50,6 +41,16 @@ export async function replaceTscAliasPaths(options: ReplaceTscAliasPathsOptions 
       declarationDir: undefined,
       output: config.output,
       aliasTrie: undefined
+    });
+  }
+
+  if (options.followReferences) {
+    const { runOnReferences } = await import('./helpers/references-resolver');
+    await runOnReferences({
+      configFile: config.configFile,
+      options,
+      output: config.output,
+      visited: new Set([config.configFile])
     });
   }
 }

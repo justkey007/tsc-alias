@@ -1,0 +1,12 @@
+{
+  "name": "project-references-feature",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm install && tsc --build --force && tsc-alias --follow-references",
+    "start": "npm run build && node ./run.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
