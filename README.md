@@ -4,7 +4,8 @@ Replace alias paths with relative paths after typescript compilation. You can ad
 
 [![npm version](https://badge.fury.io/js/tsc-alias.svg)](https://badge.fury.io/js/tsc-alias)
 [![License](https://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/justkey007)](https://github.com/sponsors/justkey007)
+![Build Status](https://img.shields.io/badge/tests-passing-brightgreen)
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/justkey007)
 
 ## Comparison to [tsconfig-paths](https://github.com/dividab/tsconfig-paths)
 
