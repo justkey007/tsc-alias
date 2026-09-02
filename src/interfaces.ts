@@ -62,6 +62,11 @@ export interface ReplaceTscAliasPathsOptions {
   output?: IOutput;
   aliasTrie?: TrieNode<Alias>;
   fileExtensions?: Partial<FileExtensions>;
+  /**
+   * If true, tsc-alias will follow TypeScript project references defined in
+   * tsconfig.json and run alias replacement on all referenced projects.
+   */
+  followReferences?: boolean;
 }
 
 export interface Alias {

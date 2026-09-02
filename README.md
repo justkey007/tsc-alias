@@ -91,6 +91,11 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
     <tr>
+      <td>follow-references</td>
+      <td>If true, tsc-alias will follow TypeScript project references defined in tsconfig.json and run alias replacement on all referenced projects.</td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
       <td>resolve-full-paths</td>
       <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
       <td><code>false</code></td>

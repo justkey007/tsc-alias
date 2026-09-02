@@ -1,0 +1,9 @@
+{
+  "name": "project-references",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build && tsc-alias --follow-references",
+    "start": "npm run build && node ./run.js"
+  }
+}
