@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "target": "es2020",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@controllers/*": ["./src/controllers/*.controller"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

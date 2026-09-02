@@ -3,4 +3,5 @@ export * from './alias-trie-builder';
 export * from './import-path-resolver';
 export * from './output';
 export * from './path-cache';
+export * from './pattern-matcher';
 export * from './trie';

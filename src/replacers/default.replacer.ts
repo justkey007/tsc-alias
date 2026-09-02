@@ -43,7 +43,12 @@ export default function replaceImportStatement(args: AliasReplacerArguments): st
   const relativeAliasPath = formatRelativeAliasPath(file, absoluteAliasPath);
   config.output.debug('default replacer - relativeAliasPath: ', relativeAliasPath);
 
-  const result = rewriteImportStatement({ orig, alias, relativeAliasPath });
+  const result = rewriteImportStatement({
+    orig,
+    alias,
+    relativeAliasPath,
+    requiredModule: requiredModule!
+  });
   config.output.debug('default replacer - newImportScript: ', result);
   return result;
 }

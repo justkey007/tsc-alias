@@ -73,12 +73,17 @@ export interface Alias {
   shouldPrefixMatchWildly: boolean;
   prefix: string;
   paths: AliasPath[];
+  suffix?: string;
+  hasWildcard?: boolean;
 }
 
 export interface AliasPath {
   basePath: string;
   path: string;
   isExtra: boolean;
+  prefix?: string;
+  suffix?: string;
+  hasWildcard?: boolean;
 }
 
 export interface AliasReplacerArguments {
