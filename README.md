@@ -91,17 +91,12 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
     <tr>
-      <td>declarationDir</td>
-      <td>Works the same as outDir but for declarationDir</td>
-      <td><code>tsconfig.compilerOptions.declarationDir</code></td>
-    </tr>
-    <tr>
-      <td>resolveFullPaths</td>
+      <td>resolve-full-paths</td>
       <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
       <td><code>false</code></td>
     </tr>
     <tr>
-      <td>resolveFullExtension</td>
+      <td>resolve-full-extension</td>
       <td>Allows you to specify the extension of incomplete import paths, works with <code>resolveFullPaths</code></td>
       <td><code>'.js' | '.mjs' | '.cjs'</code></td>
     </tr>
@@ -131,7 +126,7 @@ Here are all the available options:
       <td><code>new Output(options.verbose)</code></td>
     </tr>
     <tr>
-      <td>fileExtensions</td>
+      <td>file-extensions</td>
       <td>Overwrite file extensions tsc-alias will use to scan and resolve files.</td>
       <td><code>undefined</code></td>
     </tr>

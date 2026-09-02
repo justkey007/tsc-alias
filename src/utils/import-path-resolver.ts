@@ -37,7 +37,7 @@ const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
 // Separate patterns for each style of import statement,
 // wrapped in non-capturing groups,
 // so that they can be strung together in one big pattern.
-const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*(\\/\\*.*\\*\\/\\s*)?${importString}\\s*\\))`;
+const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*(\\/\\*.*\\*\\/\\s*)?${importString}(?:\\s*,[\\s\\S]*?)?\\s*\\))`;
 const globalStyle = `(?:\\bimport\\s+${importString})`;
 const globalMinimizedStyle = `(?:\\bimport${importString})`;
 const fromStyle = `(?:\\bfrom\\s+${importString})`;
@@ -96,19 +96,22 @@ class ImportPathResolver {
    * If no corresponding file can be found, return the original path.
    */
   private resolveFullPath(importPath: string, ext = '.js') {
+    // Si l'importation cible explicitement un fichier JSON, on doit conserver l'extension .json
+    const targetExt = importPath.endsWith('.json') ? '.json' : ext;
+
     // If bare import or already a full path import
-    if (!importPath.startsWith('.') || importPath.match(new RegExp(`\${ext}$`))) {
+    if (!importPath.startsWith('.') || importPath.match(new RegExp(`\\${targetExt}$`))) {
       return importPath;
     }
     // Try adding the extension (if not obviously a directory)
     if (!importPath.match(/[/\\]$/)) {
-      const asFilePath = `${importPath}${ext}`;
+      const asFilePath = `${importPath}${targetExt}`;
       if (existsSync(resolve(this.sourceDir, asFilePath))) {
         return asFilePath;
       }
     }
-    // Assume the path is a folder; try adding index.js
-    let asFilePath = join(importPath, 'index' + ext);
+    // Assume the path is a folder; try adding index.js / index.json
+    let asFilePath = join(importPath, 'index' + targetExt);
     if ((importPath.startsWith('./') || importPath === '.') && !asFilePath.startsWith('./')) {
       asFilePath = './' + asFilePath;
     }

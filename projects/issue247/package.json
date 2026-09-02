@@ -1,0 +1,17 @@
+{
+  "name": "tsc-alias-issue-247-repro",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "pnpm install && tsc && tsc-alias --resolve-full-paths",
+    "start": "npm run build && node ./dist/index.js"
+  },
+  "dependencies": {
+    "debug": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.13",
+    "typescript": "^7.0.2"
+  }
+}
