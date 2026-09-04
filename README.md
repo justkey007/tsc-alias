@@ -40,6 +40,14 @@ or
 }
 ```
 
+### CLI
+
+To display all available options:
+
+```sh
+tsc-alias --help
+```
+
 ## Issues
 
 If you have an issue, please create one. But, before:
@@ -91,17 +99,22 @@ Here are all the available options:
       <td><code>tsconfig.compilerOptions.outDir</code></td>
     </tr>
     <tr>
-      <td>follow-references</td>
+      <td>declarationDir</td>
+      <td>Works the same as outDir but for declarationDir</td>
+      <td><code>tsconfig.compilerOptions.declarationDir</code></td>
+    </tr>
+    <tr>
+      <td>followReferences</td>
       <td>If true, tsc-alias will follow TypeScript project references defined in tsconfig.json and run alias replacement on all referenced projects.</td>
       <td><code>false</code></td>
     </tr>
     <tr>
-      <td>resolve-full-paths</td>
+      <td>resolveFullPaths</td>
       <td>Attempt to replace incomplete import paths (those not ending in <code>.js</code>) with fully resolved paths (for ECMAScript Modules compatibility)</td>
       <td><code>false</code></td>
     </tr>
     <tr>
-      <td>resolve-full-extension</td>
+      <td>resolveFullExtension</td>
       <td>Allows you to specify the extension of incomplete import paths, works with <code>resolveFullPaths</code></td>
       <td><code>'.js' | '.mjs' | '.cjs'</code></td>
     </tr>
@@ -131,7 +144,7 @@ Here are all the available options:
       <td><code>new Output(options.verbose)</code></td>
     </tr>
     <tr>
-      <td>file-extensions</td>
+      <td>fileExtensions</td>
       <td>Overwrite file extensions tsc-alias will use to scan and resolve files.</td>
       <td><code>undefined</code></td>
     </tr>
