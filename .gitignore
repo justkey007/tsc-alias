@@ -65,6 +65,7 @@ dist
 dist-base
 dist-tsc-alias
 temp
+*.tsbuildinfo
 # Optional eslint cache
 .eslintcache
 

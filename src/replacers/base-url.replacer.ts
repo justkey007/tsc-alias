@@ -8,6 +8,7 @@
 import { dirname, relative } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
+import { isImportablePath } from '../utils/path-validator';
 import normalizePath = require('normalize-path');
 
 /**
@@ -28,7 +29,7 @@ export default function replaceBaseUrlImport(args: AliasReplacerArguments): stri
   }
 
   const targetPath = `${config.outPath}/${requiredModule}`;
-  if (!config.pathCache.existsResolvedAlias(targetPath)) {
+  if (!isImportablePath(targetPath, config.pathCache.fileExtensions)) {
     return orig;
   }
 
