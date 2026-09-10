@@ -5,7 +5,7 @@
  * with the baseUrl + import statement location.
  */
 
-import { dirname, relative } from 'path';
+import { dirname, join, relative } from 'path';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
 import { isImportablePath } from '../utils/path-validator';
@@ -28,13 +28,12 @@ export default function replaceBaseUrlImport(args: AliasReplacerArguments): stri
     return orig;
   }
 
-  const targetPath = `${config.outPath}/${requiredModule}`;
+  const targetPath = join(config.outPath, requiredModule!);
   if (!isImportablePath(targetPath, config.pathCache.fileExtensions)) {
     return orig;
   }
 
-  const rawAbsolute = config.pathCache.getAbsoluteAliasPath(config.outPath, '').replace('---', '');
-  let relativePath = normalizePath(relative(dirname(file), rawAbsolute));
+  let relativePath = normalizePath(relative(dirname(file), config.outPath));
   if (!relativePath.startsWith('.')) {
     relativePath = `./${relativePath}`;
   }

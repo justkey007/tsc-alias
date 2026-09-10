@@ -151,6 +151,12 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
 
+  projects/issue276:
+    devDependencies:
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+
   projects/project1: {}
 
   projects/project10: {}
