@@ -8,6 +8,7 @@
 /** */
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { getImportablePath } from './path-validator';
 
 export class PathCache {
   useCache: boolean;
@@ -80,7 +81,9 @@ export class PathCache {
     }
 
     if (pathExists) {
-      return join(basePath, aliasPathPart, aliasPathParts.join('/'));
+      const absolutePath = join(basePath, aliasPathPart, aliasPathParts.join('/'));
+      const importablePath = getImportablePath(absolutePath, this.fileExtensions);
+      if (importablePath) return importablePath;
     }
 
     return '---' + join(basePath, aliasPathParts.join('/'));

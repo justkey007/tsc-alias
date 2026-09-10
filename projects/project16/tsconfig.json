@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "incremental": true,
     "target": "ES2017",
     "module": "commonjs",
     "declaration": true,
