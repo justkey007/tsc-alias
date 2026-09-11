@@ -47,6 +47,7 @@ export function applyCompilerOptions(params: IApplyCompilerOptionsParams): void 
       config.baseUrl = baseUrl;
     }
   } else if (config.paths && Object.keys(config.paths).length !== 0) {
+    config.baseUrl = rootDir;
     resolvePathsWithoutBaseUrl({
       paths: config.paths,
       configDir,

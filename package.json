@@ -21,6 +21,18 @@
     "format": "prettier --write \"**/*.{js,ts,json}\"",
     "test": "npm run clean && jest"
   },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "current",
+        "linux"
+      ],
+      "cpu": [
+        "current",
+        "x64"
+      ]
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/justkey007/tsc-alias.git"
@@ -57,7 +69,6 @@
     "@types/jest": "^27.4.0",
     "@types/node": "^16.18.126",
     "@types/normalize-path": "^3.0.2",
-    "@types/rimraf": "^3.0.2",
     "@types/shelljs": "^0.8.11",
     "husky": "^7.0.4",
     "jest": "^27.5.1",

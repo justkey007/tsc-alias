@@ -29,6 +29,11 @@ export default function replaceBaseUrlImport(args: AliasReplacerArguments): stri
   }
 
   const targetPath = join(config.outPath, requiredModule!);
+  try {
+    require.resolve(requiredModule!, { paths: [dirname(file)] });
+    return orig;
+  } catch {}
+
   if (!isImportablePath(targetPath, config.pathCache.fileExtensions)) {
     return orig;
   }
