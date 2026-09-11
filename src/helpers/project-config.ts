@@ -51,7 +51,7 @@ export function createProjectConfig(params: ICreateProjectConfigParams): IProjec
     hasExtraModule: false,
     configDirInOutPath: null,
     relConfDirPathInOutPath: null,
-    pathCache: new PathCache(!options.watch, fileExtensions?.outputCheck),
+    pathCache: new PathCache(!options.watch, fileExtensions?.outputCheck, configFile),
     inputGlob: fileExtensions?.inputGlob || '{mjs,cjs,js,jsx,d.{mts,cts,ts,tsx}}'
   };
 }

@@ -1,13 +1,12 @@
 /**
  * @file
- *
- * The PathCache class is meant to cache path lookups like
- * exists and getAbsoluteAliasPath.
+ * PathCache class caches path lookups and resolves project reference paths.
  */
 
-/** */
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { findMatchingReference, resolveReferenceTargetPath } from '../helpers';
+import { splitPathByParentSteps } from './path';
 import { getImportablePath } from './path-validator';
 
 export class PathCache {
@@ -16,7 +15,7 @@ export class PathCache {
   absoluteCache?: Map<string, string>;
   fileExtensions: string[];
 
-  constructor(useCache: boolean, fileExtensions?: string[]) {
+  constructor(useCache: boolean, fileExtensions?: string[], public configFile?: string) {
     this.fileExtensions = fileExtensions || ['js', 'json', 'jsx', 'cjs', 'mjs', 'd.ts', 'd.tsx', 'd.cts', 'd.mts'];
     this.useCache = useCache;
     if (useCache) {
@@ -50,40 +49,39 @@ export class PathCache {
   public getAbsoluteAliasPath(basePath: string, aliasPath: string): string {
     const request = { basePath, aliasPath };
     if (!this.useCache) return this.getAAP(request);
-    if (this.absoluteCache!.has(this.getCacheKey(request))) {
-      return this.absoluteCache!.get(this.getCacheKey(request))!;
-    } else {
-      const result = this.getAAP(request);
-      this.absoluteCache!.set(this.getCacheKey(request), result);
-      return result;
-    }
+    const key = `${basePath}___${aliasPath}`;
+    if (this.absoluteCache!.has(key)) return this.absoluteCache!.get(key)!;
+    const result = this.getAAP(request);
+    this.absoluteCache!.set(key, result);
+    return result;
   }
 
-  private getCacheKey({ basePath, aliasPath }: { basePath: string; aliasPath: string }): string {
-    return `${basePath}___${aliasPath}`;
-  }
-
-  /**
-   * getAAP finds the absolute alias path.
-   * @param {string} basePath the basepath of the alias.
-   * @param {string} aliasPath the aliaspath of the alias.
-   * @returns {string} the absolute alias path.
-   */
-  private getAAP({ basePath, aliasPath }: { basePath: string; aliasPath: string }): string {
-    const aliasPathParts = aliasPath.split('/').filter((part) => !part.match(/^\.$|^\s*$/));
-
+  private getAAP(params: { basePath: string; aliasPath: string }): string {
+    const { aliasPath } = params;
+    const { parentSteps, remainingPath } = splitPathByParentSteps(aliasPath);
+    const basePath = join(params.basePath, parentSteps);
+    const aliasPathParts = remainingPath.split('/').filter((part) => !part.match(/^\.$|^\s*$/));
     let aliasPathPart = aliasPathParts.shift() || '';
+    let found = false;
 
-    let pathExists = false;
-
-    while (!(pathExists = this.exists(join(basePath, aliasPathPart))) && aliasPathParts.length) {
+    while (!(found = this.exists(join(basePath, aliasPathPart))) && aliasPathParts.length) {
       aliasPathPart = aliasPathParts.shift()!;
     }
 
-    if (pathExists) {
+    if (found) {
       const absolutePath = join(basePath, aliasPathPart, aliasPathParts.join('/'));
       const importablePath = getImportablePath(absolutePath, this.fileExtensions);
       if (importablePath) return importablePath;
+
+      const matchingRef = findMatchingReference({ configFile: this.configFile, sourcePath: absolutePath });
+      if (matchingRef) {
+        const refPath = resolveReferenceTargetPath({
+          reference: matchingRef,
+          sourcePath: absolutePath,
+          fileExtensions: this.fileExtensions
+        });
+        if (refPath) return refPath;
+      }
     }
 
     return '---' + join(basePath, aliasPathParts.join('/'));
