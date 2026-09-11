@@ -3,28 +3,12 @@
  * Helper for reading and resolving TypeScript project references from tsconfig.json.
  */
 
-import { existsSync } from 'fs';
-import { Json } from 'mylas';
-import { dirname, isAbsolute, join, resolve } from 'path';
 import { IOutput } from '../interfaces';
+import { loadProjectReferenceDetails } from './reference-path-resolver';
 
 export interface IReadConfigReferencesParams {
   configFile: string;
-  output: IOutput;
-}
-
-interface IRawReference {
-  path: string;
-}
-
-function resolveReferencePath(ref: string, configDir: string): string {
-  const absolutePath = isAbsolute(ref) ? ref : resolve(configDir, ref);
-
-  if (existsSync(join(absolutePath, 'tsconfig.json'))) {
-    return join(absolutePath, 'tsconfig.json');
-  }
-
-  return absolutePath;
+  output?: IOutput;
 }
 
 /**
@@ -35,25 +19,19 @@ function resolveReferencePath(ref: string, configDir: string): string {
  */
 export function readConfigReferences(params: IReadConfigReferencesParams): string[] {
   const { configFile, output } = params;
-  const raw = Json.loadS<{ references?: IRawReference[] }>(configFile, true);
+  const { hasReferences, references, missing } = loadProjectReferenceDetails(configFile);
 
-  if (!raw.references || raw.references.length === 0) {
-    output.debug('No references found in:', configFile);
+  if (!hasReferences) {
+    output?.debug('No references found in:', configFile);
     return [];
   }
 
-  const configDir = dirname(configFile);
-  const resolved: string[] = [];
-
-  for (const ref of raw.references) {
-    const refPath = resolveReferencePath(ref.path, configDir);
-    if (!existsSync(refPath)) {
-      output.debug('Referenced tsconfig not found, skipping:', refPath);
-      continue;
-    }
-    output.debug('Resolved reference:', refPath);
-    resolved.push(refPath);
+  for (const refPath of missing) {
+    output?.debug('Referenced tsconfig not found, skipping:', refPath);
+  }
+  for (const reference of references) {
+    output?.debug('Resolved reference:', reference.configFile);
   }
 
-  return resolved;
+  return references.map(({ configFile: referenceConfigFile }) => referenceConfigFile);
 }

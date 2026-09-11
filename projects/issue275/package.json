@@ -1,0 +1,12 @@
+{
+  "name": "issue275-repro",
+  "private": true,
+  "scripts": {
+    "clean": "tsc --build --clean server/tsconfig.json",
+    "build": "npm run clean && tsc --build server/tsconfig.json && tsc-alias -p server/tsconfig.json --follow-references",
+    "start": "npm run build && node server/dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "5.2.2"
+  }
+}
