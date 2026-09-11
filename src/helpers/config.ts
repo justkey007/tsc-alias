@@ -29,6 +29,6 @@ export async function prepareConfig(options: ReplaceTscAliasPathsOptions): Promi
     options
   });
 
-  await importReplacers(config, replacers!, options.replacers);
+  await importReplacers({ config, replacers: replacers!, cmdReplacers: options.replacers });
   return config;
 }
