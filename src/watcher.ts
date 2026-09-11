@@ -23,7 +23,8 @@ export function setupFileWatcher(params: ISetupFileWatcherParams): void {
 
   const filesWatcher = watch(globPattern);
   const tsconfigWatcher = watch(config.configFile);
-  const onFileChange = async (file: string) => await replaceAlias(config, file, options?.resolveFullPaths);
+  const onFileChange = async (file: string) =>
+    await replaceAlias({ config, file, resolveFullPath: options?.resolveFullPaths });
 
   filesWatcher.on('add', onFileChange);
   filesWatcher.on('change', onFileChange);

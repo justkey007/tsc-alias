@@ -39,12 +39,12 @@ export async function prepareSingleFileReplaceTscAliasPaths(
       activeConfig = declarationConfig!;
     }
 
-    return replaceAliasString(
-      activeConfig,
-      filePath,
-      fileContents,
-      options?.resolveFullPaths,
-      options?.resolveFullExtension
-    );
+    return replaceAliasString({
+      config: activeConfig,
+      file: filePath,
+      code: fileContents,
+      resolveFullPath: options?.resolveFullPaths,
+      resolveFullExtension: options?.resolveFullExtension
+    });
   };
 }
