@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "display-svg": ["./src/display/svg.js"]
+    }
+  },
+  "include": ["src/**/*"]
+}
