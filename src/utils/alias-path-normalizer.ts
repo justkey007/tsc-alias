@@ -20,6 +20,22 @@ export function isDTS(extension: string): boolean {
 }
 
 /**
+ * Normalizes TypeScript extensions to DTS equivalents.
+ */
+export function getDTSPathExtension(path: string): string {
+  if (isDTS(path)) return path;
+  return path.replace(/\.([mc])?ts(x)?$/, '.d.$1ts$2');
+}
+
+/**
+ * Convert DTS extensions to JS equivalents.
+ * Ex: 'filename.d.ts' to 'filename.js'
+ */
+export function convertDTSPathExtension(path: string): string {
+  return path.replace(/\.d\.([mc])?ts(x)?$/, '.$1js$2');
+}
+
+/**
  * Normalizes TypeScript extensions to JavaScript equivalents.
  */
 export function normalizePathExtension(path: string): string {

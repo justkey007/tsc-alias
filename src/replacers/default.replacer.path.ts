@@ -4,7 +4,7 @@
  */
 
 import { Alias, AliasPath, IConfig } from '../interfaces';
-import { parseWildcardPattern, substituteWildcard } from '../utils';
+import { convertDTSPathExtension, parseWildcardPattern, substituteWildcard } from '../utils';
 import { extractWildcardValue } from './default.replacer.match';
 import normalizePath = require('normalize-path');
 
@@ -66,7 +66,7 @@ export function findResolvedAliasPath(params: IFindResolvedAliasPathParams): str
       alias,
       config
     });
-    if (resolved) return resolved;
+    if (resolved) return convertDTSPathExtension(resolved);
   }
   return null;
 }
