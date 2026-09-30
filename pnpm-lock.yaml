@@ -88,6 +88,12 @@ importers:
         specifier: ^5.0.0
         version: 5.9.3
 
+  projects/issue196:
+    devDependencies:
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
+
   projects/issue229:
     dependencies:
       mqtt:

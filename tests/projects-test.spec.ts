@@ -46,6 +46,6 @@ it.each([1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22,
   }
 );
 
-it.each([171, 229, 233, 251, 261, 263, 265, 275, 276])('issue %d should work correctly', (value) => {
+it.each([171, 196, 229, 233, 251, 261, 263, 265, 275, 276])('issue %d should work correctly', (value) => {
   runTestProject(`issue${value}`);
 });

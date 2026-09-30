@@ -5,7 +5,7 @@
 
 import { findBasePathOfAlias } from '../helpers';
 import { Alias, IProjectConfig, PathLike } from '../interfaces';
-import { getDTSPathExtension, normalizeAliasPath } from './alias-path-normalizer';
+import { normalizeAliasPath } from './alias-path-normalizer';
 import { parseWildcardPattern } from './pattern-matcher';
 
 export interface ITrieContainer<T> {
@@ -43,8 +43,6 @@ export function normalizeAliasEntry(params: INormalizeAliasEntryParams): IRawAli
   const hasWildcard = keyPattern.hasWildcard;
   const shouldPrefixMatchWildly = hasWildcard && suffix === '';
   const paths = targetPaths.map((path) => normalizeAliasPath({ path, config }));
-  const dtsPaths = targetPaths.map((path) => getDTSPathExtension(path));
-  paths.push(...dtsPaths);
   return { prefix, suffix, hasWildcard, shouldPrefixMatchWildly, paths };
 }
 

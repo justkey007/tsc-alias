@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && tsc-alias",
+    "start": "pnpm run build && node ./index.js"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  },
+  "dependencies": {}
+}
