@@ -6,6 +6,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { findMatchingReference, resolveReferenceTargetPath } from '../helpers';
+import { DEFAULT_FILE_EXTENSIONS } from './constants';
 import { splitPathByParentSteps } from './path';
 import { getImportablePath } from './path-validator';
 
@@ -16,7 +17,7 @@ export class PathCache {
   fileExtensions: string[];
 
   constructor(useCache: boolean, fileExtensions?: string[], public configFile?: string) {
-    this.fileExtensions = fileExtensions || ['js', 'json', 'jsx', 'cjs', 'mjs', 'd.ts', 'd.tsx', 'd.cts', 'd.mts'];
+    this.fileExtensions = fileExtensions || [...DEFAULT_FILE_EXTENSIONS];
     this.useCache = useCache;
     if (useCache) {
       this.existsCache = new Map();

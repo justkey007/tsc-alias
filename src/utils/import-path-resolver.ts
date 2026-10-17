@@ -1,57 +1,18 @@
 /**
  * @file
- *
- * Import statements come in a lot of flavors, so having a single
- * regex that can capture all of those with minimal side effects
- * is trickly. In this file this regex is constructed from multiple parts.
- *
- * Using a named captured group (supported in ES2018/Node 10+)
- * to allow arbitrary complexity of the regex without worrying
- * about messing up indexing.
- *
- * Meant to match ESM/CommonJS import patterns.
- *
- * ⚠ Can match content of strings and comments!
- *
- * @example
- * // Examples of import statements that must be matched
- * // (Note that there could be newlines between tokens.)
- * const module = require('some/path')
- * import module from 'some/path'
- * import "some/path"
- * import theDefault, {namedExport} from 'some/path'
- * const asyncImport = await import('some/path')
- * export * from 'some/path';
+ * Resolves full import paths in source code files.
  */
 
-/** */
-import normalizePath = require('normalize-path');
-import { existsSync } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { dirname, resolve } from 'path';
 import { StringReplacer } from '../interfaces';
+import { DEFAULT_IMPORT_EXTENSION, DEFAULT_RUNTIME_EXTENSIONS } from './constants';
+import { newImportStatementRegex, newStringRegex } from './import-regex';
+import { resolveExistingRuntimePath, resolvePackageSubpath } from './package-subpath-resolver';
+import normalizePath = require('normalize-path');
 
-const anyQuote = `["']`;
-const pathStringContent = `[^"'\r\n]+`;
-const importString = `(?:${anyQuote}${pathStringContent}${anyQuote})`;
-
-// Separate patterns for each style of import statement,
-// wrapped in non-capturing groups,
-// so that they can be strung together in one big pattern.
-const funcStyle = `(?:\\b(?:import|require)\\s*\\(\\s*(\\/\\*.*\\*\\/\\s*)?${importString}(?:\\s*,[\\s\\S]*?)?\\s*\\))`;
-const globalStyle = `(?:\\bimport\\s+${importString})`;
-const globalMinimizedStyle = `(?:\\bimport${importString})`;
-const fromStyle = `(?:\\bfrom\\s+${importString})`;
-const fromMinimizedStyle = `(?:\\bfrom${importString})`;
-const moduleStyle = `(?:\\bmodule\\s+${importString})`;
-
-const importRegexString = `(?:${[
-  funcStyle,
-  globalStyle,
-  globalMinimizedStyle,
-  fromStyle,
-  fromMinimizedStyle,
-  moduleStyle
-].join(`|`)})`;
+function runtimeExtensions(preferredExtension: string): string[] {
+  return Array.from(new Set([preferredExtension, ...DEFAULT_RUNTIME_EXTENSIONS]));
+}
 
 class ImportPathResolver {
   constructor(public source: string, readonly sourcePath: string) {}
@@ -65,23 +26,16 @@ class ImportPathResolver {
    * function (a la `String.prototype.replace(globalRegex,replacer)`)
    */
   replaceSourceImportPaths(replacer: StringReplacer) {
-    this.source = this.source.replace(ImportPathResolver.newImportStatementRegex('g'), replacer);
+    this.source = this.source.replace(newImportStatementRegex('g'), replacer);
     return this;
   }
 
-  /**
-   * For a JavaScript code string, find all local import paths
-   * and resolve them to full filenames (including the .js extension).
-   * If no matching file is found for a path, leave it alone.
-   */
-  resolveFullImportPaths(ext = '.js') {
+  resolveFullImportPaths(ext = DEFAULT_IMPORT_EXTENSION) {
     this.replaceSourceImportPaths((importStatement) => {
-      // Find substring that is just quotes
-      const importPathMatch = importStatement.match(newStringRegex());
-      if (!importPathMatch) {
-        return importStatement;
-      }
-      const { path, pathWithQuotes } = importPathMatch.groups as {
+      const match = importStatement.match(newStringRegex());
+      if (!match) return importStatement;
+
+      const { path, pathWithQuotes } = match.groups as {
         path: string;
         pathWithQuotes: string;
       };
@@ -91,42 +45,25 @@ class ImportPathResolver {
     return this;
   }
 
-  /**
-   * Given an import path, resolve the full path (including extension).
-   * If no corresponding file can be found, return the original path.
-   */
-  private resolveFullPath(importPath: string, ext = '.js') {
-    // Si l'importation cible explicitement un fichier JSON, on doit conserver l'extension .json
-    const targetExt = importPath.endsWith('.json') ? '.json' : ext;
+  private resolveFullPath(importPath: string, ext = DEFAULT_IMPORT_EXTENSION) {
+    const extensions = runtimeExtensions(ext);
+    if (extensions.some((extension) => importPath.endsWith(extension))) return importPath;
 
-    // If bare import or already a full path import
-    if (!importPath.startsWith('.') || importPath.match(new RegExp(`\\${targetExt}$`))) {
-      return importPath;
+    if (!importPath.startsWith('.')) {
+      return resolvePackageSubpath({ importPath, sourceDir: this.sourceDir, extensions });
     }
-    // Try adding the extension (if not obviously a directory)
-    if (!importPath.match(/[/\\]$/)) {
-      const asFilePath = `${importPath}${targetExt}`;
-      if (existsSync(resolve(this.sourceDir, asFilePath))) {
-        return asFilePath;
-      }
-    }
-    // Assume the path is a folder; try adding index.js / index.json
-    let asFilePath = join(importPath, 'index' + targetExt);
-    if ((importPath.startsWith('./') || importPath === '.') && !asFilePath.startsWith('./')) {
-      asFilePath = './' + asFilePath;
-    }
-    return existsSync(resolve(this.sourceDir, asFilePath)) ? asFilePath : importPath;
+
+    return resolveExistingRuntimePath({
+      importPath,
+      absolutePath: resolve(this.sourceDir, importPath),
+      extensions
+    });
   }
 
-  static newStringRegex() {
-    return new RegExp(`(?<pathWithQuotes>${anyQuote}(?<path>${pathStringContent})${anyQuote})`);
-  }
+  static newStringRegex = newStringRegex;
+  static newImportStatementRegex = newImportStatementRegex;
 
-  static newImportStatementRegex(flags = '') {
-    return new RegExp(importRegexString, flags);
-  }
-
-  static resolveFullImportPaths(code: string, path: string, ext = '.js') {
+  static resolveFullImportPaths(code: string, path: string, ext = DEFAULT_IMPORT_EXTENSION) {
     return new ImportPathResolver(code, path).resolveFullImportPaths(ext).source;
   }
 
@@ -135,9 +72,7 @@ class ImportPathResolver {
   }
 }
 
-// Export aliases for the static functions
-// to make usage more friendly.
+// Export aliases for the static functions to make usage more friendly.
+export { newImportStatementRegex, newStringRegex };
 export const resolveFullImportPaths = ImportPathResolver.resolveFullImportPaths;
-export const newImportStatementRegex = ImportPathResolver.newImportStatementRegex;
 export const replaceSourceImportPaths = ImportPathResolver.replaceSourceImportPaths;
-export const newStringRegex = ImportPathResolver.newStringRegex;
