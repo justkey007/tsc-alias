@@ -24,14 +24,22 @@ export function isDTS(extension: string): boolean {
  */
 export function getDTSPathExtension(path: string): string {
   if (isDTS(path)) return path;
-  return path.replace(/\.([mc])?ts(x)?$/, '.d.$1ts$2');
+  return path.replace(/\.([mc])?[tj]s(x)?$/, '.d.$1ts$2');
+}
+
+/**
+ * Remove javascript extensions.
+ */
+export function removeJavascriptExtension(path: string): string {
+  if (isDTS(path)) return path;
+  return path.replace(/\.([mc])?[j]s(x)?$/, '');
 }
 
 /**
  * Convert DTS extensions to JS equivalents.
  * Ex: 'filename.d.ts' to 'filename.js'
  */
-export function convertDTSPathExtension(path: string): string {
+export function convertDTSPathToJsExtension(path: string): string {
   return path.replace(/\.d\.([mc])?ts(x)?$/, '.$1js$2');
 }
 

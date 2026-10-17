@@ -5,6 +5,7 @@
 
 import { existsSync, statSync } from 'fs';
 import { extname, join } from 'path';
+import { removeJavascriptExtension } from './alias-path-normalizer';
 
 export function getImportablePath(path: string, fileExtensions: string[]): string | null {
   const isValidPath = existsSync(path);
@@ -12,7 +13,8 @@ export function getImportablePath(path: string, fileExtensions: string[]): strin
     return path;
   }
 
-  const targetFiles = fileExtensions.map((ext) => `${path}.${ext}`);
+  const pathWithoutJsExt = removeJavascriptExtension(path);
+  const targetFiles = fileExtensions.map((ext) => `${pathWithoutJsExt}.${ext}`);
   for (const file of targetFiles) {
     if (existsSync(file)) return file;
   }

@@ -4,15 +4,11 @@
  */
 
 import { Alias } from '../interfaces';
-import { matchWildcard } from '../utils';
+import { matchWildcard, removeJavascriptExtension } from '../utils';
 
 export interface IIsMatchingAliasParams {
   requiredModule: string;
   alias: Alias;
-}
-
-function escapeSpecialChars(str: string): string {
-  return str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
 
 /**
@@ -48,14 +44,5 @@ export function extractWildcardValue(requiredModule: string, alias: Alias): stri
     text: requiredModule
   });
 
-  return starValue;
-}
-
-export function removeAliasPrefix(requiredModule: string, alias: Alias): string {
-  const starVal = extractWildcardValue(requiredModule, alias);
-  if (starVal) return starVal;
-
-  const escapedPrefix = escapeSpecialChars(alias.prefix);
-  const regex = new RegExp(`(?:^${escapedPrefix})|(?:\\.(?:[cm]?[jt]sx?|json)$)`, 'g');
-  return requiredModule.replace(regex, '');
+  return removeJavascriptExtension(starValue);
 }

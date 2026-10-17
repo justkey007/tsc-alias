@@ -3,8 +3,17 @@
  * Helper functions for locating and validating candidate alias paths.
  */
 
+import { statSync } from 'fs';
+import { resolve } from 'path';
+import { findMatchingReference } from '../helpers/reference-path-resolver';
 import { Alias, AliasPath, IConfig } from '../interfaces';
-import { convertDTSPathExtension, parseWildcardPattern, substituteWildcard } from '../utils';
+import {
+  convertDTSPathToJsExtension,
+  normalizePathExtension,
+  parseWildcardPattern,
+  substituteWildcard
+} from '../utils';
+import { getImportablePath } from '../utils/path-validator';
 import { extractWildcardValue } from './default.replacer.match';
 import normalizePath = require('normalize-path');
 
@@ -33,6 +42,26 @@ function resolveConcreteTarget(aliasPath: AliasPath, starValue: string): string 
   return aliasPath.path;
 }
 
+function resolveExistingArtifact(aliasPath: AliasPath, concretePath: string, config: IConfig): string | null {
+  if (aliasPath.path.match(/^(\.\/|)node_modules/)) return null;
+
+  const sourcePath = resolve(config.configDir!, config.baseUrl, concretePath);
+  if (findMatchingReference({ configFile: config.configFile, sourcePath })) return null;
+
+  const importablePath = getImportablePath(sourcePath, config.pathCache.fileExtensions);
+  if (
+    !importablePath ||
+    !config.pathCache.fileExtensions.some((extension) => importablePath.endsWith(`.${extension}`))
+  ) {
+    return null;
+  }
+
+  const runtimePath = normalizePathExtension(convertDTSPathToJsExtension(importablePath));
+  if (!statSync(runtimePath, { throwIfNoEntry: false })?.isFile()) return null;
+
+  return normalizePath(runtimePath);
+}
+
 function checkSingleAliasPath(params: ICheckAliasPathParams): string | null {
   const { aliasPath, requiredModule, alias, config } = params;
   const starValue = extractWildcardValue(requiredModule, alias);
@@ -41,17 +70,13 @@ function checkSingleAliasPath(params: ICheckAliasPathParams): string | null {
   const absolutePath = config.pathCache.getAbsoluteAliasPath(aliasPath.basePath, concretePath);
   config.output.debug('default replacer - absoluteAliasPath: ', absolutePath);
 
-  if (absolutePath.startsWith('---')) {
-    config.output.debug('default replacer - Invalid path');
-    return null;
+  if (!absolutePath.startsWith('---')) {
+    const resolvedPath = normalizePath(absolutePath);
+    if (config.pathCache.existsResolvedAlias(resolvedPath)) return resolvedPath;
   }
 
-  const resolvedPath = normalizePath(absolutePath);
-  if (!config.pathCache.existsResolvedAlias(resolvedPath)) {
-    config.output.debug('default replacer - Invalid path');
-    return null;
-  }
-  return resolvedPath;
+  config.output.debug('default replacer - Invalid path');
+  return resolveExistingArtifact(aliasPath, concretePath, config);
 }
 
 /**
@@ -66,7 +91,7 @@ export function findResolvedAliasPath(params: IFindResolvedAliasPathParams): str
       alias,
       config
     });
-    if (resolved) return convertDTSPathExtension(resolved);
+    if (resolved) return convertDTSPathToJsExtension(resolved);
   }
   return null;
 }
