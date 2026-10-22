@@ -3,7 +3,7 @@
  * Resolves full file paths for bare package subpath imports.
  */
 
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { SCOPED_PACKAGE_PREFIX } from './constants';
 
@@ -22,6 +22,20 @@ export interface IResolvePackageSubpathParams {
 interface IPackageSubpath {
   packageParts: string[];
   subpathParts: string[];
+}
+
+function packageDefinesExports(packageRoot: string): boolean {
+  const manifestPath = join(packageRoot, 'package.json');
+  if (!existsSync(manifestPath)) return false;
+
+  try {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as Record<string, unknown>;
+    return Object.prototype.hasOwnProperty.call(manifest, 'exports');
+  } catch {
+    // If the manifest cannot be interpreted, avoid rewriting a package specifier
+    // based only on its filesystem layout.
+    return true;
+  }
 }
 
 export function resolveExistingRuntimePath(params: IResolveRuntimePathParams): string {
@@ -60,6 +74,8 @@ export function resolvePackageSubpath(params: IResolvePackageSubpathParams): str
 
   while (!isAtRoot) {
     const root = resolve(dir, 'node_modules', ...packageParts);
+    if (packageDefinesExports(root)) return importPath;
+
     const resolved = resolveExistingRuntimePath({
       importPath,
       absolutePath: resolve(root, ...subpathParts),
