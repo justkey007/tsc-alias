@@ -50,12 +50,16 @@ export function replaceAliasString(params: IReplaceAliasStringParams): string {
   // Fully resolve all import paths (not just aliased ones)
   // *after* the aliases are resolved
   if (resolveFullPath) {
-    code = resolveFullImportPaths(
+    let shouldResolvePackageSubpaths = config.moduleResolution?.toLowerCase() !== 'bundler';
+    if (typeof config.resolvePackageSubpaths === 'boolean') {
+      shouldResolvePackageSubpaths = config.resolvePackageSubpaths;
+    }
+    code = resolveFullImportPaths({
       code,
-      file,
-      resolveFullExtension,
-      config.moduleResolution?.toLowerCase() !== 'bundler'
-    );
+      path: file,
+      ext: resolveFullExtension,
+      resolvePackageSubpaths: shouldResolvePackageSubpaths
+    });
   }
 
   return code;

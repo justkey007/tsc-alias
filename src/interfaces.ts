@@ -3,6 +3,7 @@ import { PathCache, TrieNode } from './utils';
 export interface ITSCAliasConfig {
   replacers?: ReplacerOptions;
   resolveFullPaths?: boolean;
+  resolvePackageSubpaths?: boolean;
   verbose?: boolean;
   fileExtensions?: Partial<FileExtensions>;
 }
@@ -26,6 +27,7 @@ export interface ITSConfig {
   paths?: PathLike;
   replacers?: ReplacerOptions;
   resolveFullPaths?: boolean;
+  resolvePackageSubpaths?: boolean;
   verbose?: boolean;
   fileExtensions?: Partial<FileExtensions>;
 }
@@ -43,6 +45,7 @@ export interface IProjectConfig {
   relConfDirPathInOutPath: string | null;
   pathCache: PathCache;
   inputGlob: string;
+  resolvePackageSubpaths?: boolean;
 }
 
 export interface IConfig extends IProjectConfig {
@@ -60,6 +63,7 @@ export interface ReplaceTscAliasPathsOptions {
   debug?: boolean;
   resolveFullPaths?: boolean;
   resolveFullExtension?: '.js' | '.mjs' | '.cjs';
+  resolvePackageSubpaths?: boolean;
   replacers?: string[];
   output?: IOutput;
   aliasTrie?: TrieNode<Alias>;

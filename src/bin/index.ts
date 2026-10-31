@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 import { Option, program } from 'commander';
-import { replaceTscAliasPaths } from '..';
+import { replaceTscAliasPaths } from '../alias-paths-replacer';
 
 const { version } = require('../../package.json');
 
@@ -35,12 +35,15 @@ program
     '--follow-references',
     'Follow TypeScript project references and resolve alias paths in all referenced projects'
   )
+  .option('--resolve-package-subpaths', 'Resolve subpaths for bare package imports')
+  .option('--no-resolve-package-subpaths', 'Do not resolve subpaths for bare package imports')
   .parseAsync(process.argv);
 
 const options = program.opts();
 
 replaceTscAliasPaths({
   resolveFullExtension: options.resolveFullExtension,
+  resolvePackageSubpaths: options.resolvePackageSubpaths,
   configFile: options.project,
   watch: !!options.watch,
   outDir: options.dir,

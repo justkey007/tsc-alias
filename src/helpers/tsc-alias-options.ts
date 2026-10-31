@@ -18,6 +18,9 @@ export function applyTscAliasOptions(params: IApplyTscAliasOptionsParams): void 
   if (tscAliasConfig?.resolveFullPaths) {
     config.resolveFullPaths = tscAliasConfig.resolveFullPaths;
   }
+  if (typeof tscAliasConfig?.resolvePackageSubpaths === 'boolean') {
+    config.resolvePackageSubpaths = tscAliasConfig.resolvePackageSubpaths;
+  }
   if (tscAliasConfig?.verbose) config.verbose = tscAliasConfig.verbose;
   config.fileExtensions = tscAliasConfig?.fileExtensions ?? {};
 

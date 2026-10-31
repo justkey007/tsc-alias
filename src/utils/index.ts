@@ -3,6 +3,7 @@ export * from './alias-trie-builder';
 export * from './constants';
 export * from './import-path-resolver';
 export * from './output';
+export * from './package-exports';
 export * from './package-subpath-resolver';
 export * from './path';
 export * from './path-cache';

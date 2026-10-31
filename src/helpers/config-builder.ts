@@ -20,7 +20,17 @@ export function buildProjectConfig(params: IBuildProjectConfigParams): {
 } {
   const { configFile, output, options } = params;
   const loaded = loadConfig({ file: configFile, output });
-  const { baseUrl = '', outDir, declarationDir, paths, replacers, resolveFullPaths, verbose, fileExtensions } = loaded;
+  const {
+    baseUrl = '',
+    outDir,
+    declarationDir,
+    paths,
+    replacers,
+    resolveFullPaths,
+    resolvePackageSubpaths,
+    verbose,
+    fileExtensions
+  } = loaded;
 
   applyConfigOverrides({
     options,
@@ -46,7 +56,11 @@ export function buildProjectConfig(params: IBuildProjectConfigParams): {
   output.debug('loaded project config:', projectConfig);
 
   const config = createFinalConfig({
-    projectConfig: { ...projectConfig, moduleResolution: loaded.moduleResolution },
+    projectConfig: {
+      ...projectConfig,
+      moduleResolution: loaded.moduleResolution,
+      resolvePackageSubpaths: options.resolvePackageSubpaths ?? resolvePackageSubpaths
+    },
     output,
     paths,
     aliasTrie: options.aliasTrie

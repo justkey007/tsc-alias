@@ -10,6 +10,13 @@ import { newImportStatementRegex, newStringRegex } from './import-regex';
 import { resolveExistingRuntimePath, resolvePackageSubpath } from './package-subpath-resolver';
 import normalizePath = require('normalize-path');
 
+export interface IResolveFullImportPathsParams {
+  code: string;
+  path: string;
+  ext?: string;
+  resolvePackageSubpaths?: boolean;
+}
+
 function runtimeExtensions(preferredExtension: string): string[] {
   return Array.from(new Set([preferredExtension, ...DEFAULT_RUNTIME_EXTENSIONS]));
 }
@@ -34,11 +41,7 @@ class ImportPathResolver {
     this.replaceSourceImportPaths((importStatement) => {
       const match = importStatement.match(newStringRegex());
       if (!match) return importStatement;
-
-      const { path, pathWithQuotes } = match.groups as {
-        path: string;
-        pathWithQuotes: string;
-      };
+      const { path, pathWithQuotes } = match.groups as { path: string; pathWithQuotes: string };
       const fullPath = normalizePath(this.resolveFullPath(path, ext));
       return importStatement.replace(pathWithQuotes, pathWithQuotes.replace(path, fullPath));
     });
@@ -64,12 +67,8 @@ class ImportPathResolver {
   static newStringRegex = newStringRegex;
   static newImportStatementRegex = newImportStatementRegex;
 
-  static resolveFullImportPaths(
-    code: string,
-    path: string,
-    ext = DEFAULT_IMPORT_EXTENSION,
-    resolvePackageSubpaths = true
-  ) {
+  static resolveFullImportPaths(params: IResolveFullImportPathsParams) {
+    const { code, path, ext = DEFAULT_IMPORT_EXTENSION, resolvePackageSubpaths = true } = params;
     return new ImportPathResolver(code, path, resolvePackageSubpaths).resolveFullImportPaths(ext).source;
   }
 

@@ -56,4 +56,41 @@ describe('issue 292: preserve bare package subpaths for bundlers', () => {
     });
     expect(replace({ fileContents: code, filePath: join(projectDir, 'dist/index.js') })).toBe(expected);
   });
+
+  it('preserves package imports with moduleResolution node when resolvePackageSubpaths is false in options', async () => {
+    configure('node');
+    write('dist/index.js', code);
+    await replaceTscAliasPaths({
+      configFile: join(projectDir, 'tsconfig.json'),
+      resolveFullPaths: true,
+      resolvePackageSubpaths: false
+    });
+    expect(readFileSync(join(projectDir, 'dist/index.js'), 'utf8')).toBe(expected);
+  });
+
+  it('preserves package imports with moduleResolution node when resolvePackageSubpaths is false in tsconfig', async () => {
+    write(
+      'tsconfig.json',
+      JSON.stringify({
+        compilerOptions: {
+          baseUrl: '.',
+          module: 'esnext',
+          moduleResolution: 'node',
+          outDir: 'dist',
+          paths: { '@/*': ['./dist/*'] }
+        },
+        include: ['dist/**/*.js'],
+        exclude: ['node_modules'],
+        'tsc-alias': { resolvePackageSubpaths: false }
+      })
+    );
+    write('node_modules/next/package.json', JSON.stringify({ name: 'next', version: '1.0.0' }));
+    write('node_modules/next/font/google/index.js', '');
+    write('node_modules/next/navigation.js', '');
+    write('dist/local.js', 'export const local = 1;');
+    write('dist/index.js', code);
+
+    await replaceTscAliasPaths({ configFile: join(projectDir, 'tsconfig.json'), resolveFullPaths: true });
+    expect(readFileSync(join(projectDir, 'dist/index.js'), 'utf8')).toBe(expected);
+  });
 });
