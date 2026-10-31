@@ -15,7 +15,7 @@ function runtimeExtensions(preferredExtension: string): string[] {
 }
 
 class ImportPathResolver {
-  constructor(public source: string, readonly sourcePath: string) {}
+  constructor(public source: string, readonly sourcePath: string, readonly resolvePackageSubpaths = true) {}
 
   get sourceDir() {
     return dirname(this.sourcePath);
@@ -50,6 +50,7 @@ class ImportPathResolver {
     if (extensions.some((extension) => importPath.endsWith(extension))) return importPath;
 
     if (!importPath.startsWith('.')) {
+      if (!this.resolvePackageSubpaths) return importPath;
       return resolvePackageSubpath({ importPath, sourceDir: this.sourceDir, extensions });
     }
 
@@ -63,8 +64,13 @@ class ImportPathResolver {
   static newStringRegex = newStringRegex;
   static newImportStatementRegex = newImportStatementRegex;
 
-  static resolveFullImportPaths(code: string, path: string, ext = DEFAULT_IMPORT_EXTENSION) {
-    return new ImportPathResolver(code, path).resolveFullImportPaths(ext).source;
+  static resolveFullImportPaths(
+    code: string,
+    path: string,
+    ext = DEFAULT_IMPORT_EXTENSION,
+    resolvePackageSubpaths = true
+  ) {
+    return new ImportPathResolver(code, path, resolvePackageSubpaths).resolveFullImportPaths(ext).source;
   }
 
   static replaceSourceImportPaths(code: string, path: string, replacer: StringReplacer) {
