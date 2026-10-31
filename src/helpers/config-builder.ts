@@ -46,7 +46,7 @@ export function buildProjectConfig(params: IBuildProjectConfigParams): {
   output.debug('loaded project config:', projectConfig);
 
   const config = createFinalConfig({
-    projectConfig,
+    projectConfig: { ...projectConfig, moduleResolution: loaded.moduleResolution },
     output,
     paths,
     aliasTrie: options.aliasTrie

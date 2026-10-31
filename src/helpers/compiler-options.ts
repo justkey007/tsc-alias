@@ -23,6 +23,8 @@ export function applyCompilerOptions(params: IApplyCompilerOptionsParams): void 
   const { config, compilerOptions, baseTsConfig, configDir, baseConfigDir } = params;
   const { baseUrl, outDir, declarationDir, paths, rootDir } = compilerOptions;
 
+  config.moduleResolution = compilerOptions.moduleResolution;
+
   const effectiveOutDir = outDir || baseTsConfig?.compilerOptions?.outDir;
   if (effectiveOutDir) {
     let rawOutDir = effectiveOutDir;

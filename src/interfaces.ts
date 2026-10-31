@@ -19,6 +19,7 @@ export interface FileExtensions {
 }
 
 export interface ITSConfig {
+  moduleResolution?: string;
   baseUrl?: string;
   outDir?: string;
   declarationDir?: string;
@@ -30,6 +31,7 @@ export interface ITSConfig {
 }
 
 export interface IProjectConfig {
+  moduleResolution?: string;
   configFile: string;
   baseUrl: string;
   outDir: string | null;
