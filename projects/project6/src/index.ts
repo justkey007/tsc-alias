@@ -1,3 +1,3 @@
-import { HashMap } from '@esfx/collections-hashmap';
+import { BadRequestException } from '@nestjs/common';
 
-const map = new HashMap();
+export const exception = new BadRequestException();

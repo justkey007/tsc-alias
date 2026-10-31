@@ -15,23 +15,11 @@
   "scripts": {
     "prepare": "husky install",
     "build:dev": "tsc -w",
-    "clean": "rimraf dist && tsc && pnpm link -g",
+    "clean": "rimraf dist && tsc && pnpm add -g .",
     "release:patch": "npm version patch",
     "postversion": "git push && git push --tags && npm publish",
     "format": "prettier --write \"**/*.{js,ts,json}\"",
     "test": "npm run clean && jest"
-  },
-  "pnpm": {
-    "supportedArchitectures": {
-      "os": [
-        "current",
-        "linux"
-      ],
-      "cpu": [
-        "current",
-        "x64"
-      ]
-    }
   },
   "repository": {
     "type": "git",
