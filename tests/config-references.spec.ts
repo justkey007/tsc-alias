@@ -1,10 +1,11 @@
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
 import { readConfigReferences } from '../src/helpers/config-references';
 import { runOnReferences } from '../src/helpers/references-resolver';
 import { Output } from '../src/utils';
 
-const testDir = join(__dirname, '../temp-test-references');
+const testDir = mkdtempSync(join(tmpdir(), 'temp-test-references'));
 
 beforeAll(() => {
   if (existsSync(testDir)) rmSync(testDir, { recursive: true, force: true });

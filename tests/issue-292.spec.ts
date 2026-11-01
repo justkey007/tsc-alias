@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import { prepareSingleFileReplaceTscAliasPaths, replaceTscAliasPaths } from '../src';
 
@@ -6,7 +7,7 @@ describe('issue 292: preserve bare package subpaths for bundlers', () => {
   let projectDir: string;
 
   beforeEach(() => {
-    projectDir = mkdtempSync(join(__dirname, 'temp-issue-292-'));
+    projectDir = mkdtempSync(join(tmpdir(), 'temp-issue-292-'));
   });
 
   afterEach(() => {

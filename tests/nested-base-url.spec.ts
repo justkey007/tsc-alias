@@ -1,11 +1,12 @@
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
 import { findBasePathOfAlias } from '../src/helpers/path-base';
 import { resolveNestedBaseUrlPath } from '../src/helpers/path-base-nested';
 import { IProjectConfig } from '../src/interfaces';
 import { PathCache } from '../src/utils/path-cache';
 
-const testDir = join(__dirname, '../temp-test-nested-baseurl');
+const testDir = mkdtempSync(join(tmpdir(), 'temp-test-nested-baseurl'));
 const buildDir = join(testDir, 'build');
 const jslibUtilsDir = join(buildDir, 'src/jslib/utils');
 

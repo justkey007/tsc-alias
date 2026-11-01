@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import * as shell from 'shelljs';
 import { replaceTscAliasPaths } from '../src';
@@ -7,7 +8,7 @@ describe('issue 217: aliases targeting the project root', () => {
   let projectDir: string;
 
   beforeEach(() => {
-    projectDir = mkdtempSync(join(__dirname, 'temp-issue-217-'));
+    projectDir = mkdtempSync(join(tmpdir(), 'temp-issue-217-'));
   });
 
   afterEach(() => {

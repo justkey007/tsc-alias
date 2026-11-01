@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import { replaceTscAliasPaths } from '../src';
 
@@ -6,7 +7,7 @@ describe('issue 290: respect package exports for bare package subpaths', () => {
   let projectDir: string;
 
   beforeEach(() => {
-    projectDir = mkdtempSync(join(__dirname, 'temp-issue-290-'));
+    projectDir = mkdtempSync(join(tmpdir(), 'temp-issue-290-'));
   });
 
   afterEach(() => {

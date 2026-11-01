@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { dirname, join, resolve } from 'path';
 import { replaceTscAliasPaths } from '../src';
 
@@ -6,7 +7,7 @@ describe('aliases to existing build artifacts', () => {
   let projectDir: string;
 
   beforeEach(() => {
-    projectDir = mkdtempSync(join(__dirname, 'temp-built-alias-'));
+    projectDir = mkdtempSync(join(tmpdir(), 'temp-built-alias-'));
   });
 
   afterEach(() => {

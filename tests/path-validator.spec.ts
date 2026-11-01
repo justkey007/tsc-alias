@@ -1,4 +1,5 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
 import { isImportablePath } from '../src/utils/path-validator';
 
@@ -6,7 +7,7 @@ describe('isImportablePath', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(__dirname, 'temp-path-validator-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'temp-path-validator-'));
   });
 
   afterEach(() => {
