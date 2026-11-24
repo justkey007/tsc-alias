@@ -7,7 +7,7 @@ import { normalize } from 'path';
 import { IProjectConfig } from '../interfaces';
 import normalizePath = require('normalize-path');
 
-function isRootOrParentBaseUrl(normalizedBase: string): boolean {
+export function isRootOrParentBaseUrl(normalizedBase: string): boolean {
   return !normalizedBase || normalizedBase === '.' || normalizedBase.startsWith('..');
 }
 

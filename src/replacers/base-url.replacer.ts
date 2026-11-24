@@ -5,7 +5,8 @@
  * with the baseUrl + import statement location.
  */
 
-import { dirname, join, relative } from 'path';
+import { dirname, isAbsolute, join, normalize, relative } from 'path';
+import { isRootOrParentBaseUrl } from '../helpers/path-base-nested';
 import { AliasReplacerArguments } from '../interfaces';
 import { newStringRegex } from '../utils';
 import { isImportablePath } from '../utils/path-validator';
@@ -28,17 +29,17 @@ export default function replaceBaseUrlImport(args: AliasReplacerArguments): stri
     return orig;
   }
 
-  const targetPath = join(config.outPath, requiredModule!);
   try {
     require.resolve(requiredModule!, { paths: [dirname(file)] });
     return orig;
   } catch {}
 
-  if (!isImportablePath(targetPath, config.pathCache.fileExtensions)) {
+  const basePath = findBaseUrlOutPath(requiredModule!, config);
+  if (!basePath) {
     return orig;
   }
 
-  let relativePath = normalizePath(relative(dirname(file), config.outPath));
+  let relativePath = normalizePath(relative(dirname(file), basePath));
   if (!relativePath.startsWith('.')) {
     relativePath = `./${relativePath}`;
   }
@@ -54,4 +55,15 @@ export default function replaceBaseUrlImport(args: AliasReplacerArguments): stri
 
   config.output.debug('base-url replacer - modulePath: ', modulePath);
   return newImportScript.replace(modulePath, normalizePath(modulePath));
+}
+
+function findBaseUrlOutPath(requiredModule: string, config: AliasReplacerArguments['config']): string | undefined {
+  const candidates = [config.outPath];
+  const baseUrl = config.baseUrl;
+  if (baseUrl && !isAbsolute(baseUrl) && !isRootOrParentBaseUrl(normalize(baseUrl))) {
+    candidates.unshift(join(config.outPath, baseUrl));
+  }
+  return candidates.find((candidate) =>
+    isImportablePath(join(candidate, requiredModule), config.pathCache.fileExtensions)
+  );
 }
