@@ -22,6 +22,10 @@ export default function replaceImportStatement(args: AliasReplacerArguments): st
   config.output.debug('default replacer - requiredModule: ', requiredModule);
   config.output.assert(typeof requiredModule === 'string', `Unexpected import statement pattern ${orig}`);
 
+  if (requiredModule!.startsWith('.')) {
+    return orig;
+  }
+
   // Lookup which alias should be used for this given requiredModule.
   const alias = config.aliasTrie.search(requiredModule!);
   config.output.debug('default replacer - alias: ', alias);

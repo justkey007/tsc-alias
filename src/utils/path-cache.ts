@@ -7,6 +7,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { findMatchingReference, resolveReferenceTargetPath } from '../helpers';
 import { DEFAULT_FILE_EXTENSIONS } from './constants';
+import { removeJavascriptExtension } from './alias-path-normalizer';
 import { splitPathByParentSteps } from './path';
 import { getImportablePath } from './path-validator';
 
@@ -94,6 +95,10 @@ export class PathCache {
    * @returns {boolean} result of check.
    */
   private exists(path: string): boolean {
-    return existsSync(path) || this.fileExtensions.some((extension) => existsSync(`${path}.${extension}`));
+    if (existsSync(path)) return true;
+    const pathWithoutJsExt = removeJavascriptExtension(path);
+    return this.fileExtensions.some(
+      (extension) => existsSync(`${path}.${extension}`) || existsSync(`${pathWithoutJsExt}.${extension}`)
+    );
   }
 }
