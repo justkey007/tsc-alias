@@ -4,7 +4,7 @@
  */
 
 import { Alias } from '../interfaces';
-import { matchWildcard, removeJavascriptExtension } from '../utils';
+import { matchWildcard } from '../utils';
 
 export interface IIsMatchingAliasParams {
   requiredModule: string;
@@ -44,5 +44,5 @@ export function extractWildcardValue(requiredModule: string, alias: Alias): stri
     text: requiredModule
   });
 
-  return removeJavascriptExtension(starValue);
+  return starValue;
 }
